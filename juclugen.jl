@@ -1,3 +1,7 @@
+# Copyright (c) 2020 Diogo de Andrade, Nuno Fachada
+# Distributed under the MIT License (See accompanying file LICENSE or copy
+# at http://opensource.org/licenses/MIT)
+
 using LinearAlgebra
 using Distributions, Random
 using Plots
@@ -58,7 +62,8 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
                 pointDist::String="unif", pointOffset::String="nd", allowEmpty::Bool=false)
     # Validate inputs
     if (numDims < 2)
-        error("jundCluGen only supports more than 2 dimensions")
+        # TODO: Why not support 1D?
+        error("juCluGen only supports more than 2 dimensions")
     end
     sizeClustOffset = size(clustOffset)[1]
     if (sizeClustOffset != numDims)
@@ -175,8 +180,6 @@ function runTest(numDims, nClusters=5, pointDist="norm", pointOffset="nd")
             numDims, nClusters, 1500, [0, 0, 1], pi/2, [0, 0, 0], [2, 2, 2], 8, 1, 0.1, pointDist, pointOffset)
     end
 
-    #PyPlot.clf()
-
     dims = size(points)[2]
     if (dims == 2)
         display(scatter(points[:,1],points[:,2], group = clusters, markersize=3, markerstrokewidth=0.5))
@@ -188,8 +191,6 @@ function runTest(numDims, nClusters=5, pointDist="norm", pointOffset="nd")
 
     return points, clusters, clusterDefs, retPointCountPerCluster
 end
-
-
 
 #runTest(2, 4, "norm", "(n-1)d")
 #runTest(3, 5, "norm")
