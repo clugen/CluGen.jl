@@ -9,7 +9,7 @@ struct Cluster
 end
 
 function getRandomNormalizedVector(numDims::Int)
-    return normalize(rand(Float64, (1, numDims)) .- 0.5)'
+    return normalize(rand(Float64, numDims) .- 0.5)
 end
 
 function getPerpendicularVector(u)
@@ -25,7 +25,7 @@ function getPerpendicularVector(u)
         end
     end
     # - Compute (u'u)v' - (v'u)u', and normalize it
-    p = normalize((u'u)v' - (v'u)u')'
+    p = normalize(((u'u)v' - (v'u)u')')
 
     return p
 end
