@@ -144,7 +144,7 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
 
     # Create points
     retPoints = zeros((totalPoints, numDims))
-    retCluster = zeros((totalPoints, 1))
+    retCluster = zeros(Int32, totalPoints)
 
     index = 1
 
