@@ -1,6 +1,6 @@
 using LinearAlgebra
 using Distributions, Random
-using PyPlot
+using Plots
 
 struct Cluster
     center
@@ -26,7 +26,7 @@ function getPerpendicularVector(u)
     end
     # - Compute (u'u)v' - (v'u)u', and normalize it
     p = normalize((u'u)v' - (v'u)u')'
-    
+
     return p
 end
 
@@ -36,7 +36,7 @@ function generatePoint(numDims::Int, cluster::Cluster, lenghtDistribution::Distr
     ll = lateralStd * randn()
 
     # Compute point
-    pt = cluster.center 
+    pt = cluster.center
     pt += cluster.direction * ld * cluster.length
 
     if (pointOffset == "nd")
@@ -50,18 +50,18 @@ function generatePoint(numDims::Int, cluster::Cluster, lenghtDistribution::Distr
     return pt
 end
 
-function cluGen(numDims::Int, numCusts::Int, totalPoints::Int, 
-                dirMain, angleStd::Number, 
-                clustOffset, clustAvgSep, 
-                lengthMean::Number, lengthStd::Number, 
-                lateralStd::Number, 
+function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
+                dirMain, angleStd::Number,
+                clustOffset, clustAvgSep,
+                lengthMean::Number, lengthStd::Number,
+                lateralStd::Number,
                 pointDist::String="unif", pointOffset::String="nd", allowEmpty::Bool=false)
     # Validate inputs
     if (numDims < 2)
         error("jundCluGen only supports more than 2 dimensions")
     end
     sizeClustOffset = size(clustOffset)[1]
-    if (sizeClustOffset != numDims)        
+    if (sizeClustOffset != numDims)
         error("clustOffset has to have as many dimensions as the requested ($sizeClustOffset != $numDims)")
     end
     sizeClustAvgSep = size(clustAvgSep)[1]
@@ -124,7 +124,7 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
         else
             direction = getRandomNormalizedVector(numDims)
         end
-        
+
         # Length
         if (pointDist == "norm")
             length = rand(Normal(lengthMean, lengthStd)) / 6
@@ -168,18 +168,20 @@ end
 
 function runTest(numDims, nClusters=5, pointDist="norm", pointOffset="nd")
     if (numDims == 2)
-        @time points, clusters, clusterDefs, retPointCountPerCluster = cluGen(numDims, nClusters, 1500, [1, 0], 0, [0, 0], [2, 2], 4, 1, 0.1, pointDist, pointOffset)
+        @time points, clusters, clusterDefs, retPointCountPerCluster = cluGen(
+            numDims, nClusters, 1500, [1, 0], 0, [0, 0], [2, 2], 4, 1, 0.1, pointDist, pointOffset)
     elseif (numDims == 3)
-        @time points, clusters, clusterDefs, retPointCountPerCluster = cluGen(numDims, nClusters, 1500, [0, 0, 1], pi/2, [0, 0, 0], [2, 2, 2], 8, 1, 0.1, pointDist, pointOffset)
+        @time points, clusters, clusterDefs, retPointCountPerCluster = cluGen(
+            numDims, nClusters, 1500, [0, 0, 1], pi/2, [0, 0, 0], [2, 2, 2], 8, 1, 0.1, pointDist, pointOffset)
     end
-        
-    PyPlot.clf()
+
+    #PyPlot.clf()
 
     dims = size(points)[2]
     if (dims == 2)
-        PyPlot.scatter(points[:,1],points[:,2],c=clusters, label = "Red Data", s = 2)
+        display(scatter(points[:,1],points[:,2], group = clusters, markersize=3, markerstrokewidth=0.5))
     elseif (dims == 3)
-        PyPlot.scatter3D(points[:,1], points[:,2], points[:,3], c = clusters, label = "Red Data", s = 2)
+        display(scatter(points[:,1], points[:,2], points[:,3], group = clusters, markersize=3, markerstrokewidth=0.5))
     else
         println("Can't display $dims-D data")
     end
@@ -189,9 +191,8 @@ end
 
 
 
-runTest(2, 4, "norm", "(n-1)d")
+#runTest(2, 4, "norm", "(n-1)d")
 #runTest(3, 5, "norm")
 #runTest(4, 5, "norm")
 
 nothing
-
