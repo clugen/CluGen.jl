@@ -56,20 +56,24 @@ end
 
 function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
                 dirMain, angleStd::Number,
-                clustOffset, clustAvgSep,
+                clustSepMean,
                 lengthMean::Number, lengthStd::Number,
                 lateralStd::Number,
-                pointDist::String="unif", pointOffset::String="nd", allowEmpty::Bool=false)
+                clustOffset = nothing, pointDist::String = "unif",
+                pointOffset::String = "nd", allowEmpty::Bool = false)
     # Validate inputs
     if (numDims < 2)
         # TODO: Why not support 1D?
         error("juCluGen only supports more than 2 dimensions")
     end
+    if (clustOffset === nothing)
+        clustOffset = zeros(Float64, numDims)
+    end
     sizeClustOffset = size(clustOffset)[1]
     if (sizeClustOffset != numDims)
         error("clustOffset has to have as many dimensions as the requested ($sizeClustOffset != $numDims)")
     end
-    sizeClustAvgSep = size(clustAvgSep)[1]
+    sizeClustAvgSep = size(clustSepMean)[1]
     if (sizeClustAvgSep != numDims)
         error("clustAvgSep has to have as many dimensions as the requested ($sizeClustAvgSep != $numDims)")
     end
@@ -115,7 +119,7 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
 
     # Create clusters
     clusters = []
-    limDiag = Diagonal(numCusts * clustAvgSep)
+    limDiag = Diagonal(numCusts * clustSepMean)
     for i = 1:numCusts
         # Define center
         center = limDiag * (rand(Float64, (1, numDims)) .- 0.5)' .+ clustOffset
