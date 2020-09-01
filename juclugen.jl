@@ -121,26 +121,26 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
     clusters = []
     limDiag = Diagonal(numCusts * clustSepMean)
     for i = 1:numCusts
-        # Define center
+
+        # Determine cluster (line) center
         center = limDiag * (rand(Float64, (1, numDims)) .- 0.5)' .+ clustOffset
 
+        # Determine cluster (line) angle w.r.t. main direction
         angle = angleStd * randn()
 
-        println("Cluster $i => Angle=$angle (std=$angleStd)")
+        #println("Cluster $i => Angle=$angle (std=$angleStd)")
 
+        # Determine normalized cluster direction
         if (-pi/2 < angle < pi/2)
             direction = normalize(dirMain + getPerpendicularVector(dirMain) * tan(angle))
         else
             direction = getRandomNormalizedVector(numDims)
         end
 
-        # Length
-        if (pointDist == "norm")
-            length = rand(Normal(lengthMean, lengthStd)) / 6
-        else
-            length = rand(Normal(lengthMean, lengthStd)) * 0.5
-        end
+        # Line length, obtained from the folded normal distribution
+        length = abs(rand(Normal(lengthMean, lengthStd)))
 
+        # Push cluster configuration to clusters vector
         push!(clusters, Cluster(center, direction, length))
     end
 
