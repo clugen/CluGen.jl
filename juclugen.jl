@@ -28,8 +28,8 @@ function getPerpendicularVector(u)
             break
         end
     end
-    # - Compute (u'u)v' - (v'u)u', and normalize it
-    p = normalize(((u'u)v' - (v'u)u')')
+    # Obtain normalized vector orthogonal to u using Gram-Schmidt process
+    p = normalize(v - dot(v, u) / dot(u, u) * u)
 
     return p
 end
