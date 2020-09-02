@@ -96,9 +96,12 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
     # Define points per cluster
     retPointCountPerCluster = abs.(randn((numCusts,1)))
     retPointCountPerCluster = retPointCountPerCluster / sum(retPointCountPerCluster)
-    retPointCountPerCluster = round.(totalPoints * retPointCountPerCluster)
+    # Rounding is done using RoundNeareastTiesAway to be the same behaviour as Matlab
+    retPointCountPerCluster = round.(totalPoints * retPointCountPerCluster, RoundNearestTiesAway)
 
     if (!allowEmpty)
+        # If we don't want empty clusters, transfer one point from the cluster with more
+        # points to the cluster with zero points
         for i = 1:numCusts
             if (retPointCountPerCluster[i] == 0)
                 to_remove = argmax(retPointCountPerCluster)[1]
@@ -108,14 +111,19 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
         end
     end
 
+    # Make sure the number of points is not more than the totalPoints
     while (sum(retPointCountPerCluster) < totalPoints)
         to_add = argmin(retPointCountPerCluster)[1]
         retPointCountPerCluster[to_add] += 1
     end
+    # Make sure the number of points is not moe than the totalPoints
     while (sum(retPointCountPerCluster) > totalPoints)
         to_add = argmax(retPointCountPerCluster)[1]
         retPointCountPerCluster[to_add] -= 1
     end
+
+    # TODO: Should we create only one loop, or separate cluster generation from point generations?
+    # TODO: Should we vectorize the code?
 
     # Create clusters
     clusters = []
