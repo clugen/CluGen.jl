@@ -3,6 +3,10 @@ uuid = "48a2e8d8-1966-47f1-a982-993d59b21037"
 authors = ["Nuno Fachada <faken@fakenmc.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
 [compat]
 julia = "1"
 

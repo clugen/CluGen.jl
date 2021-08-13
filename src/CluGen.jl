@@ -8,9 +8,9 @@ Julia implementation of clugen.
 module CluGen
 
 using LinearAlgebra
-using Distributions, Random
+using Distributions
 
-export cluGen
+export clugen
 
 struct Cluster
     center
@@ -61,21 +61,21 @@ function generatePoint(numDims::Int, cluster::Cluster, lenghtDistribution::Distr
 end
 
 """
-    cluGen()
+    clugen()
 
 Create clusters.
 """
-function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
+function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
                 dirMain, angleStd::Number,
                 clustSepMean,
                 lengthMean::Number, lengthStd::Number,
-                lateralStd::Number,
+                lateralStd::Number;
                 clustOffset = nothing, pointDist::String = "unif",
                 pointOffset::String = "nd", allowEmpty::Bool = false)
     # Validate inputs
     if (numDims < 2)
         # TODO: Why not support 1D?
-        error("juCluGen only supports more than 2 dimensions")
+        error("CluGen only supports more than 2 dimensions")
     end
     if (clustOffset === nothing)
         clustOffset = zeros(Float64, numDims)
