@@ -1,10 +1,16 @@
-# Copyright (c) 2020 Diogo de Andrade, Nuno Fachada
+# Copyright (c) 2020, 2021 Nuno Fachada, Diogo de Andrade and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
+"""
+Julia implementation of clugen.
+"""
+module CluGen
+
 using LinearAlgebra
 using Distributions, Random
-using Plots
+
+export cluGen
 
 struct Cluster
     center
@@ -54,6 +60,11 @@ function generatePoint(numDims::Int, cluster::Cluster, lenghtDistribution::Distr
     return pt
 end
 
+"""
+    cluGen()
+
+Create clusters.
+"""
 function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
                 dirMain, angleStd::Number,
                 clustSepMean,
@@ -183,29 +194,4 @@ function cluGen(numDims::Int, numCusts::Int, totalPoints::Int,
     return retPoints, retCluster, clusters, retPointCountPerCluster
 end
 
-function runTest(numDims, nClusters=5, pointDist="norm", pointOffset="nd")
-    if (numDims == 2)
-        @time points, clusters, clusterDefs, retPointCountPerCluster = cluGen(
-            numDims, nClusters, 1500, [1, 0], pi/16, [2, 2], 4, 1, 0.1, [0, 0], pointDist, pointOffset)
-    elseif (numDims == 3)
-        @time points, clusters, clusterDefs, retPointCountPerCluster = cluGen(
-            numDims, nClusters, 1500, [0, 0, 1], pi/8, [2, 2, 2], 8, 1, 0.8, [0, 0, 0], pointDist, pointOffset)
-    end
-
-    dims = size(points)[2]
-    if (dims == 2)
-        display(scatter(points[:,1],points[:,2], group = clusters, markersize=3, markerstrokewidth=0.5))
-    elseif (dims == 3)
-        display(scatter(points[:,1], points[:,2], points[:,3], group = clusters, markersize=3, markerstrokewidth=0.5))
-    else
-        println("Can't display $dims-D data")
-    end
-
-    return points, clusters, clusterDefs, retPointCountPerCluster
-end
-
-runTest(2, 4, "norm", "(n-1)d")
-#runTest(3, 5, "norm")
-#runTest(4, 5, "norm")
-
-nothing
+end # Module
