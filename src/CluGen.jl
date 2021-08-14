@@ -18,7 +18,7 @@ struct Cluster
     length
 end
 
-function getRandomNormalizedVector(numDims::Int)
+function getRandomNormalizedVector(numDims::Integer)
     return normalize(rand(Float64, numDims) .- 0.5)
 end
 
@@ -40,7 +40,12 @@ function getPerpendicularVector(u)
     return p
 end
 
-function generatePoint(numDims::Int, cluster::Cluster, lenghtDistribution::Distribution, lateralStd::Number, pointOffset::String)
+function generatePoint(numDims::Integer,
+                       cluster::Cluster,
+                       lenghtDistribution::Distribution,
+                       lateralStd::Number,
+                       pointOffset::String)
+
     # Get the random shifts coeficients
     ld = rand(lenghtDistribution)
     ll = lateralStd * randn()
@@ -65,38 +70,45 @@ end
 
 Create clusters.
 """
-function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
-                dirMain, angleStd::Number,
-                clustSepMean,
-                lengthMean::Number, lengthStd::Number,
+function clugen(numDims::Integer,
+                numCusts::Integer,
+                totalPoints::Integer,
+                base_direction::AbstractArray{<:Number, 1},
+                angleStd::Number,
+                clustSepMean::AbstractArray{<:Number, 1},
+                lengthMean::Number,
+                lengthStd::Number,
                 lateralStd::Number;
-                clustOffset = nothing, pointDist::String = "unif",
-                pointOffset::String = "nd", allowEmpty::Bool = false)
+                cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
+                point_dist::String = "unif",
+                point_offset::String = "nd",
+                allow_empty::Bool = false)
+
     # Validate inputs
     if (numDims < 2)
         # TODO: Why not support 1D?
         error("CluGen only supports more than 2 dimensions")
     end
-    if (clustOffset === nothing)
-        clustOffset = zeros(Float64, numDims)
+    if (cluster_offset === nothing)
+        cluster_offset = zeros(Float64, numDims)
     end
-    sizeClustOffset = size(clustOffset)[1]
+    sizeClustOffset = size(cluster_offset)[1]
     if (sizeClustOffset != numDims)
-        error("clustOffset has to have as many dimensions as the requested ($sizeClustOffset != $numDims)")
+        error("cluster_offset has to have as many dimensions as the requested ($sizeClustOffset != $numDims)")
     end
     sizeClustAvgSep = size(clustSepMean)[1]
     if (sizeClustAvgSep != numDims)
         error("clustAvgSep has to have as many dimensions as the requested ($sizeClustAvgSep != $numDims)")
     end
-    sizeDirMain = size(dirMain)[1]
+    sizeDirMain = size(base_direction)[1]
     if (sizeDirMain != numDims)
         error("dirMain has to have as many dimensions as the requested ($sizeDirMain != $numDims)")
     end
-    if ((pointDist != "unif") && (pointDist != "norm"))
-        error("pointDist has to be either \"unif\" or \"norm\"")
+    if ((point_dist != "unif") && (point_dist != "norm"))
+        error("point_dist has to be either \"unif\" or \"norm\"")
     end
-    if ((pointOffset != "nd") && (pointOffset != "(n-1)d"))
-        error("pointOffset has to be either \"nd\" or \"(n-1)d)\"")
+    if ((point_offset != "nd") && (point_offset != "(n-1)d"))
+        error("point_offset has to be either \"nd\" or \"(n-1)d)\"")
     end
 
     # Convert ints to float if needed
@@ -107,10 +119,11 @@ function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
     # Define points per cluster
     retPointCountPerCluster = abs.(randn((numCusts,1)))
     retPointCountPerCluster = retPointCountPerCluster / sum(retPointCountPerCluster)
+
     # Rounding is done using RoundNeareastTiesAway to be the same behaviour as Matlab
     retPointCountPerCluster = round.(totalPoints * retPointCountPerCluster, RoundNearestTiesAway)
 
-    if (!allowEmpty)
+    if (!allow_empty)
         # If we don't want empty clusters, transfer one point from the cluster with more
         # points to the cluster with zero points
         for i = 1:numCusts
@@ -142,7 +155,7 @@ function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
     for i = 1:numCusts
 
         # Determine cluster (line) center
-        center = limDiag * (rand(Float64, (1, numDims)) .- 0.5)' .+ clustOffset
+        center = limDiag * (rand(Float64, (1, numDims)) .- 0.5)' .+ cluster_offset
 
         # Determine cluster (line) angle w.r.t. main direction
         angle = angleStd * randn()
@@ -151,7 +164,7 @@ function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
 
         # Determine normalized cluster direction
         if (-pi/2 < angle < pi/2)
-            direction = normalize(dirMain + getPerpendicularVector(dirMain) * tan(angle))
+            direction = normalize(base_direction + getPerpendicularVector(base_direction) * tan(angle))
         else
             direction = getRandomNormalizedVector(numDims)
         end
@@ -164,7 +177,7 @@ function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
     end
 
     # Length distribution
-    if (pointDist == "norm")
+    if (point_dist == "norm")
         lenghtDistribution = Normal(0, 1)
     else
         lenghtDistribution = Uniform(-1, 1)
@@ -182,7 +195,7 @@ function clugen(numDims::Int, numCusts::Int, totalPoints::Int,
         pCount = retPointCountPerCluster[i]
 
         for j = 1:pCount
-            pt = generatePoint(numDims, cluster, lenghtDistribution, lateralStd, pointOffset)
+            pt = generatePoint(numDims, cluster, lenghtDistribution, lateralStd, point_offset)
 
             # Add it to the output
             retPoints[index,:] = pt

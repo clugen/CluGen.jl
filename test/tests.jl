@@ -4,17 +4,21 @@ using Plots
 function runTest(numDims, nClusters=5, pointDist="norm", pointOffset="nd")
     if (numDims == 2)
         @time points, clusters, clusterDefs, retPointCountPerCluster = clugen(
-            numDims, nClusters, 1500, [1, 0], pi/16, [2, 2], 4, 1, 0.1, [0, 0], pointDist, pointOffset)
+            numDims, nClusters, 1500, [1, 0], pi/16, [2, 2], 4, 1, 0.1,
+            point_dist = pointDist, point_offset = pointOffset)
     elseif (numDims == 3)
         @time points, clusters, clusterDefs, retPointCountPerCluster = clugen(
-            numDims, nClusters, 1500, [0, 0, 1], pi/8, [2, 2, 2], 8, 1, 0.8, [0, 0, 0], pointDist, pointOffset)
+            numDims, nClusters, 1500, [0, 0, 1], pi/8, [2, 2, 2], 8, 1, 0.8,
+            point_dist = pointDist, point_offset = pointOffset)
     end
 
     dims = size(points)[2]
     if (dims == 2)
-        display(scatter(points[:,1],points[:,2], group = clusters, markersize=3, markerstrokewidth=0.5))
+        display(scatter(points[:,1],points[:,2], group = clusters, markersize=3,
+                        markerstrokewidth=0.5, reuse = false))
     elseif (dims == 3)
-        display(scatter(points[:,1], points[:,2], points[:,3], group = clusters, markersize=3, markerstrokewidth=0.5))
+        display(scatter(points[:,1], points[:,2], points[:,3], group = clusters,
+                        markersize=3, markerstrokewidth=0.5, reuse = false))
     else
         println("Can't display $dims-D data")
     end
