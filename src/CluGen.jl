@@ -7,8 +7,9 @@ Julia implementation of clugen.
 """
 module CluGen
 
-using LinearAlgebra
 using Distributions
+using LinearAlgebra
+using Random
 
 export clugen
 
@@ -68,11 +69,15 @@ end
 """
 Determine cluster sizes.
 """
-function cluster_sizes(num_clusters::Integer, total_points::Integer, allow_empty::Bool)
+function cluster_sizes(
+    num_clusters::Integer,
+    total_points::Integer,
+    allow_empty::Bool;
+    rng::AbstractRNG = Random.GLOBAL_RNG)
 
     # Determine number of points in each cluster using the half-normal
     # distribution (with std=1)
-    clust_num_points = abs.(randn(num_clusters))
+    clust_num_points = abs.(randn(rng, num_clusters))
     clust_num_points = clust_num_points / sum(clust_num_points)
 
     # For consistency with other clugen implementations, rounding ties move away from zero
@@ -132,7 +137,8 @@ function clugenTNG(
     cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
     point_dist::String = "unif",
     point_offset::String = "nd",
-    allow_empty::Bool = false)
+    allow_empty::Bool = false,
+    rng::AbstractRNG = Random.GLOBAL_RNG)
 
     # ############### #
     # Validate inputs #
@@ -191,7 +197,7 @@ function clugenTNG(
     dir_unit = normalize(direction)
 
     # Determine cluster sizes
-    clust_num_points = cluster_sizes(num_clusters, total_points, allow_empty);
+    clust_num_points = cluster_sizes(num_clusters, total_points, allow_empty, rng=rng);
 
     clust_num_points, sum(clust_num_points)
 
