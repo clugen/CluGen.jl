@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada, Diogo de Andrade and contributors
+# Copyright (c) 2020, 2021 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -67,9 +67,11 @@ function generatePoint(numDims::Integer,
 end
 
 """
+    clusizes()
+
 Determine cluster sizes.
 """
-function cluster_sizes(
+function clusizes(
     num_clusters::Integer,
     total_points::Integer,
     allow_empty::Bool;
@@ -117,6 +119,20 @@ function cluster_sizes(
 
     return clust_num_points
 
+end
+
+"""
+    clucenters()
+
+Determine cluster centers.
+"""
+function clucenters(
+    num_clusters::Integer,
+    cluster_sep::AbstractArray{<:Number, 1},
+    offset::AbstractArray{<:Number, 1},
+    dist_fun::Function)
+
+    return num_clusters .* dist_fun() * Diagonal(cluster_sep) .+ offset'
 end
 
 """
@@ -197,9 +213,16 @@ function clugenTNG(
     dir_unit = normalize(direction)
 
     # Determine cluster sizes
-    clust_num_points = cluster_sizes(num_clusters, total_points, allow_empty, rng=rng);
+    clust_num_points = clusizes(num_clusters, total_points, allow_empty, rng=rng);
 
-    clust_num_points, sum(clust_num_points)
+    # Determine cluster centers
+    clust_centers = clucenters(
+        num_clusters,
+        cluster_sep,
+        cluster_offset,
+        () -> rand(num_clusters, num_dims) .- 0.5)
+
+    clust_num_points, sum(clust_num_points), clust_centers
 
 end
 
