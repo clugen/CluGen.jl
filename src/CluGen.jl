@@ -232,11 +232,16 @@ function clugenTNG(
     # Line lengths are drawn from the folded normal distribution
     lengths = abs.(line_length .+ line_length_std .* randn(rng, num_clusters));
 
+    # Obtain angles between main direction and cluster-supporting lines
+    # using the normal distribution (mean=0, std=angle_std)
+    angles = angle_std .* randn(rng, num_clusters)
+
     return (
         points_per_cluster = clust_num_points,
         total_points = sum(clust_num_points),
         centers = clust_centers,
-        line_lengths = lengths)
+        line_lengths = lengths,
+        angles = angles)
 
 end
 
