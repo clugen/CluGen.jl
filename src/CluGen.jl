@@ -7,7 +7,7 @@ Julia implementation of clugen.
 """
 module CluGen
 
-using Distributions
+using Distributions # TODO Remove this dependency
 using LinearAlgebra
 using Random
 
@@ -70,16 +70,18 @@ end
     clusizes()
 
 Determine cluster sizes.
+
+Note that dist_fun should return a n x 1 array of non-negative numbers where
+n is the desired number of clusters.
 """
 function clusizes(
-    num_clusters::Integer,
     total_points::Integer,
-    allow_empty::Bool;
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    allow_empty::Bool,
+    dist_fun::Function)
 
     # Determine number of points in each cluster using the half-normal
     # distribution (with std=1)
-    clust_num_points = abs.(randn(rng, num_clusters))
+    clust_num_points = dist_fun()
     clust_num_points = clust_num_points / sum(clust_num_points)
 
     # For consistency with other clugen implementations, rounding ties move away from zero
@@ -213,16 +215,27 @@ function clugenTNG(
     dir_unit = normalize(direction)
 
     # Determine cluster sizes
-    clust_num_points = clusizes(num_clusters, total_points, allow_empty, rng=rng);
+    clust_num_points = clusizes(
+        total_points,
+        allow_empty,
+        () -> abs.(randn(rng, num_clusters)));
 
     # Determine cluster centers
     clust_centers = clucenters(
         num_clusters,
         cluster_sep,
         cluster_offset,
-        () -> rand(num_clusters, num_dims) .- 0.5)
+        () -> rand(rng, num_clusters, num_dims) .- 0.5)
 
-    clust_num_points, sum(clust_num_points), clust_centers
+    # Determine length of lines supporting clusters
+    # Line lengths are drawn from the folded normal distribution
+    lengths = abs.(line_length .+ line_length_std .* randn(rng, num_clusters));
+
+    return (
+        points_per_cluster = clust_num_points,
+        total_points = sum(clust_num_points),
+        centers = clust_centers,
+        line_lengths = lengths)
 
 end
 
