@@ -79,8 +79,7 @@ function clusizes(
     allow_empty::Bool,
     dist_fun::Function)
 
-    # Determine number of points in each cluster using the half-normal
-    # distribution (with std=1)
+    # Determine number of points in each cluster
     clust_num_points = dist_fun()
     clust_num_points = clust_num_points / sum(clust_num_points)
 
@@ -127,6 +126,8 @@ end
     clucenters()
 
 Determine cluster centers.
+
+Note that dist_fun should return a num_clusters * num_dims matrix.
 """
 function clucenters(
     num_clusters::Integer,
@@ -214,13 +215,13 @@ function clugenTNG(
     # Normalize base direction
     dir_unit = normalize(direction)
 
-    # Determine cluster sizes
+    # Determine cluster sizes using the half-normal distribution (with std=1)
     clust_num_points = clusizes(
         total_points,
         allow_empty,
         () -> abs.(randn(rng, num_clusters)));
 
-    # Determine cluster centers
+    # Determine cluster centers using the uniform distribution between -0.5 and 0.5
     clust_centers = clucenters(
         num_clusters,
         cluster_sep,
