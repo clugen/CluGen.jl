@@ -223,8 +223,8 @@ function clugenTNG(
     line_length_std::Number,
     lateral_std::Number;
     cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
-    point_dist::String = "unif",
-    point_offset::String = "nd",
+    point_dist::Union{String, <:Function} = "norm",
+    point_offset::String = "d-1",
     allow_empty::Bool = false,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
@@ -263,12 +263,24 @@ function clugenTNG(
             "($dir_len != $num_dims)"))
     end
 
-    if (point_dist != "unif") && (point_dist != "norm")
-        throw(ArgumentError("`point_dist` has to be either \"unif\" or \"norm\""))
+    # What distribution to use for point projections along cluster-supporting lines?
+    if typeof(point_dist) <: Function
+        # Use user defined distribution; assume function returns num_dims x 1 vectors
+        pointproj_fun =  point_dist
+    elseif point_dist != "unif"
+        # Point projections will be uniformly placed along cluster-supporting lines
+        pointproj_fun =  (len, n) -> len .* rand(rng, n) - len / 2
+    elseif point_dist != "norm"
+        # Use normal distribution for placing point projections along cluster-supporting
+        # lines, mean equal to line center, standard deviation equal to 1/6 of line length
+        pointproj_fun =  (len, n) -> (1.0/6.0) * len .* randn(rng, n)
+    else
+        throw(ArgumentError(
+            "`point_dist` has to be either \"unif\", \"norm\" or user-defined function"))
     end
 
-    if (point_offset != "nd") && (point_offset != "(n-1)d")
-        throw(ArgumentError("point_offset has to be either \"nd\" or \"(n-1)d)\""))
+    if (point_offset != "d") && (point_offset != "d-1")
+        throw(ArgumentError("point_offset has to be either \"n\" or \"d-1\""))
     end
 
     if !allow_empty && total_points < num_clusters
@@ -305,10 +317,18 @@ function clugenTNG(
     # using the normal distribution (mean=0, std=angle_std)
     angles = angle_std .* randn(rng, num_clusters)
 
-    # Determine normalized cluster directions
+    # Initialize data structures for holding cluster info and points
+    # - Cluster directions
     clust_dirs = zeros(num_dims, num_clusters)
+
+    # Determine points for each cluster
     for i in 1:num_clusters
+
+        # Determine normalized cluster directions
         clust_dirs[:, i] = rand_vector_at_angle(direction, angles[i]; rng=rng)
+
+
+
     end
 
     return (
