@@ -139,6 +139,75 @@ function clucenters(
 end
 
 """
+Function which returns a random unit vector with `num_dims` dimensions.
+"""
+function rand_unit_vector(
+    num_dims::Integer;
+    rng::AbstractRNG = Random.GLOBAL_RNG)
+
+    r = rand(rng, num_dims) .- 0.5
+    normalize!(r)
+    return r
+
+end
+
+"""
+Function which returns a random normalized vector orthogonal to `u`
+
+`u` is expected to be a unit vector
+"""
+function rand_ortho_vector(
+    u::AbstractArray{<:Number};
+    rng::AbstractRNG = Random.GLOBAL_RNG)
+
+    # Variable for placing random non-parallel vector
+    r = nothing
+
+    # Find a random, non-parallel vector to u
+    while true
+
+        # Find normalized random vector
+        r = rand_unit_vector(length(u); rng=rng)
+
+        # If not parallel to u, we can keep it and break the loop
+        if abs(dot(u, r)) < (1 - eps())
+            break
+        end
+
+    end
+
+    # Get vector orthogonal to u using 1st iteration of Gram-Schmidt process
+    v = r - dot(u, r) / dot(u, u) .* u
+
+    # Normalize it
+    normalize!(v)
+
+    # And return it
+    return v
+
+end
+
+"""
+Function which returns a random vector that is at an angle of `angle` radians
+from vector `u`.
+
+`u` is expected to be a unit vector
+`angle` should be in radians
+"""
+function rand_vector_at_angle(
+    u::AbstractArray{<:Number},
+    angle::Number;
+    rng::AbstractRNG = Random.GLOBAL_RNG)
+
+    if -pi/2 < angle < pi/2
+        return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
+    else
+        return rand_unit_vector(length(u); rng=rng)
+    end
+
+end
+
+"""
     clugen()
 
 Create clusters.
@@ -236,12 +305,19 @@ function clugenTNG(
     # using the normal distribution (mean=0, std=angle_std)
     angles = angle_std .* randn(rng, num_clusters)
 
+    # Determine normalized cluster directions
+    clust_dirs = zeros(num_dims, num_clusters)
+    for i in 1:num_clusters
+        clust_dirs[:, i] = rand_vector_at_angle(direction, angles[i]; rng=rng)
+    end
+
     return (
         points_per_cluster = clust_num_points,
         total_points = sum(clust_num_points),
         centers = clust_centers,
         line_lengths = lengths,
-        angles = angles)
+        angles = angles,
+        dirs = clust_dirs)
 
 end
 
