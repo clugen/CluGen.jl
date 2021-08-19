@@ -265,12 +265,12 @@ function clugenTNG(
 
     # What distribution to use for point projections along cluster-supporting lines?
     if typeof(point_dist) <: Function
-        # Use user defined distribution; assume function returns num_dims x 1 vectors
+        # Use user-defined distribution; assume function returns num_dims x 1 vectors
         pointproj_fun =  point_dist
-    elseif point_dist != "unif"
+    elseif point_dist == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
-        pointproj_fun =  (len, n) -> len .* rand(rng, n) - len / 2
-    elseif point_dist != "norm"
+        pointproj_fun =  (len, n) -> len .* rand(rng, n) .- len / 2
+    elseif point_dist == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
         pointproj_fun =  (len, n) -> (1.0/6.0) * len .* randn(rng, n)
@@ -319,15 +319,27 @@ function clugenTNG(
 
     # Initialize data structures for holding cluster info and points
     # - Cluster directions
-    clust_dirs = zeros(num_dims, num_clusters)
+    clust_dirs = zeros(num_clusters, num_dims)
+
+    projs_tmp = zeros(1, num_dims)
 
     # Determine points for each cluster
     for i in 1:num_clusters
 
         # Determine normalized cluster directions
-        clust_dirs[:, i] = rand_vector_at_angle(direction, angles[i]; rng=rng)
+        clust_dirs[i, :] = rand_vector_at_angle(direction, angles[i]; rng=rng)
 
+        # Determine where in the cluster-supporting line will points be
+        # projected using the distribution specified in point_dist
 
+        # 1) Determine distance of point projections from the center of the line
+        ptproj_dist_center = pointproj_fun(lengths[i], clust_num_points[i])
+
+        # 2) Determine coordinates of point projections on the line using the
+        # parametric line equation (this works since cluster direction is normalized)
+        ptproj = clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
+
+        projs_tmp = vcat(projs_tmp, ptproj)
 
     end
 
@@ -337,7 +349,8 @@ function clugenTNG(
         centers = clust_centers,
         line_lengths = lengths,
         angles = angles,
-        dirs = clust_dirs)
+        dirs = clust_dirs,
+        projs = projs_tmp)
 
 end
 
