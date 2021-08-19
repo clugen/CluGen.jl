@@ -169,7 +169,7 @@ function rand_ortho_vector(
         # Find normalized random vector
         r = rand_unit_vector(length(u); rng=rng)
 
-        # If not parallel to u, we can keep it and break the loop
+        # If not parallel to u we can keep it and break the loop
         if abs(dot(u, r)) < (1 - eps())
             break
         end
@@ -199,7 +199,7 @@ function rand_vector_at_angle(
     angle::Number;
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
-    if -pi/2 < angle < pi/2
+    if -pi/2 < angle < pi/2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
     else
         return rand_unit_vector(length(u); rng=rng)
@@ -232,10 +232,10 @@ function clugenTNG(
     # Validate inputs #
     # ############### #
 
-    if num_dims < 2
-        # TODO: Why not support 1D?
-        throw(ArgumentError("CluGen only supports two or more dimensions (`num_dims` < 2)"))
-    end
+    # if num_dims < 2
+    #     # TODO: Why not support 1D?
+    #     throw(ArgumentError("CluGen only supports two or more dimensions (`num_dims` < 2)"))
+    # end
 
     if norm(direction) == float(0)
         throw(ArgumentError("`direction` must have magnitude > 0"))
