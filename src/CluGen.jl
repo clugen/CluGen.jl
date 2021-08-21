@@ -80,27 +80,27 @@ function clusizes(
     dist_fun::Function)
 
     # Determine number of points in each cluster
-    clust_num_points = dist_fun()
-    clust_num_points = clust_num_points / sum(clust_num_points)
+    clu_num_points = dist_fun()
+    clu_num_points = clu_num_points / sum(clu_num_points)
 
     # For consistency with other clugen implementations, rounding ties move away from zero
-    clust_num_points = round.(Int, total_points * clust_num_points, RoundNearestTiesAway)
+    clu_num_points = round.(Int, total_points * clu_num_points, RoundNearestTiesAway)
 
     # Make sure total points is respected
-    while sum(clust_num_points) < total_points
-        imin = argmin(clust_num_points)
-        clust_num_points[imin] += 1
+    while sum(clu_num_points) < total_points
+        imin = argmin(clu_num_points)
+        clu_num_points[imin] += 1
     end
-    while sum(clust_num_points) > total_points
-        imax = argmax(clust_num_points)
-        clust_num_points[imax] -= 1
+    while sum(clu_num_points) > total_points
+        imax = argmax(clu_num_points)
+        clu_num_points[imax] -= 1
     end
 
     # If empty clusters are not allowed, make sure there aren't any
     if !allow_empty
 
         # Find empty clusters
-        empty_clusts = findall(x -> x == 0, clust_num_points)
+        empty_clusts = findall(x -> x == 0, clu_num_points)
 
         # If there are empty clusters...
         if length(empty_clusts) > 0
@@ -110,15 +110,15 @@ function clusizes(
 
                 # ...get a point from the largest cluster and assign it to the
                 # current empty cluster
-                imax = argmax(clust_num_points)
-                clust_num_points[imax] -= 1
-                clust_num_points[i0] += 1
+                imax = argmax(clu_num_points)
+                clu_num_points[imax] -= 1
+                clu_num_points[i0] += 1
 
             end
         end
     end
 
-    return clust_num_points
+    return clu_num_points
 
 end
 
@@ -207,11 +207,45 @@ function rand_vector_at_angle(
 
 end
 
-function clupoints_d_1(projs, lat_std, clu_dir, clu_ctr)
+"""
+    clupoints_d_1()
+
+Function which generates points for a cluster from their projections in n-D,
+placing points on a second line perpendicular to the cluster-supporting line
+using a normal distribution centered at their intersection.
+
+- `projs` are the point projections.
+- `lat_std` is the lateral standard deviation or cluster "fatness".
+- `clu_dir` is the cluster direction.
+- `clu_ctr` is the cluster-supporting line center position (ignored).
+"""
+function clupoints_d_1(
+    projs::AbstractArray{<:Number, 2},
+    lat_std::Number,
+    clu_dir::AbstractArray{<:Number, 1},
+    clu_ctr::AbstractArray{<:Number, 1})
+
     projs
 end
 
-function clupoints_d(projs, lat_std, clu_dir, clu_ctr)
+"""
+    clupoints_d()
+
+Function which generates points for a cluster from their projections in n-D,
+placing points using a multivariate normal distribution centered at the point
+projection.
+
+- `projs` are the point projections.
+- `lat_std` is the lateral standard deviation or cluster "fatness".
+- `clu_dir` is the cluster direction.
+- `clu_ctr` is the cluster-supporting line center position (ignored).
+"""
+function clupoints_d(
+    projs::AbstractArray{<:Number, 2},
+    lat_std::Number,
+    clu_dir::AbstractArray{<:Number, 1},
+    clu_ctr::AbstractArray{<:Number, 1})
+
     projs
 end
 
@@ -301,17 +335,17 @@ function clugenTNG(
     if num_dims == 1
         # If 1D was specified, point projections are the points themselves
         pt_from_proj_fun = (projs, lat_std, clu_dir, clu_ctr) -> projs
-    if typeof(point_offset) <: Function
+    elseif typeof(point_offset) <: Function
         # Use user-defined distribution; assume function accepts point projections
         # on the line, lateral std., cluster direction and cluster center, and
         # returns a num_points x num_dims matrix containing the final points
         # for the current cluster
         pt_from_proj_fun = point_offset
-    else if point_offset == "d-1"
+    elseif point_offset == "d-1"
         # Points will be placed on a second line perpendicular to the cluster
         # line using a normal distribution centered at their intersection
         pt_from_proj_fun = clupoints_d_1
-    else if point_offset == "d"
+    elseif point_offset == "d"
         # Points will be placed using a multivariate normal distribution
         # centered at the point projection
         pt_from_proj_fun = clupoints_d
@@ -336,13 +370,13 @@ function clugenTNG(
     dir_unit = normalize(direction)
 
     # Determine cluster sizes using the half-normal distribution (with std=1)
-    clust_num_points = clusizes(
+    clu_num_points = clusizes(
         total_points,
         allow_empty,
         () -> abs.(randn(rng, num_clusters)));
 
     # Determine cluster centers using the uniform distribution between -0.5 and 0.5
-    clust_centers = clucenters(
+    clu_centers = clucenters(
         num_clusters,
         cluster_sep,
         cluster_offset,
@@ -357,14 +391,14 @@ function clugenTNG(
     angles = angle_std .* randn(rng, num_clusters)
 
     # Determine normalized cluster direction
-    clust_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)';
+    clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)';
 
     # ################################# #
     # Determine points for each cluster #
     # ################################# #
 
     # Aux. vector with cumulative sum of number of points in each cluster
-    cumsum_points = [0; cumsum(clust_num_points)]
+    cumsum_points = [0; cumsum(clu_num_points)]
 
     # Pre-allocate data structures for holding cluster info and points
     clu_pts_idx = zeros(total_points)           # Cluster indices of each point
@@ -382,30 +416,30 @@ function clugenTNG(
         clu_pts_idx[idx_start:idx_end] .= i;
 
         # Determine distance of point projections from the center of the line
-        ptproj_dist_center = pointproj_fun(lengths[i], clust_num_points[i])
+        ptproj_dist_center = pointproj_fun(lengths[i], clu_num_points[i])
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
         points_proj[idx_start:idx_end, :] =
-            clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
+            clu_centers[i, :]' .+ ptproj_dist_center * clu_dirs[i, :]'
 
         # Determine points from their projections on the line
         points[idx_start:idx_end, :] = pt_from_proj_fun(
             points_proj[idx_start:idx_end, :],
             lateral_std,
-            clust_dirs(i, :)',
-            centers(i, :)')
+            clu_dirs[i, :],
+            clu_centers[i, :])
 
     end
 
     return (
         points = points,
-        points_per_cluster = clust_num_points,
-        total_points = sum(clust_num_points),
-        centers = clust_centers,
+        points_per_cluster = clu_num_points,
+        total_points = sum(clu_num_points),
+        centers = clu_centers,
         line_lengths = lengths,
         angles = angles,
-        dirs = clust_dirs,
+        dirs = clu_dirs,
         clu_pts_idx = clu_pts_idx,
         projs = points_proj)
 
