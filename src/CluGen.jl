@@ -207,6 +207,14 @@ function rand_vector_at_angle(
 
 end
 
+function clupoints_d_1(projs, lat_std, clu_dir, clu_ctr)
+    projs
+end
+
+function clupoints_d(projs, lat_std, clu_dir, clu_ctr)
+    projs
+end
+
 """
     clugen()
 
@@ -272,7 +280,8 @@ function clugenTNG(
     # cluster-supporting lines i.e., either 'norm' (default), 'unif' or a
     # user-defined function
     if typeof(point_dist) <: Function
-        # Use user-defined distribution; assume function returns num_dims x 1 vectors
+        # Use user-defined distribution; assume function accepts length of line
+        # and number of points, and returns a num_dims x 1 vector
         pointproj_fun =  point_dist
     elseif point_dist == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
@@ -283,12 +292,32 @@ function clugenTNG(
         pointproj_fun =  (len, n) -> (1.0/6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
-            "`point_dist` has to be either \"unif\", \"norm\" or user-defined function"))
+            "`point_dist` has to be either \"norm\", \"unif\" or user-defined function"))
     end
 
-    # Check that, if given, point_offset is either 'd-1' (default) or 'd'
-    if (point_offset != "d") && (point_offset != "d-1")
-        throw(ArgumentError("point_offset has to be either \"n\" or \"d-1\""))
+    # Check that point_offset specifies a valid way for generating points given
+    # their projections along cluster-supporting lines, i.e., either 'd-1'
+    # (default), 'd' or a user-defined function
+    if num_dims == 1
+        # If 1D was specified, point projections are the points themselves
+        pt_from_proj_fun = (projs, lat_std, clu_dir, clu_ctr) -> projs
+    if typeof(point_offset) <: Function
+        # Use user-defined distribution; assume function accepts point projections
+        # on the line, lateral std., cluster direction and cluster center, and
+        # returns a num_points x num_dims matrix containing the final points
+        # for the current cluster
+        pt_from_proj_fun = point_offset
+    else if point_offset == "d-1"
+        # Points will be placed on a second line perpendicular to the cluster
+        # line using a normal distribution centered at their intersection
+        pt_from_proj_fun = clupoints_d_1
+    else if point_offset == "d"
+        # Points will be placed using a multivariate normal distribution
+        # centered at the point projection
+        pt_from_proj_fun = clupoints_d
+    else
+        throw(ArgumentError(
+            "point_offset has to be either \"d-1\", \"d\" or a user-defined function"))
     end
 
     # If allow_empty is false, make sure there are enough points to distribute
@@ -360,20 +389,12 @@ function clugenTNG(
         points_proj[idx_start:idx_end, :] =
             clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
 
-        # Find points
-        if num_dims == 1
-
-            # If 1D was specified, we're done since point projections are the
-            # points themselves
-            points[idx_start:idx_end, :] = points_proj[idx_start:idx_end, :]
-
-        else
-
-            # Otherwise find points
-
-            # TODO Find points
-
-        end;
+        # Determine points from their projections on the line
+        points[idx_start:idx_end, :] = pt_from_proj_fun(
+            points_proj[idx_start:idx_end, :],
+            lateral_std,
+            clust_dirs(i, :)',
+            centers(i, :)')
 
     end
 
