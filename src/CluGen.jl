@@ -232,25 +232,17 @@ function clugenTNG(
     # Validate inputs #
     # ############### #
 
-    if norm(direction) == float(0)
+    # Check that number of dimensions is > 0
+    if num_dims < 1
+        throw(ArgumentError("Number of dimensions, `num_dims`, must be > 0"))
+    end
+
+    # Check that direction vector has magnitude > 0
+    if norm(direction) < eps()
         throw(ArgumentError("`direction` must have magnitude > 0"))
     end
 
-    if cluster_offset === nothing
-        cluster_offset = zeros(Float64, num_dims)
-    elseif length(cluster_offset) != num_dims
-        throw(ArgumentError(
-            "Length of `cluster_offset` must be equal to `num_dims` " *
-            "($(length(cluster_offset)) != $num_dims)"))
-    end
-
-    clusep_len = length(cluster_sep)
-    if clusep_len != num_dims
-        throw(ArgumentError(
-            "Length of `cluster_sep` must be equal to `num_dims` " *
-            "($clusep_len != $num_dims)"))
-    end
-
+    # Check that direction has num_dims dimensions
     dir_len = length(direction)
     if dir_len != num_dims
         throw(ArgumentError(
@@ -258,7 +250,27 @@ function clugenTNG(
             "($dir_len != $num_dims)"))
     end
 
-    # What distribution to use for point projections along cluster-supporting lines?
+    # If given, cluster_offset must have the correct number of dimensions,
+    # if not given then it will be a num_dims x 1 vector of zeros
+    if cluster_offset === nothing
+        cluster_offset = zeros(num_dims)
+    elseif length(cluster_offset) != num_dims
+        throw(ArgumentError(
+            "Length of `cluster_offset` must be equal to `num_dims` " *
+            "($(length(cluster_offset)) != $num_dims)"))
+    end
+
+    # Check that cluster_sep has num_dims dimensions
+    clusep_len = length(cluster_sep)
+    if clusep_len != num_dims
+        throw(ArgumentError(
+            "Length of `cluster_sep` must be equal to `num_dims` " *
+            "($clusep_len != $num_dims)"))
+    end
+
+    # Check that point_dist specifies a valid way for projecting points along
+    # cluster-supporting lines i.e., either 'norm' (default), 'unif' or a
+    # user-defined function
     if typeof(point_dist) <: Function
         # Use user-defined distribution; assume function returns num_dims x 1 vectors
         pointproj_fun =  point_dist
@@ -274,10 +286,13 @@ function clugenTNG(
             "`point_dist` has to be either \"unif\", \"norm\" or user-defined function"))
     end
 
+    # Check that, if given, point_offset is either 'd-1' (default) or 'd'
     if (point_offset != "d") && (point_offset != "d-1")
         throw(ArgumentError("point_offset has to be either \"n\" or \"d-1\""))
     end
 
+    # If allow_empty is false, make sure there are enough points to distribute
+    # by the clusters
     if !allow_empty && total_points < num_clusters
         throw(ArgumentError(
             "A total of $total_points points is not enough for " *
