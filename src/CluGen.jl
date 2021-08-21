@@ -218,6 +218,7 @@ using a normal distribution centered at their intersection.
 - `lat_std` is the lateral standard deviation or cluster "fatness".
 - `clu_dir` is the cluster direction.
 - `clu_ctr` is the cluster-supporting line center position (ignored).
+- `rng` is an optional pseudo-random number generator.
 """
 function clupoints_d_1(
     projs::AbstractArray{<:Number, 2},
@@ -226,7 +227,29 @@ function clupoints_d_1(
     clu_ctr::AbstractArray{<:Number, 1},
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
-    projs
+    # Number of dimensions
+    num_dims = length(clu_dir)
+
+    # Number of points in this cluster
+    clu_num_points = size(projs, 1)
+
+    # Get distances from points to their projections on the line
+    points_dist = lat_std .* randn(rng, clu_num_points, 1)
+
+    # Get normalized vectors, orthogonal to the current line, for each point
+    orth_vecs = zeros(clu_num_points, num_dims)
+    for j = 1:clu_num_points
+        orth_vecs[j, :] = rand_ortho_vector(clu_dir, rng=rng)
+    end
+
+    # Set vector magnitudes
+    orth_vecs = abs.(points_dist) .* orth_vecs
+
+    # Add perpendicular vectors to point projections on the line,
+    # yielding final cluster points
+    points = projs + orth_vecs
+
+    return points
 
 end
 
@@ -241,6 +264,7 @@ projection.
 - `lat_std` is the lateral standard deviation or cluster "fatness".
 - `clu_dir` is the cluster direction.
 - `clu_ctr` is the cluster-supporting line center position (ignored).
+- `rng` is an optional pseudo-random number generator.
 """
 function clupoints_d(
     projs::AbstractArray{<:Number, 2},
@@ -253,13 +277,13 @@ function clupoints_d(
     num_dims = length(clu_dir)
 
     # Number of points in this cluster
-    clu_num_points = size(projs, 1);
+    clu_num_points = size(projs, 1)
 
     # Get random displacement vectors for each point projection
-    displ = lat_std .* randn(rng, clu_num_points, num_dims);
+    displ = lat_std .* randn(rng, clu_num_points, num_dims)
 
     # Add displacement vectors to each point projection
-    points = projs + displ;
+    points = projs + displ
 
     return points
 end
