@@ -281,7 +281,7 @@ function clugenTNG(
     lateral_std::Number;
     cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
     point_dist::Union{String, <:Function} = "norm",
-    point_offset::String = "d-1",
+    point_offset::Union{String, <:Function} = "d-1",
     allow_empty::Bool = false,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
