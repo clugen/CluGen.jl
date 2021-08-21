@@ -232,11 +232,6 @@ function clugenTNG(
     # Validate inputs #
     # ############### #
 
-    # if num_dims < 2
-    #     # TODO: Why not support 1D?
-    #     throw(ArgumentError("CluGen only supports two or more dimensions (`num_dims` < 2)"))
-    # end
-
     if norm(direction) == float(0)
         throw(ArgumentError("`direction` must have magnitude > 0"))
     end
@@ -350,11 +345,25 @@ function clugenTNG(
         points_proj[idx_start:idx_end, :] =
             clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
 
-        # TODO Find points
+        # Find points
+        if num_dims == 1
+
+            # If 1D was specified, we're done since point projections are the
+            # points themselves
+            points[idx_start:idx_end, :] = points_proj[idx_start:idx_end, :]
+
+        else
+
+            # Otherwise find points
+
+            # TODO Find points
+
+        end;
 
     end
 
     return (
+        points = points,
         points_per_cluster = clust_num_points,
         total_points = sum(clust_num_points),
         centers = clust_centers,
