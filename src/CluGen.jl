@@ -223,9 +223,11 @@ function clupoints_d_1(
     projs::AbstractArray{<:Number, 2},
     lat_std::Number,
     clu_dir::AbstractArray{<:Number, 1},
-    clu_ctr::AbstractArray{<:Number, 1})
+    clu_ctr::AbstractArray{<:Number, 1},
+    rng::AbstractRNG = Random.GLOBAL_RNG)
 
     projs
+
 end
 
 """
@@ -244,9 +246,22 @@ function clupoints_d(
     projs::AbstractArray{<:Number, 2},
     lat_std::Number,
     clu_dir::AbstractArray{<:Number, 1},
-    clu_ctr::AbstractArray{<:Number, 1})
+    clu_ctr::AbstractArray{<:Number, 1},
+    rng::AbstractRNG = Random.GLOBAL_RNG)
 
-    projs
+    # Number of dimensions
+    num_dims = length(clu_dir)
+
+    # Number of points in this cluster
+    clu_num_points = size(projs, 1);
+
+    # Get random displacement vectors for each point projection
+    displ = lat_std .* randn(rng, clu_num_points, num_dims);
+
+    # Add displacement vectors to each point projection
+    points = projs + displ;
+
+    return points
 end
 
 """
