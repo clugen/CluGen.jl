@@ -317,23 +317,20 @@ function clugenTNG(
     # using the normal distribution (mean=0, std=angle_std)
     angles = angle_std .* randn(rng, num_clusters)
 
-    # Determine normalized cluster directions
-    clust_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
-
     # Aux. vector with cumulative sum of number of points in each cluster
     cumsum_points = [0; cumsum(clust_num_points)]
 
-    # Vector containing the cluster indices of each point
-    clu_pts_idx = [findfirst(x -> x >= i, cumsum_points[2:end]) for i in 1:total_points]
-
-    # Initialize data structures for holding cluster info and points
-    # - Point projections on cluster-supporting lines
-    points_proj = zeros(total_points, num_dims)
-    # - Final points to be generated
-    points = zeros(total_points, num_dims)
+    # Pre-allocate data structures for holding cluster info and points
+    clust_dirs = zeros(num_clusters, num_dims); # Direction of each cluster
+    clu_pts_idx = zeros(total_points)           # Cluster indices of each point
+    points_proj = zeros(total_points, num_dims) # Point projections on cluster-supporting lines
+    points = zeros(total_points, num_dims)      # Final points to be generated
 
     # Determine points for each cluster
     for i in 1:num_clusters
+
+        # Determine normalized cluster direction
+        clust_dirs[i, :] = rand_vector_at_angle(direction, angles[i]; rng=rng);
 
         # Determine where in the cluster-supporting line will points be
         # projected using the distribution specified in point_dist
@@ -345,6 +342,9 @@ function clugenTNG(
         # parametric line equation (this works since cluster direction is normalized)
         points_proj[cumsum_points[i] + 1 : cumsum_points[i + 1], :] =
             clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
+
+        # Update clu_pts_idx
+        clu_pts_idx[cumsum_points[i] + 1 : cumsum_points[i + 1]] .= i;
 
     end
 
