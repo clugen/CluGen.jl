@@ -317,17 +317,23 @@ function clugenTNG(
     # using the normal distribution (mean=0, std=angle_std)
     angles = angle_std .* randn(rng, num_clusters)
 
-    # Initialize data structures for holding cluster info and points
-    # - Cluster directions
-    clust_dirs = zeros(num_clusters, num_dims)
+    # Determine normalized cluster directions
+    clust_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
 
-    projs_tmp = zeros(1, num_dims)
+    # Aux. vector with cumulative sum of number of points in each cluster
+    cumsum_points = [0; cumsum(clust_num_points)]
+
+    # Vector containing the cluster indices of each point
+    clu_pts_idx = [findfirst(x -> x >= i, cumsum_points[2:end]) for i in 1:total_points]
+
+    # Initialize data structures for holding cluster info and points
+    # - Point projections on cluster-supporting lines
+    points_proj = zeros(total_points, num_dims)
+    # - Final points to be generated
+    points = zeros(total_points, num_dims)
 
     # Determine points for each cluster
     for i in 1:num_clusters
-
-        # Determine normalized cluster directions
-        clust_dirs[i, :] = rand_vector_at_angle(direction, angles[i]; rng=rng)
 
         # Determine where in the cluster-supporting line will points be
         # projected using the distribution specified in point_dist
@@ -337,9 +343,8 @@ function clugenTNG(
 
         # 2) Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
-        ptproj = clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
-
-        projs_tmp = vcat(projs_tmp, ptproj)
+        points_proj[cumsum_points[i] + 1 : cumsum_points[i + 1], :] =
+            clust_centers[i, :]' .+ ptproj_dist_center * clust_dirs[i, :]'
 
     end
 
@@ -350,7 +355,8 @@ function clugenTNG(
         line_lengths = lengths,
         angles = angles,
         dirs = clust_dirs,
-        projs = projs_tmp)
+        clu_pts_idx = clu_pts_idx,
+        projs = points_proj)
 
 end
 
