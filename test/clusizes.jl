@@ -2,19 +2,14 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# Specific test parameters
-cs_dists = Dict(
-    "half_normal" => (rng, nclu) -> () -> abs.(randn(rng, nclu)),
-    "unif" => (rng, nclu) -> () -> rand(rng, nclu),
-    "equal" => (rng, nclu) -> () -> (1.0 / nclu) .* ones(nclu)
-)
-
 # Test clusizes
 @testset "clusizes" begin
     @testset "seed=$seed, nclu=$nclu, tot_points=$tpts, dist=$cs_dist_name, allow_empty=$ae" for
-        seed in seeds, (cs_dist_name, cs_dist_fn) in cs_dists,
+        seed in seeds,
         nclu in num_clusters,
-        tpts in total_points, ae in allow_empty
+        tpts in total_points,
+        (cs_dist_name, cs_dist_fn) in clusize_dists,
+        ae in allow_empties
 
         # Don't test if number of points is less than number of
         # clusters and we don't allow empty clusters
