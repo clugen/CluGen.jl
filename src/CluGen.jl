@@ -28,7 +28,8 @@ n is the desired number of clusters.
 function clusizes(
     total_points::Integer,
     allow_empty::Bool,
-    dist_fun::Function)
+    dist_fun::Function
+)::AbstractArray{<:Number, 1}
 
     # Determine number of points in each cluster
     clu_num_points = dist_fun()
@@ -84,7 +85,8 @@ function clucenters(
     num_clusters::Integer,
     cluster_sep::AbstractArray{<:Number, 1},
     offset::AbstractArray{<:Number, 1},
-    dist_fun::Function)
+    dist_fun::Function
+)::AbstractArray{<:Number}
 
     return num_clusters .* dist_fun() * Diagonal(cluster_sep) .+ offset'
 end
@@ -94,7 +96,8 @@ Function which returns a random unit vector with `num_dims` dimensions.
 """
 function rand_unit_vector(
     num_dims::Integer;
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Number, 1}
 
     r = rand(rng, num_dims) .- 0.5
     normalize!(r)
@@ -109,7 +112,8 @@ Function which returns a random normalized vector orthogonal to `u`
 """
 function rand_ortho_vector(
     u::AbstractArray{<:Number};
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Number, 1}
 
     # Variable for placing random non-parallel vector
     r = nothing
@@ -148,7 +152,8 @@ from vector `u`.
 function rand_vector_at_angle(
     u::AbstractArray{<:Number},
     angle::Number;
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Number, 1}
 
     if -pi/2 < angle < pi/2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
@@ -176,7 +181,8 @@ function clupoints_d_1(
     lat_std::Number,
     clu_dir::AbstractArray{<:Number, 1},
     clu_ctr::AbstractArray{<:Number, 1},
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Number}
 
     # Number of dimensions
     num_dims = length(clu_dir)
@@ -222,7 +228,8 @@ function clupoints_d(
     lat_std::Number,
     clu_dir::AbstractArray{<:Number, 1},
     clu_ctr::AbstractArray{<:Number, 1},
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Number}
 
     # Number of dimensions
     num_dims = length(clu_dir)
