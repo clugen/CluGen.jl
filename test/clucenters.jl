@@ -4,16 +4,16 @@
 
 # Test clucenters
 @testset "clucenters" begin
-    @testset "nd=$nd, seed=$seed, nclu=$nclu, sep=$clu_sep, off=$clu_off, dist=$cc_dist_name" for
+    @testset "nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, sep=$clu_sep, off=$clu_off, dist=$cc_dist_name" for
         nd in num_dims,
-        seed in seeds,
+        rng in rngs,
         nclu in num_clusters,
-        clu_sep in clu_seps(nd),
-        clu_off in clu_offsets(nd),
+        clu_sep in get_clu_seps(nd),
+        clu_off in get_clu_offsets(nd),
         (cc_dist_name, cc_dist_fn) in clucenter_dists
 
         # Get the actual function to use
-        dist_fn = cc_dist_fn(MersenneTwister(seed), nclu, nd)
+        dist_fn = cc_dist_fn(rng, nclu, nd)
 
         # Check that the clucenters function runs without warnings
         clu_ctrs = @test_nowarn clucenters(nclu, clu_sep, clu_off, dist_fn)

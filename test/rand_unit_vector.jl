@@ -4,12 +4,12 @@
 
 # Test rand_unit_vector
 @testset "rand_unit_vector" begin
-    @testset "nd=$nd, seed=$seed" for
+    @testset "nd=$nd, seed=$(Int(rng.seed[1]))" for
         nd in num_dims,
-        seed in seeds
+        rng in rngs
 
         # Check that the rand_unit_vector function runs without warnings
-        r = @test_nowarn rand_unit_vector(nd; rng=MersenneTwister(seed))
+        r = @test_nowarn rand_unit_vector(nd; rng=rng)
 
         # Check that returned vector has the correct dimensions
         @test size(r) == (nd, )

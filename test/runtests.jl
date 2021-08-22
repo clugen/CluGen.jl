@@ -11,17 +11,18 @@ using Test
 # Parameters for all tests #
 # ######################## #
 
-num_dims = (1, 2, 3, 4, 30)
 seeds = (0, 123)
+rngs = MersenneTwister.(seeds)
+num_dims = (1, 2, 3, 4, 30)
 total_points = (1, 10, 500, 10000)
 num_clusters = (1, 2, 5, 10, 100)
 allow_empties = (true, false)
-clu_offsets = (ndims) -> (
+get_clu_offsets = (ndims) -> (
     zeros(ndims),
     ones(ndims),
-    [1000 .* randn(MersenneTwister(s), ndims) for s in seeds]...
+    [1000 .* randn(rng, ndims) for rng in rngs]...
 )
-clu_seps = clu_offsets
+get_clu_seps = get_clu_offsets
 
 clusize_dists = Dict(
     "half_normal" => (rng, nclu) -> () -> abs.(randn(rng, nclu)),
@@ -34,6 +35,8 @@ clucenter_dists = Dict(
     "normal" => (rng, nclu, ndim) -> () -> randn(rng, nclu, ndim),
     "fixed" =>  (rng, nclu, ndim) -> () -> collect(1:ndim)' .* ones(nclu, ndim)
 )
+
+get_vecs = (rng, n, nd) -> [v for v in eachcol(rand(rng, nd, n))]
 
 # ############################################# #
 # Perform test for each function in the package #
