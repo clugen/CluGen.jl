@@ -111,7 +111,7 @@ Function which returns a random normalized vector orthogonal to `u`
 `u` is expected to be a unit vector
 """
 function rand_ortho_vector(
-    u::AbstractArray{<:Number};
+    u::AbstractArray{<:Number, 1};
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Number, 1}
 
@@ -150,7 +150,7 @@ from vector `u`.
 `angle` should be in radians
 """
 function rand_vector_at_angle(
-    u::AbstractArray{<:Number},
+    u::AbstractArray{<:Number, 1},
     angle::Number;
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Number, 1}
