@@ -3,6 +3,7 @@
 # at http://opensource.org/licenses/MIT)
 
 using CluGen
+using LinearAlgebra
 using Random
 using Test
 
