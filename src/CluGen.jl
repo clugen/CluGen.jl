@@ -28,11 +28,11 @@ n is the desired number of clusters.
 function clusizes(
     total_points::Integer,
     allow_empty::Bool,
-    dist_fun::Function
+    dist_fn::Function
 )::AbstractArray{<:Number, 1}
 
     # Determine number of points in each cluster
-    clu_num_points = dist_fun()
+    clu_num_points = dist_fn()
     clu_num_points = clu_num_points / sum(clu_num_points)
 
     # For consistency with other clugen implementations, rounding ties move away from zero
@@ -79,16 +79,16 @@ end
 
 Determine cluster centers.
 
-Note that dist_fun should return a num_clusters * num_dims matrix.
+Note that dist_fn should return a num_clusters * num_dims matrix.
 """
 function clucenters(
     num_clusters::Integer,
     cluster_sep::AbstractArray{<:Number, 1},
     offset::AbstractArray{<:Number, 1},
-    dist_fun::Function
+    dist_fn::Function
 )::AbstractArray{<:Number}
 
-    return num_clusters .* dist_fun() * Diagonal(cluster_sep) .+ offset'
+    return num_clusters .* dist_fn() * Diagonal(cluster_sep) .+ offset'
 end
 
 """
@@ -313,14 +313,14 @@ function clugen(
     if typeof(point_dist) <: Function
         # Use user-defined distribution; assume function accepts length of line
         # and number of points, and returns a num_dims x 1 vector
-        pointproj_fun =  point_dist
+        pointproj_fn =  point_dist
     elseif point_dist == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
-        pointproj_fun =  (len, n) -> len .* rand(rng, n) .- len / 2
+        pointproj_fn =  (len, n) -> len .* rand(rng, n) .- len / 2
     elseif point_dist == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
-        pointproj_fun =  (len, n) -> (1.0/6.0) * len .* randn(rng, n)
+        pointproj_fn =  (len, n) -> (1.0/6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
             "`point_dist` has to be either \"norm\", \"unif\" or user-defined function"))
@@ -331,21 +331,21 @@ function clugen(
     # (default), 'd' or a user-defined function
     if num_dims == 1
         # If 1D was specified, point projections are the points themselves
-        pt_from_proj_fun = (projs, lat_std, clu_dir, clu_ctr) -> projs
+        pt_from_proj_fn = (projs, lat_std, clu_dir, clu_ctr) -> projs
     elseif typeof(point_offset) <: Function
         # Use user-defined distribution; assume function accepts point projections
         # on the line, lateral std., cluster direction and cluster center, and
         # returns a num_points x num_dims matrix containing the final points
         # for the current cluster
-        pt_from_proj_fun = point_offset
+        pt_from_proj_fn = point_offset
     elseif point_offset == "d-1"
         # Points will be placed on a second line perpendicular to the cluster
         # line using a normal distribution centered at their intersection
-        pt_from_proj_fun = clupoints_d_1
+        pt_from_proj_fn = clupoints_d_1
     elseif point_offset == "d"
         # Points will be placed using a multivariate normal distribution
         # centered at the point projection
-        pt_from_proj_fun = clupoints_d
+        pt_from_proj_fn = clupoints_d
     else
         throw(ArgumentError(
             "point_offset has to be either \"d-1\", \"d\" or a user-defined function"))
@@ -413,7 +413,7 @@ function clugen(
         clu_pts_idx[idx_start:idx_end] .= i;
 
         # Determine distance of point projections from the center of the line
-        ptproj_dist_center = pointproj_fun(lengths[i], clu_num_points[i])
+        ptproj_dist_center = pointproj_fn(lengths[i], clu_num_points[i])
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
@@ -421,7 +421,7 @@ function clugen(
             clu_centers[i, :]' .+ ptproj_dist_center * clu_dirs[i, :]'
 
         # Determine points from their projections on the line
-        points[idx_start:idx_end, :] = pt_from_proj_fun(
+        points[idx_start:idx_end, :] = pt_from_proj_fn(
             points_proj[idx_start:idx_end, :],
             lateral_std,
             clu_dirs[i, :],
