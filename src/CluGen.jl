@@ -79,16 +79,16 @@ end
 
 Determine cluster centers.
 
-Note that dist_fn should return a num_clusters * num_dims matrix.
+Note that dist_fn should return a num_clusters x num_dims matrix.
 """
 function clucenters(
     num_clusters::Integer,
-    cluster_sep::AbstractArray{<:Number, 1},
-    offset::AbstractArray{<:Number, 1},
+    clu_sep::AbstractArray{<:Number, 1},
+    clu_offset::AbstractArray{<:Number, 1},
     dist_fn::Function
 )::AbstractArray{<:Number}
 
-    return num_clusters .* dist_fn() * Diagonal(cluster_sep) .+ offset'
+    return num_clusters .* dist_fn() * Diagonal(clu_sep) .+ clu_offset'
 end
 
 """
