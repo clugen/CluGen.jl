@@ -323,7 +323,7 @@ function clugen(
     elseif point_dist == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
-        pointproj_fn =  (len, n) -> (1.0/6.0) * len .* randn(rng, n)
+        pointproj_fn =  (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
             "`point_dist` has to be either \"norm\", \"unif\" or user-defined function"))

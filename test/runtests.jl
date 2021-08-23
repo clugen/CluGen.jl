@@ -16,6 +16,10 @@ rngs = MersenneTwister.(seeds)
 num_dims = (1, 2, 3, 4, 30)
 total_points = (1, 10, 500, 10000)
 num_clusters = (1, 2, 5, 10, 100)
+lat_stds = (0.0, 5.0, 500)
+line_lengths = (0, 10)
+line_length_stds = (0, 15)
+
 allow_empties = (true, false)
 get_clu_offsets = (ndims) -> (
     zeros(ndims),

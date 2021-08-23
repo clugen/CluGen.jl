@@ -19,13 +19,13 @@ nang = 10
         # Check that the rand_ortho_vector function runs without warnings
         r = @test_nowarn rand_vector_at_angle(u, a; rng=rng)
 
-        # # Check that returned vector has the correct dimensions
+        # Check that returned vector has the correct dimensions
         @test size(r) == (nd, )
 
-        # # Check that returned vector has norm == 1
+        # Check that returned vector has norm == 1
         @test norm(r) ≈ 1
 
-        # # Check that vectors u and r have an angle of a between them
+        # Check that vectors u and r have an angle of a between them
         if nd > 1 && abs(a) < pi/2
             @test acos(dot(u, r) / (norm(u) * norm(r))) ≈ abs(a) atol=1e-13
         end
