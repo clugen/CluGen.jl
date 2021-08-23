@@ -36,7 +36,8 @@ clucenter_dists = Dict(
     "fixed" =>  (rng, nclu, ndim) -> () -> collect(1:ndim)' .* ones(nclu, ndim)
 )
 
-get_vecs = (rng, n, nd) -> [v for v in eachcol(rand(rng, nd, n))]
+get_vecs = (rng, n, nd) -> [normalize(v) for v in eachcol(rand(rng, nd, n))]
+get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
 
 # ############################################# #
 # Perform test for each function in the package #
