@@ -49,6 +49,7 @@ get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
 
 include("clusizes.jl")
 include("clucenters.jl")
+include("get_points_from_line.jl")
 include("rand_unit_vector.jl")
 include("rand_ortho_vector.jl")
 include("rand_vector_at_angle.jl")
