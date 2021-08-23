@@ -43,6 +43,13 @@ clucenter_dists = Dict(
 get_vecs = (rng, n, nd) -> [normalize(v) for v in eachcol(rand(rng, nd, n))]
 get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
 
+# For compatibility with Julia 1.0, from Compat.jl (MIT license)
+# https://github.com/JuliaLang/Compat.jl/blob/master/src/Compat.jl
+if VERSION < v"1.1.0-DEV.792"
+    eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
+    eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
+end
+
 # ############################################# #
 # Perform test for each function in the package #
 # ############################################# #
