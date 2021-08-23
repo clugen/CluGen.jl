@@ -8,7 +8,7 @@ nvec = 10
 # Test rand_ortho_vector
 @testset "rand_ortho_vector" begin
     @testset "u=$u, seed=$(Int(rng.seed[1]))" for
-        nd in num_dims[2:end],
+        nd in num_dims,
         rng in rngs,
         u in get_vecs(rng, nvec, nd)
 

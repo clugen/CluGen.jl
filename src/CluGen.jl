@@ -115,6 +115,9 @@ function rand_ortho_vector(
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Number, 1}
 
+    # If 1-D, just return a random unit vector
+    length(u) == 1 && return rand_unit_vector(1; rng=rng)
+
     # Variable for placing random non-parallel vector
     r = nothing
 
