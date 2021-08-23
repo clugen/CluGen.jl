@@ -11,7 +11,7 @@ using Test
 # Parameters for all tests #
 # ######################## #
 
-seeds = (0, 123)
+seeds = (0, 123, 9999, 9876543)
 rngs = MersenneTwister.(seeds)
 num_dims = (1, 2, 3, 4, 30)
 total_points = (1, 10, 500, 10000)

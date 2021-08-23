@@ -115,7 +115,7 @@ function rand_ortho_vector(
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Number, 1}
 
-    # If 1-D, just return a random unit vector
+    # If 1D, just return a random unit vector
     length(u) == 1 && return rand_unit_vector(1; rng=rng)
 
     # Variable for placing random non-parallel vector
@@ -128,7 +128,7 @@ function rand_ortho_vector(
         r = rand_unit_vector(length(u); rng=rng)
 
         # If not parallel to u we can keep it and break the loop
-        if abs(dot(u, r)) < (1 - eps())
+        if abs(dot(u, r)) ≉ 1
             break
         end
 
