@@ -89,14 +89,14 @@ function clucenters(
     num_clusters::Integer,
     clu_sep::AbstractArray{<:Number, 1},
     clu_offset::AbstractArray{<:Number, 1};
-    rng::AbstractRNG = Random._GLOBAL_RNG
+    rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Number}
 
     # Obtain a num_clusters x num_dims matrix of uniformly distributed values
-    # between -0.5 and 0.5
-    x = rand(rng, num_clusters, length(clu_sep)) .- 0.5
+    # between -0.5 and 0.5 representing the relative cluster centers
+    ctr_rel = rand(rng, num_clusters, length(clu_sep)) .- 0.5
 
-    return num_clusters .* x * Diagonal(clu_sep) .+ clu_offset'
+    return num_clusters .* ctr_rel * Diagonal(clu_sep) .+ clu_offset'
 end
 
 """
