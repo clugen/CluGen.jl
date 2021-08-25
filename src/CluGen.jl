@@ -316,9 +316,9 @@ function clugen(
     cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
     point_dist::Union{String, <:Function} = "norm",
     point_offset::Union{String, <:Function} = "d-1",
-    clusizes_fn::Union{Function, Nothing} = nothing,
-    clucenters_fn::Union{Function, Nothing} = nothing,
-    line_lengths_fn::Union{Function, Nothing} = nothing,
+    clusizes_fn::Function = clusizes,
+    clucenters_fn::Function = clucenters,
+    line_lengths_fn::Function = line_lengths,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
     # ############### #
@@ -411,24 +411,6 @@ function clugen(
     else
         throw(ArgumentError(
             "point_offset has to be either \"d-1\", \"d\" or a user-defined function"))
-    end
-
-    # If no clusizes_fn function was specified, use the default provided with
-    # the module
-    if clusizes_fn === nothing
-        clusizes_fn = clusizes
-    end
-
-    # If no clucenters_fn function was specified, use the default provided with
-    # the module
-    if clucenters_fn === nothing
-        clucenters_fn = clucenters
-    end
-
-    # If no line_lengths_fn function was specified, use the default provided
-    # with # the module
-    if line_lengths_fn === nothing
-        line_lengths_fn = line_lengths
     end
 
     # ############################ #
