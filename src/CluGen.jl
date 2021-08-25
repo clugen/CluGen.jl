@@ -32,10 +32,10 @@ function clusizes(
     num_clusters::Integer,
     total_points::Integer,
     allow_empty::Bool;
-    mean = 1::Number,
-    sigma = 0.3::Number,
+    mean = 1::Real,
+    sigma = 0.3::Real,
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number, 1}
+)::AbstractArray{<:Real, 1}
 
     # Determine number of points in each cluster using the folded-normal
     # distribution (μ=1, σ=0.3)
@@ -88,10 +88,10 @@ Determine cluster centers using the uniform distribution between -0.5 and 0.5.
 """
 function clucenters(
     num_clusters::Integer,
-    clu_sep::AbstractArray{<:Number, 1},
-    clu_offset::AbstractArray{<:Number, 1};
+    clu_sep::AbstractArray{<:Real, 1},
+    clu_offset::AbstractArray{<:Real, 1};
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number}
+)::AbstractArray{<:Real}
 
     # Obtain a num_clusters x num_dims matrix of uniformly distributed values
     # between -0.5 and 0.5 representing the relative cluster centers
@@ -106,10 +106,10 @@ distribution with μ=`line_length`, σ=`line_length_std`.
 """
 function line_lengths(
     num_clusters::Integer,
-    line_length::Number,
-    line_length_std::Number;
+    line_length::Real,
+    line_length_std::Real;
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number, 1}
+)::AbstractArray{<:Real, 1}
 
     return abs.(line_length .+ line_length_std .* randn(rng, num_clusters))
 
@@ -121,7 +121,7 @@ Function which returns a random unit vector with `num_dims` dimensions.
 function rand_unit_vector(
     num_dims::Integer;
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number, 1}
+)::AbstractArray{<:Real, 1}
 
     r = rand(rng, num_dims) .- 0.5
     normalize!(r)
@@ -135,9 +135,9 @@ Function which returns a random normalized vector orthogonal to `u`
 `u` is expected to be a unit vector
 """
 function rand_ortho_vector(
-    u::AbstractArray{<:Number, 1};
+    u::AbstractArray{<:Real, 1};
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number, 1}
+)::AbstractArray{<:Real, 1}
 
     # If 1D, just return a random unit vector
     length(u) == 1 && return rand_unit_vector(1; rng=rng)
@@ -177,10 +177,10 @@ from vector `u`.
 `angle` should be in radians
 """
 function rand_vector_at_angle(
-    u::AbstractArray{<:Number, 1},
-    angle::Number;
+    u::AbstractArray{<:Real, 1},
+    angle::Real;
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number, 1}
+)::AbstractArray{<:Real, 1}
 
     if -pi/2 < angle < pi/2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
@@ -199,10 +199,10 @@ on the distances from the center given in `dist_center`.
 This works by using the parametric line equation assuming `direction` is normalized.
 """
 function get_points_from_line(
-    center::AbstractArray{<:Number, 1},
-    direction::AbstractArray{<:Number, 1},
-    dist_center::AbstractArray{<:Number, 1},
-)::AbstractArray{<:Number, 2}
+    center::AbstractArray{<:Real, 1},
+    direction::AbstractArray{<:Real, 1},
+    dist_center::AbstractArray{<:Real, 1},
+)::AbstractArray{<:Real, 2}
 
     return center' .+ dist_center * direction'
 
@@ -222,12 +222,12 @@ using a normal distribution centered at their intersection.
 - `rng` is an optional pseudo-random number generator.
 """
 function clupoints_d_1(
-    projs::AbstractArray{<:Number, 2},
-    lat_std::Number,
-    clu_dir::AbstractArray{<:Number, 1},
-    clu_ctr::AbstractArray{<:Number, 1},
+    projs::AbstractArray{<:Real, 2},
+    lat_std::Real,
+    clu_dir::AbstractArray{<:Real, 1},
+    clu_ctr::AbstractArray{<:Real, 1},
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number}
+)::AbstractArray{<:Real}
 
     # Number of dimensions
     num_dims = length(clu_dir)
@@ -269,12 +269,12 @@ projection.
 - `rng` is an optional pseudo-random number generator.
 """
 function clupoints_d(
-    projs::AbstractArray{<:Number, 2},
-    lat_std::Number,
-    clu_dir::AbstractArray{<:Number, 1},
-    clu_ctr::AbstractArray{<:Number, 1},
+    projs::AbstractArray{<:Real, 2},
+    lat_std::Real,
+    clu_dir::AbstractArray{<:Real, 1},
+    clu_ctr::AbstractArray{<:Real, 1},
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Number}
+)::AbstractArray{<:Real}
 
     # Number of dimensions
     num_dims = length(clu_dir)
@@ -306,14 +306,14 @@ function clugen(
     num_dims::Integer,
     num_clusters::Integer,
     total_points::Integer,
-    direction::AbstractArray{<:Number, 1},
-    angle_std::Number,
-    cluster_sep::AbstractArray{<:Number, 1},
-    line_length::Number,
-    line_length_std::Number,
-    lateral_std::Number;
+    direction::AbstractArray{<:Real, 1},
+    angle_std::Real,
+    cluster_sep::AbstractArray{<:Real, 1},
+    line_length::Real,
+    line_length_std::Real,
+    lateral_std::Real;
     allow_empty::Bool = false,
-    cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
+    cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
     point_dist::Union{String, <:Function} = "norm",
     point_offset::Union{String, <:Function} = "d-1",
     clusizes_fn::Union{Function, Nothing} = nothing,
