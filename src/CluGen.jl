@@ -10,14 +10,15 @@ module CluGen
 using LinearAlgebra
 using Random
 
+export clugen
 export clusizes
 export clucenters
+export line_angles
 export line_lengths
 export points_from_line
 export rand_unit_vector
 export rand_ortho_vector
 export rand_vector_at_angle
-export clugen
 
 """
     clusizes()
