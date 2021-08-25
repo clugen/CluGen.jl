@@ -24,7 +24,7 @@ nvec = 10
         # Check that vectors u and r are orthogonal (only for nd > 1)
         if nd > 1
             # The dot product of orthogonal vectors must be (approximately) zero
-            @test dot(u, r) ≈ 0 atol=1e-14
+            @test dot(u, r) ≈ 0 atol=1e-13
         end
 
     end
