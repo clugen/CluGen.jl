@@ -13,7 +13,7 @@ using Random
 export clusizes
 export clucenters
 export line_lengths
-export get_points_from_line
+export points_from_line
 export rand_unit_vector
 export rand_ortho_vector
 export rand_vector_at_angle
@@ -191,14 +191,14 @@ function rand_vector_at_angle(
 end
 
 """
-    get_points_from_line()
+    points_from_line()
 
 Determine coordinates of points on a line with `center` and `direction`, based
 on the distances from the center given in `dist_center`.
 
 This works by using the parametric line equation assuming `direction` is normalized.
 """
-function get_points_from_line(
+function points_from_line(
     center::AbstractArray{<:Real, 1},
     direction::AbstractArray{<:Real, 1},
     dist_center::AbstractArray{<:Real, 1},
@@ -481,7 +481,7 @@ function clugen(
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
-        points_proj[idx_start:idx_end, :] = get_points_from_line(
+        points_proj[idx_start:idx_end, :] = points_from_line(
             clu_centers[i, :], clu_dirs[i, :], ptproj_dist_center)
 
         # Determine points from their projections on the line

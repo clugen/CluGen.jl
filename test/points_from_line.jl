@@ -8,8 +8,8 @@ ndirs = 3
 # Number of line centers to test
 ncts = 3
 
-# Test get_points_from_line
-@testset "get_points_from_line" begin
+# Test points_from_line
+@testset "points_from_line" begin
     @testset "nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), length=$length, dir=$dir, ctr=$ctr" for
         nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
@@ -22,8 +22,8 @@ ncts = 3
         # Create some random distances from center
         dist2ctr = length .* rand(rng, tpts) .- length / 2
 
-        # Check that the get_points_from_line function runs without warnings
-        pts = @test_nowarn get_points_from_line(ctr, dir, dist2ctr)
+        # Check that the points_from_line function runs without warnings
+        pts = @test_nowarn points_from_line(ctr, dir, dist2ctr)
 
         # Check that the dimensions agree
         @test size(pts) == (tpts, nd)
