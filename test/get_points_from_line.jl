@@ -15,7 +15,7 @@ ncts = 3
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, total_points),
         rng in rngs,
-        length in line_lengths,
+        length in line_lengths_mus,
         dir in get_vecs(rng, ndirs, nd),
         ctr in get_vecs(rng, ncts, nd)
 

@@ -16,7 +16,7 @@ ncts = 3
         tpts in total_points,
         rng in rngs,
         lat_std in lat_stds,
-        length in line_lengths,
+        length in line_lengths_mus,
         dir in get_vecs(rng, ndirs, nd),
         ctr in get_vecs(rng, ncts, nd)
 
