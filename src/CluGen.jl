@@ -346,6 +346,11 @@ function clugen(
         throw(ArgumentError("Number of dimensions, `num_dims`, must be > 0"))
     end
 
+    # Check that number of clusters is > 0
+    if num_clusters < 1
+        throw(ArgumentError("Number of clusters, `num_clust`, must be > 0"))
+    end
+
     # Check that direction vector has magnitude > 0
     if norm(direction) < eps()
         throw(ArgumentError("`direction` must have magnitude > 0"))
@@ -367,6 +372,14 @@ function clugen(
             "$num_clusters non-empty clusters"))
     end
 
+    # Check that cluster_sep has num_dims dimensions
+    clusep_len = length(cluster_sep)
+    if clusep_len != num_dims
+        throw(ArgumentError(
+            "Length of `cluster_sep` must be equal to `num_dims` " *
+            "($clusep_len != $num_dims)"))
+    end
+
     # If given, cluster_offset must have the correct number of dimensions,
     # if not given then it will be a num_dims x 1 vector of zeros
     if cluster_offset === nothing
@@ -375,14 +388,6 @@ function clugen(
         throw(ArgumentError(
             "Length of `cluster_offset` must be equal to `num_dims` " *
             "($(length(cluster_offset)) != $num_dims)"))
-    end
-
-    # Check that cluster_sep has num_dims dimensions
-    clusep_len = length(cluster_sep)
-    if clusep_len != num_dims
-        throw(ArgumentError(
-            "Length of `cluster_sep` must be equal to `num_dims` " *
-            "($clusep_len != $num_dims)"))
     end
 
     # Check that point_dist specifies a valid way for projecting points along
@@ -398,6 +403,7 @@ function clugen(
     elseif point_dist == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
+        # TODO CHECK THIS 1/6!
         pointproj_fn = (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
@@ -492,14 +498,13 @@ function clugen(
 
     return (
         points = points,
-        points_per_cluster = clu_num_points,
-        total_points = sum(clu_num_points),
-        centers = clu_centers,
+        points_cluster_index = clu_pts_idx,
+        points_projection = points_proj,
+        cluster_number_of_points = clu_num_points,
+        cluster_centers = clu_centers,
+        cluster_directions = clu_dirs,
         line_lengths = lengths,
-        angles = angles,
-        dirs = clu_dirs,
-        clu_pts_idx = clu_pts_idx,
-        projs = points_proj)
+        line_angles = angles)
 
 end
 
