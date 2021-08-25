@@ -100,6 +100,21 @@ function clucenters(
 end
 
 """
+Determine length of lines supporting clusters using the folded normal
+distribution with μ=`line_length`, σ=`line_length_std`.
+"""
+function line_lengths(
+    num_clusters::Integer,
+    line_length::Number,
+    line_length_std::Number;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Number, 1}
+
+    return abs.(line_length .+ line_length_std .* randn(rng, num_clusters))
+
+end
+
+"""
 Function which returns a random unit vector with `num_dims` dimensions.
 """
 function rand_unit_vector(
@@ -302,6 +317,7 @@ function clugen(
     point_offset::Union{String, <:Function} = "d-1",
     clusizes_fn::Union{Function, Nothing} = nothing,
     clucenters_fn::Union{Function, Nothing} = nothing,
+    line_lengths_fn::Union{Function, Nothing} = nothing,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
     # ############### #
@@ -408,6 +424,12 @@ function clugen(
         clucenters_fn = clucenters
     end
 
+    # If no line_lengths_fn function was specified, use the default provided
+    # with # the module
+    if line_lengths_fn === nothing
+        line_lengths_fn = line_lengths
+    end
+
     # ############################ #
     # Determine cluster properties #
     # ############################ #
@@ -422,8 +444,7 @@ function clugen(
     clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
 
     # Determine length of lines supporting clusters
-    # Line lengths are drawn from the folded normal distribution
-    lengths = abs.(line_length .+ line_length_std .* randn(rng, num_clusters))
+    lengths = line_lengths_fn(num_clusters, line_length, line_length_std; rng=rng)
 
     # Obtain angles between main direction and cluster-supporting lines
     # using the normal distribution (mean=0, std=angle_std)
