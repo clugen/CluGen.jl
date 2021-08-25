@@ -2,11 +2,12 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# How many vectors to test?
-nvec = 10
-
 # Test rand_ortho_vector
 @testset "rand_ortho_vector" begin
+
+    # How many vectors to test?
+    nvec = 10
+
     @testset "u=$u, seed=$(Int(rng.seed[1]))" for
         nd in num_dims,
         rng in rngs,

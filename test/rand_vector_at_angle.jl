@@ -2,14 +2,15 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# How many vectors to test?
-nvec = 10
-
-# How many angles to test?
-nang = 10
-
 # Test rand_vector_at_angle
 @testset "rand_vector_at_angle" begin
+
+    # How many vectors to test?
+    nvec = 10
+
+    # How many angles to test?
+    nang = 10
+
     @testset "u=$u, a=$a, seed=$(Int(rng.seed[1]))" for
         nd in num_dims,
         rng in rngs,

@@ -2,14 +2,15 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# Number of line directions to test
-ndirs = 3
-
-# Number of line centers to test
-ncts = 3
-
 # Test clupoints_d
 @testset "clupoints_d" begin
+
+    # Number of line directions to test
+    ndirs = 3
+
+    # Number of line centers to test
+    ncts = 3
+
     @testset """
         nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std,
         length=$length, dir=$dir, ctr=$ctr

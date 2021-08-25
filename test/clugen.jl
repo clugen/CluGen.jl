@@ -5,6 +5,9 @@
 # Test clugen
 @testset "clugen" begin
 
+    # Number of directions to test
+    ndirs = 2
+
     @testset """Mandatory params:
         seed=$(Int(rng.seed[1])), nd=$nd, tpts=$tpts, dir=$dir, astd=$astd,
         clu_sep=$clu_sep, lmu=$len_mu, lstd=$len_std, lat_std=$lat_std

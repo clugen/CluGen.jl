@@ -35,30 +35,38 @@ get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
 ptdist_fns = Dict(
     "norm" => "norm",
     "unif" => "unif",
-    #"equidistant" =>  (len, n) -> (-len/2:len/n:len/2)[1:end-1]
+    "equidistant" =>  (len, n) -> (-len/2:len/n:len/2)[1:n]
 )
 ptoff_fns = Dict(
     "d-1" => "d-1",
-    "d" => "d"
-    #"no" =>
+    "d" => "d",
+    "proj+1" => (projs, lstd, cdir, cctr) -> projs + ones(size(projs))
 )
-csz_fns = Dict("default" => clusizes)
-cctr_fns = Dict("default" => clucenters)
-llen_fns = Dict("default" => line_lengths)
-lang_fns = Dict("default" => line_angles)
-
-
-# clusize_dists = Dict(
-#     "half_normal" => (rng, nclu) -> () -> abs.(randn(rng, nclu)),
-#     "unif" => (rng, nclu) -> () -> rand(rng, nclu),
-#     "equal" => (rng, nclu) -> () -> (1.0 / nclu) .* ones(nclu)
-# )
-
-# clucenter_dists = Dict(
-#     "unif" => (rng, nclu, ndim) -> () -> rand(rng, nclu, ndim) .- 0.5,
-#     "normal" => (rng, nclu, ndim) -> () -> randn(rng, nclu, ndim),
-#     "fixed" =>  (rng, nclu, ndim) -> () -> collect(1:ndim)' .* ones(nclu, ndim)
-# )
+csz_fns = Dict(
+    "default" => clusizes,
+    "equi_size" =>
+        function (nclu, tpts, ae; rng=nothing)
+            cs = zeros(Integer, nclu)
+            for i in 1:tpts
+                cs[i % nclu + 1] += 1
+            end
+            return cs
+        end
+)
+cctr_fns = Dict(
+    "default" => clucenters,
+    "on_a_line" =>
+        (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu)
+)
+llen_fns = Dict(
+    "default" => line_lengths,
+    "unif_btw10-20" =>
+        (nclu, llen, llenstd; rng = Random.GLOBAL_RNG) -> 10 .+ 10 * rand(rng, nclu)
+)
+lang_fns = Dict(
+    "default" => line_angles,
+    "same_angle" => (nclu, astd; rng=nothing) -> zeros(nclu)
+)
 
 # For compatibility with Julia 1.0, from Compat.jl (MIT license)
 # https://github.com/JuliaLang/Compat.jl/blob/master/src/Compat.jl
