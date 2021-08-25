@@ -21,19 +21,24 @@ export clugen
 """
     clusizes()
 
-Determine cluster sizes.
+Determine cluster sizes using the folded normal distribution, by default with
+μ=1, σ=0.3.
 
 Note that dist_fun should return a n x 1 array of non-negative numbers where
 n is the desired number of clusters.
 """
 function clusizes(
+    num_clusters::Integer,
     total_points::Integer,
-    allow_empty::Bool,
-    dist_fn::Function
+    allow_empty::Bool;
+    mean = 1::Number,
+    sigma = 0.3::Number,
+    rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Number, 1}
 
-    # Determine number of points in each cluster
-    clu_num_points = dist_fn()
+    # Determine number of points in each cluster using the folded-normal
+    # distribution (μ=1, σ=0.3)
+    clu_num_points = abs.(sigma .* randn(rng, num_clusters) .+ mean)
     clu_num_points = clu_num_points / sum(clu_num_points)
 
     # For consistency with other clugen implementations, rounding ties move away from zero
@@ -286,6 +291,7 @@ function clugen(
     cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
     point_dist::Union{String, <:Function} = "norm",
     point_offset::Union{String, <:Function} = "d-1",
+    clusizes_fn::Union{Function, Nothing} = nothing,
     allow_empty::Bool = false,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
@@ -335,14 +341,14 @@ function clugen(
     if typeof(point_dist) <: Function
         # Use user-defined distribution; assume function accepts length of line
         # and number of points, and returns a num_dims x 1 vector
-        pointproj_fn =  point_dist
+        pointproj_fn = point_dist
     elseif point_dist == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
-        pointproj_fn =  (len, n) -> len .* rand(rng, n) .- len / 2
+        pointproj_fn = (len, n) -> len .* rand(rng, n) .- len / 2
     elseif point_dist == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
-        pointproj_fn =  (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
+        pointproj_fn = (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
             "`point_dist` has to be either \"norm\", \"unif\" or user-defined function"))
@@ -373,6 +379,12 @@ function clugen(
             "point_offset has to be either \"d-1\", \"d\" or a user-defined function"))
     end
 
+    # If no clusizes_fn function was specified, use the default provided with
+    # the module
+    if clusizes_fn === nothing
+        clusizes_fn = clusizes
+    end
+
     # If allow_empty is false, make sure there are enough points to distribute
     # by the clusters
     if !allow_empty && total_points < num_clusters
@@ -388,11 +400,8 @@ function clugen(
     # Normalize base direction
     dir_unit = normalize(direction)
 
-    # Determine cluster sizes using the half-normal distribution (with std=1)
-    clu_num_points = clusizes(
-        total_points,
-        allow_empty,
-        () -> abs.(randn(rng, num_clusters)));
+    # Determine cluster sizes
+    clu_num_points = clusizes_fn(num_clusters, total_points, allow_empty; rng=rng)
 
     # Determine cluster centers using the uniform distribution between -0.5 and 0.5
     clu_centers = clucenters(
@@ -403,14 +412,14 @@ function clugen(
 
     # Determine length of lines supporting clusters
     # Line lengths are drawn from the folded normal distribution
-    lengths = abs.(line_length .+ line_length_std .* randn(rng, num_clusters));
+    lengths = abs.(line_length .+ line_length_std .* randn(rng, num_clusters))
 
     # Obtain angles between main direction and cluster-supporting lines
     # using the normal distribution (mean=0, std=angle_std)
     angles = angle_std .* randn(rng, num_clusters)
 
     # Determine normalized cluster direction
-    clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)';
+    clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
 
     # ################################# #
     # Determine points for each cluster #
