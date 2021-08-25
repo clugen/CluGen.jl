@@ -10,7 +10,9 @@ ncts = 3
 
 # Test points_from_line
 @testset "points_from_line" begin
-    @testset "nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), length=$length, dir=$dir, ctr=$ctr" for
+    @testset """
+        nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), length=$length, dir=$dir, ctr=$ctr
+        """ for
         nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, total_points),

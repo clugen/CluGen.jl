@@ -4,7 +4,10 @@
 
 # Test line_lengths
 @testset "line_lengths" begin
-    @testset "nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, llength_mu=$llength_mu, llength_sigma=$llength_sigma" for
+    @testset """
+        nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, llength_mu=$llength_mu,
+        llength_sigma=$llength_sigma
+        """ for
         rng in rngs,
         nd in num_dims,
         nclu in num_clusters,

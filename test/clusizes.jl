@@ -4,7 +4,9 @@
 
 # Test clusizes
 @testset "clusizes" begin
-    @testset "seed=$(Int(rng.seed[1])), nclu=$nclu, tot_points=$tpts, allow_empty=$ae" for
+    @testset """
+        seed=$(Int(rng.seed[1])), nclu=$nclu, tot_points=$tpts, allow_empty=$ae
+        """ for
         rng in rngs,
         nclu in num_clusters,
         tpts in total_points,

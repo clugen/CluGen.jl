@@ -29,20 +29,36 @@ get_clu_offsets = (ndims) -> (
 )
 get_clu_seps = get_clu_offsets
 
-clusize_dists = Dict(
-    "half_normal" => (rng, nclu) -> () -> abs.(randn(rng, nclu)),
-    "unif" => (rng, nclu) -> () -> rand(rng, nclu),
-    "equal" => (rng, nclu) -> () -> (1.0 / nclu) .* ones(nclu)
-)
-
-clucenter_dists = Dict(
-    "unif" => (rng, nclu, ndim) -> () -> rand(rng, nclu, ndim) .- 0.5,
-    "normal" => (rng, nclu, ndim) -> () -> randn(rng, nclu, ndim),
-    "fixed" =>  (rng, nclu, ndim) -> () -> collect(1:ndim)' .* ones(nclu, ndim)
-)
-
 get_vecs = (rng, n, nd) -> [normalize(v) for v in eachcol(rand(rng, nd, n))]
 get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
+
+ptdist_fns = Dict(
+    "norm" => "norm",
+    "unif" => "unif",
+    #"equidistant" =>  (len, n) -> (-len/2:len/n:len/2)[1:end-1]
+)
+ptoff_fns = Dict(
+    "d-1" => "d-1",
+    "d" => "d"
+    #"no" =>
+)
+csz_fns = Dict("default" => clusizes)
+cctr_fns = Dict("default" => clucenters)
+llen_fns = Dict("default" => line_lengths)
+lang_fns = Dict("default" => line_angles)
+
+
+# clusize_dists = Dict(
+#     "half_normal" => (rng, nclu) -> () -> abs.(randn(rng, nclu)),
+#     "unif" => (rng, nclu) -> () -> rand(rng, nclu),
+#     "equal" => (rng, nclu) -> () -> (1.0 / nclu) .* ones(nclu)
+# )
+
+# clucenter_dists = Dict(
+#     "unif" => (rng, nclu, ndim) -> () -> rand(rng, nclu, ndim) .- 0.5,
+#     "normal" => (rng, nclu, ndim) -> () -> randn(rng, nclu, ndim),
+#     "fixed" =>  (rng, nclu, ndim) -> () -> collect(1:ndim)' .* ones(nclu, ndim)
+# )
 
 # For compatibility with Julia 1.0, from Compat.jl (MIT license)
 # https://github.com/JuliaLang/Compat.jl/blob/master/src/Compat.jl

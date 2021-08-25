@@ -4,7 +4,9 @@
 
 # Test clucenters
 @testset "clucenters" begin
-    @testset "nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, sep=$clu_sep, off=$clu_off" for
+    @testset """
+        nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, sep=$clu_sep, off=$clu_off
+        """ for
         nd in num_dims,
         rng in rngs,
         nclu in num_clusters,

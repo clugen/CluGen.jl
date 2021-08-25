@@ -10,7 +10,10 @@ ncts = 3
 
 # Test clupoints_d
 @testset "clupoints_d" begin
-    @testset "nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std, length=$length, dir=$dir, ctr=$ctr" for
+    @testset """
+        nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std,
+        length=$length, dir=$dir, ctr=$ctr
+        """ for
         # Only for num_dims > 1
         nd in filter((x) ->  x > 1, num_dims),
         tpts in total_points,
