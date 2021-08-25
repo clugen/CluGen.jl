@@ -19,6 +19,7 @@ num_clusters = (1, 2, 5, 10, 100)
 lat_stds = (0.0, 5.0, 500)
 line_lengths_mus = (0, 10)
 line_lengths_sigmas = (0, 15)
+angles_stds = (0, pi/256, pi/32, pi/4, pi/2, pi, 2*pi)
 
 allow_empties = (true, false)
 get_clu_offsets = (ndims) -> (
@@ -57,6 +58,7 @@ end
 include("clusizes.jl")
 include("clucenters.jl")
 include("line_lengths.jl")
+include("line_angles.jl")
 include("points_from_line.jl")
 include("rand_unit_vector.jl")
 include("rand_ortho_vector.jl")
