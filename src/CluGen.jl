@@ -116,6 +116,20 @@ function line_lengths(
 end
 
 """
+Obtain angles between main direction and cluster-supporting lines
+using the normal distribution (mean=0, std=`angle_std`)
+"""
+function line_angles(
+    num_clusters::Integer,
+    angle_std::Real;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Real, 1}
+
+    return angle_std .* randn(rng, num_clusters)
+
+end
+
+"""
 Function which returns a random unit vector with `num_dims` dimensions.
 """
 function rand_unit_vector(
@@ -319,6 +333,7 @@ function clugen(
     clusizes_fn::Function = clusizes,
     clucenters_fn::Function = clucenters,
     line_lengths_fn::Function = line_lengths,
+    line_angles_fn::Function = line_angles,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
     # ############### #
@@ -430,8 +445,7 @@ function clugen(
     lengths = line_lengths_fn(num_clusters, line_length, line_length_std; rng=rng)
 
     # Obtain angles between main direction and cluster-supporting lines
-    # using the normal distribution (mean=0, std=angle_std)
-    angles = angle_std .* randn(rng, num_clusters)
+    angles = line_angles_fn(num_clusters, angle_std; rng=rng)
 
     # Determine normalized cluster direction
     clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
