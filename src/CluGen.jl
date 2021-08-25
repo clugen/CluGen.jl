@@ -12,6 +12,7 @@ using Random
 
 export clusizes
 export clucenters
+export line_lengths
 export get_points_from_line
 export rand_unit_vector
 export rand_ortho_vector
