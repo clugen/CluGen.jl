@@ -83,18 +83,20 @@ end
 """
     clucenters()
 
-Determine cluster centers.
-
-Note that dist_fn should return a num_clusters x num_dims matrix.
+Determine cluster centers using the uniform distribution between -0.5 and 0.5.
 """
 function clucenters(
     num_clusters::Integer,
     clu_sep::AbstractArray{<:Number, 1},
-    clu_offset::AbstractArray{<:Number, 1},
-    dist_fn::Function
+    clu_offset::AbstractArray{<:Number, 1};
+    rng::AbstractRNG = Random._GLOBAL_RNG
 )::AbstractArray{<:Number}
 
-    return num_clusters .* dist_fn() * Diagonal(clu_sep) .+ clu_offset'
+    # Obtain a num_clusters x num_dims matrix of uniformly distributed values
+    # between -0.5 and 0.5
+    x = rand(rng, num_clusters, length(clu_sep)) .- 0.5
+
+    return num_clusters .* x * Diagonal(clu_sep) .+ clu_offset'
 end
 
 """
@@ -294,11 +296,12 @@ function clugen(
     line_length::Number,
     line_length_std::Number,
     lateral_std::Number;
+    allow_empty::Bool = false,
     cluster_offset::Union{AbstractArray{<:Number, 1}, Nothing} = nothing,
     point_dist::Union{String, <:Function} = "norm",
     point_offset::Union{String, <:Function} = "d-1",
     clusizes_fn::Union{Function, Nothing} = nothing,
-    allow_empty::Bool = false,
+    clucenters_fn::Union{Function, Nothing} = nothing,
     rng::AbstractRNG = Random.GLOBAL_RNG)
 
     # ############### #
@@ -321,6 +324,14 @@ function clugen(
         throw(ArgumentError(
             "Length of `direction` must be equal to `num_dims` " *
             "($dir_len != $num_dims)"))
+    end
+
+    # If allow_empty is false, make sure there are enough points to distribute
+    # by the clusters
+    if !allow_empty && total_points < num_clusters
+        throw(ArgumentError(
+            "A total of $total_points points is not enough for " *
+            "$num_clusters non-empty clusters"))
     end
 
     # If given, cluster_offset must have the correct number of dimensions,
@@ -391,12 +402,10 @@ function clugen(
         clusizes_fn = clusizes
     end
 
-    # If allow_empty is false, make sure there are enough points to distribute
-    # by the clusters
-    if !allow_empty && total_points < num_clusters
-        throw(ArgumentError(
-            "A total of $total_points points is not enough for " *
-            "$num_clusters non-empty clusters"))
+    # If no clucenters_fn function was specified, use the default provided with
+    # the module
+    if clucenters_fn === nothing
+        clucenters_fn = clucenters
     end
 
     # ############################ #
@@ -409,12 +418,8 @@ function clugen(
     # Determine cluster sizes
     clu_num_points = clusizes_fn(num_clusters, total_points, allow_empty; rng=rng)
 
-    # Determine cluster centers using the uniform distribution between -0.5 and 0.5
-    clu_centers = clucenters(
-        num_clusters,
-        cluster_sep,
-        cluster_offset,
-        () -> rand(rng, num_clusters, num_dims) .- 0.5)
+    # Determine cluster centers
+    clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
 
     # Determine length of lines supporting clusters
     # Line lengths are drawn from the folded normal distribution
