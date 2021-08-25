@@ -4,11 +4,10 @@
 
 # Test clusizes
 @testset "clusizes" begin
-    @testset "seed=$(Int(rng.seed[1])), nclu=$nclu, tot_points=$tpts, dist=$cs_dist_name, allow_empty=$ae" for
+    @testset "seed=$(Int(rng.seed[1])), nclu=$nclu, tot_points=$tpts, allow_empty=$ae" for
         rng in rngs,
         nclu in num_clusters,
         tpts in total_points,
-        (cs_dist_name, cs_dist_fn) in clusize_dists,
         ae in allow_empties
 
         # Don't test if number of points is less than number of
@@ -17,11 +16,8 @@
             continue
         end
 
-        # Get the actual function to use
-        dist_fn = cs_dist_fn(rng, nclu)
-
         # Check that the clusizes function runs without warnings
-        clu_sizes = @test_nowarn clusizes(tpts, ae, dist_fn)
+        clu_sizes = @test_nowarn clusizes(nclu, tpts, ae; rng=rng)
 
         # Check that the output has the correct number of clusters
         @test size(clu_sizes) == (nclu, )
