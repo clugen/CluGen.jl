@@ -3,7 +3,7 @@
 # at http://opensource.org/licenses/MIT)
 
 """
-Julia implementation of clugen.
+A Julia package for generating multidimensional clusters.
 """
 module CluGen
 
@@ -21,32 +21,77 @@ export rand_ortho_vector
 export rand_vector_at_angle
 
 """
-    clusizes()
+    clusizes(
+        num_clusters::Integer,
+        total_points::Integer,
+        allow_empty::Bool;
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Integer, 1}
 
-Determine cluster sizes using the folded normal distribution, by default with
-μ=1, σ=0.3.
+Determine cluster sizes, i.e., number of points in each cluster.
 
-Note that dist_fun should return a n x 1 array of non-negative numbers where
-n is the desired number of clusters.
+The function uses the normal distribution (`μ=total_points/num_clusters`,
+`σ=μ/3`) for obtaining cluster sizes, and then assures that the final,
+absolute cluster sizes add up to `total_points`.
+
+# Examples
+```jldoctest; setup = :(Random.seed!(90))
+julia> clusizes(4, 6, true)
+4-element Array{Int64,1}:
+ 1
+ 0
+ 3
+ 2
+
+julia> clusizes(4, 100, false)
+4-element Array{Int64,1}:
+ 29
+ 26
+ 24
+ 21
+
+julia> clusizes(5, 500, true; rng=MersenneTwister(123))
+5-element Array{Int64,1}:
+ 108
+ 129
+ 107
+  89
+  67
+```
+
 """
 function clusizes(
     num_clusters::Integer,
     total_points::Integer,
     allow_empty::Bool;
-    mean = 1::Real,
-    sigma = 0.3::Real,
     rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Real, 1}
+)::AbstractArray{<:Integer, 1}
 
-    # Determine number of points in each cluster using the folded-normal
-    # distribution (μ=1, σ=0.3)
-    clu_num_points = abs.(sigma .* randn(rng, num_clusters) .+ mean)
-    clu_num_points = clu_num_points / sum(clu_num_points)
+    # Determine number of points in each cluster using the normal distribution
 
+    # Consider the mean an equal division of points between clusters
+    mean = total_points / num_clusters
+    # The standard deviation is such that the interval [0, 2 * mean] will contain
+    # approximatelly 99.7% of cluster sizes
+    std = mean / 3
+
+    # Determine points with the normal distribution
+    clu_num_points = std .* randn(rng, num_clusters) .+ mean
+
+    # Set negative values to zero
+    map!((x) -> x > 0 ? x : 0, clu_num_points, clu_num_points)
+
+    # Fix imbalances, so that total_points is respected
+    if sum(clu_num_points) > 0 # Be careful not to divide by zero
+        clu_num_points .*=  total_points / sum(clu_num_points)
+    end
+
+    # Round the real values to integers since a cluster sizes is represented by an integer
     # For consistency with other clugen implementations, rounding ties move away from zero
-    clu_num_points = round.(Int, total_points * clu_num_points, RoundNearestTiesAway)
+    clu_num_points = round.(Integer, clu_num_points, RoundNearestTiesAway)
 
-    # Make sure total points is respected
+    # Make sure total points is respected, which may not be the case at this time due
+    # to rounding
     while sum(clu_num_points) < total_points
         imin = argmin(clu_num_points)
         clu_num_points[imin] += 1
