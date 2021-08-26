@@ -1,3 +1,5 @@
-using Documenter, CluGen
+using CluGen, Documenter
 
-makedocs(sitename="CluGen.jl Documentation")
+DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, Random); recursive=true)
+
+makedocs(sitename="CluGen.jl documentation")

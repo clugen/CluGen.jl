@@ -3,6 +3,7 @@
 # at http://opensource.org/licenses/MIT)
 
 using CluGen
+using Documenter
 using LinearAlgebra
 using Random
 using Test
@@ -91,3 +92,6 @@ include("clupoints_d_1.jl")
 include("clupoints_d.jl")
 include("clugen.jl")
 
+# Run doctests
+DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, Random); recursive=true)
+doctest(CluGen)
