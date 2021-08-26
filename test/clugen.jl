@@ -9,8 +9,8 @@
     ndirs = 2
 
     @testset """Mandatory params:
-        seed=$(Int(rng.seed[1])), nd=$nd, tpts=$tpts, dir=$dir, astd=$astd,
-        clu_sep=$clu_sep, lmu=$len_mu, lstd=$len_std, lat_std=$lat_std
+        seed=$(Int(rng.seed[1])), nd=$nd, nclu=$nclu, tpts=$tpts, dir=$dir,
+        astd=$astd, clu_sep=$clu_sep, lmu=$len_mu, lstd=$len_std, lat_std=$lat_std
         """ for
         rng in rngs[1:end-1],
         nd in num_dims[1:end-1],
