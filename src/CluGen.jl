@@ -455,17 +455,54 @@ function points_on_line(
 end
 
 """
-    clupoints_d_1()
+    function clupoints_d_1(
+        projs::AbstractArray{<:Real, 2},
+        lat_std::Real,
+        clu_dir::AbstractArray{<:Real, 1},
+        clu_ctr::AbstractArray{<:Real, 1},
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real}
 
 Function which generates points for a cluster from their projections in n-D,
 placing points on a second line perpendicular to the cluster-supporting line
 using a normal distribution centered at their intersection.
 
-- `projs` are the point projections.
-- `lat_std` is the lateral standard deviation or cluster "fatness".
-- `clu_dir` is the cluster direction.
-- `clu_ctr` is the cluster-supporting line center position (ignored).
-- `rng` is an optional pseudo-random number generator.
+
+Generate points from their ``d``-dimensional projections on a cluster-supporting
+line, placing each point `i` on a second line, orthogonal to the first and
+centered at the point's projection, using the normal distribution (μ=0, σ=`lat_std`).
+
+!!! note "Internal package function"
+    This function's main intended use is by the [`clugen()`](@ref) function,
+    generating points when its `point_offset` parameter is set to `"d-1"`. Thus,
+    it's not exported by the package and must be prefixed by the package name,
+    e.g. `CluGen.clupoints_d_1(...)`.
+
+# Arguments
+- `projs`: point projections on the cluster-supporting line.
+- `lat_std`: standard deviation for the normal distribution (or cluster "fatness").
+- `clu_dir`: direction of the cluster-supporting line.
+- `clu_ctr` center position of the cluster-supporting line center position (ignored).
+- `rng`: an optional pseudo-random number generator for reproducible executions.
+
+# Examples
+```jldoctest
+julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
+5×2 Array{Float64,2}:
+ 1.0  5.0
+ 3.0  5.0
+ 5.0  5.0
+ 7.0  5.0
+ 9.0  5.0
+
+julia> CluGen.clupoints_d_1(projs, 0.5, [1,0], [0,0], MersenneTwister(123))
+5×2 Array{Float64,2}:
+ 1.0  5.59513
+ 3.0  3.97591
+ 5.0  4.42867
+ 7.0  5.22971
+ 9.0  4.80166
+```
 """
 function clupoints_d_1(
     projs::AbstractArray{<:Real, 2},
