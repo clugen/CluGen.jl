@@ -364,11 +364,30 @@ function rand_ortho_vector(
 end
 
 """
-Function which returns a random vector that is at an angle of `angle` radians
-from vector `u`.
+    function rand_vector_at_angle(
+        u::AbstractArray{<:Real, 1},
+        angle::Real;
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real, 1}
 
-`u` is expected to be a unit vector
-`angle` should be in radians
+Get a random unit vector which is at `angle` radians of vector `u`.
+
+Note that `u` is expected to be a unit vector itself.
+
+# Examples
+```jldoctest; setup = :(Random.seed!(111))
+julia> u = normalize([1,0.5,0.3,-0.1]); # Define a 4D unit vector
+
+julia> v = rand_vector_at_angle(u, pi/4); # pi/4 = 0.7853981... radians = 45 degrees
+
+julia> a = acos(dot(u, v) / (norm(u) * norm(v))) # Angle (radians) between u and v?
+0.7853981633974483
+
+julia> rand_vector_at_angle([0, 1], pi/6; rng=MersenneTwister(456)) # 2D, reproducible
+2-element Array{Float64,1}:
+ -0.4999999999999999
+  0.8660254037844387
+```
 """
 function rand_vector_at_angle(
     u::AbstractArray{<:Real, 1},
