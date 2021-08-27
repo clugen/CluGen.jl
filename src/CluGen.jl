@@ -405,12 +405,44 @@ function rand_vector_at_angle(
 end
 
 """
-    points_from_line()
+    function points_from_line(
+        center::AbstractArray{<:Real, 1},
+        direction::AbstractArray{<:Real, 1},
+        dist_center::AbstractArray{<:Real, 1},
+    )::AbstractArray{<:Real, 2}
 
 Determine coordinates of points on a line with `center` and `direction`, based
 on the distances from the center given in `dist_center`.
 
-This works by using the parametric line equation assuming `direction` is normalized.
+This works by using the vector formulation of the line equation assuming
+`direction` is a ``d``-dimensional unit vector. In other words, considering
+``\\mathbf{v}=`` `direction` (``d \\times 1``), ``\\mathbf{c}=`` `center` (``
+d \\times 1``), and ``\\mathbf{w}=`` `dist_center` (``p_\\text{tot} \\times
+1``), the coordinates of points on the line are given by:
+
+```math
+\\mathbf{P}=\\mathbf{1}\\,\\mathbf{c}^T + \\mathbf{w}\\mathbf{v}^T
+```
+
+where ``\\mathbf{P}`` is the ``p_\\text{tot} \\times d`` matrix of point
+coordinates on the line, and ``\\mathbf{1}`` is an ``d \\times 1`` vector with
+all entries equal to 1.
+
+# Examples
+```jldoctest
+julia> points_from_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
+5×2 Array{Float64,2}:
+ 1.0  5.0
+ 3.0  5.0
+ 5.0  5.0
+ 7.0  5.0
+ 9.0  5.0
+
+julia> points_from_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
+2×4 Array{Float64,2}:
+ -2.0  0.0  -10.0  2.0
+ -2.0  0.0   10.0  2.0
+```
 """
 function points_from_line(
     center::AbstractArray{<:Real, 1},
