@@ -93,5 +93,5 @@ include("clupoints_d.jl")
 include("clugen.jl")
 
 # Run doctests
-DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, Random); recursive=true)
+DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, LinearAlgebra, Random); recursive=true)
 doctest(CluGen)

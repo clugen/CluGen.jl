@@ -266,7 +266,30 @@ function line_angles(
 end
 
 """
-Function which returns a random unit vector with `num_dims` dimensions.
+    function rand_unit_vector(
+        num_dims::Integer;
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real, 1}
+
+Get a random unit vector with `num_dims` dimensions.
+
+# Examples
+```jldoctest; setup = :(Random.seed!(111))
+julia> v = rand_unit_vector(4) # 4D
+4-element Array{Float64,1}:
+ -0.24033021128704707
+ -0.032103799230189585
+  0.04223910709972599
+ -0.9692402145232775
+
+julia> norm(v) # Check vector magnitude is 1 (needs LinearAlgebra package)
+1.0
+
+julia> rand_unit_vector(2; rng=MersenneTwister(33)) # 2D, reproducible
+2-element Array{Float64,1}:
+  0.8429232717309576
+ -0.5380337888779647
+```
 """
 function rand_unit_vector(
     num_dims::Integer;
