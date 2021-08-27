@@ -50,7 +50,7 @@ julia> clusizes(4, 100, false)
  24
  21
 
-julia> clusizes(5, 500, true; rng=MersenneTwister(123))
+julia> clusizes(5, 500, true; rng=MersenneTwister(123)) # Reproducible
 5-element Array{Int64,1}:
  108
  129
@@ -146,7 +146,7 @@ obtained according with the following formula:
 
 where ``\\mathbf{C}`` is the ``n \\times d`` matrix of cluster centers, and
 ``\\mathbf{U}`` is an ``n \\times d`` matrix of random values drawn from the
-uniform distribution.
+uniform distribution between -0.5 and 0.5.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
@@ -165,7 +165,7 @@ julia> clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
    7.30168  -1.20904   -41.2033
   46.5412    7.3284    -42.8401
 
-julia> clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D
+julia> clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D, reproducible
 3×1 Array{Float64,2}:
   -91.3675026663759
   140.98964768714384
@@ -187,8 +187,34 @@ function clucenters(
 end
 
 """
-Determine length of lines supporting clusters using the folded normal
-distribution with μ=`line_length`, σ=`line_length_std`.
+    function line_lengths(
+        num_clusters::Integer,
+        line_length::Real,
+        line_length_std::Real;
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real, 1}
+
+Determine length of cluster-supporting lines.
+
+These lengths are obtained using the folded normal distribution (μ=`line_length`,
+σ=`line_length_std`).
+
+# Examples
+```jldoctest; setup = :(Random.seed!(123))
+julia> line_lengths(5, 10, 3)
+5-element Array{Float64,1}:
+ 13.57080364295883
+ 16.14453912336772
+ 13.427952708601596
+ 11.37824686122124
+  8.809962762114331
+
+julia> line_lengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
+3-element Array{Float64,1}:
+ 146.1737820482947
+  31.914161161783426
+ 180.04064126207396
+```
 """
 function line_lengths(
     num_clusters::Integer,
