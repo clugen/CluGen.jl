@@ -502,17 +502,49 @@ function clupoints_d_1(
 end
 
 """
-    clupoints_d()
+    function clupoints_d(
+        projs::AbstractArray{<:Real, 2},
+        lat_std::Real,
+        clu_dir::AbstractArray{<:Real, 1},
+        clu_ctr::AbstractArray{<:Real, 1},
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real}
 
-Function which generates points for a cluster from their projections in n-D,
-placing points using a multivariate normal distribution centered at the point
-projection.
+Generate points from their ``d``-dimensional projections on a cluster-supporting
+line, placing each point `i` around its projection using the normal distribution
+(μ=`projs[i]`, σ=`lat_std`).
 
-- `projs` are the point projections.
-- `lat_std` is the lateral standard deviation or cluster "fatness".
-- `clu_dir` is the cluster direction.
-- `clu_ctr` is the cluster-supporting line center position (ignored).
-- `rng` is an optional pseudo-random number generator.
+!!! note "Internal package function"
+    This function's main intended use is by the [`clugen()`](@ref) function,
+    generating points when its `point_offset` parameter is set to `"d"`. Thus,
+    it's not exported by the package and must be prefixed by the package name,
+    e.g. `CluGen.clupoints_d(...)`.
+
+# Arguments
+- `projs`: point projections on the cluster-supporting line.
+- `lat_std`: standard deviation for the normal distribution (or cluster "fatness").
+- `clu_dir`: direction of the cluster-supporting line.
+- `clu_ctr` center position of the cluster-supporting line center position (ignored).
+- `rng`: an optional pseudo-random number generator for reproducible executions.
+
+# Examples
+```jldoctest
+julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
+5×2 Array{Float64,2}:
+ 1.0  5.0
+ 3.0  5.0
+ 5.0  5.0
+ 7.0  5.0
+ 9.0  5.0
+
+julia> CluGen.clupoints_d(projs, 0.5, [1,0], [0,0], MersenneTwister(123))
+5×2 Array{Float64,2}:
+ 1.59513  4.66764
+ 4.02409  5.49048
+ 5.57133  4.96226
+ 7.22971  5.13691
+ 8.80166  4.90289
+```
 """
 function clupoints_d(
     projs::AbstractArray{<:Real, 2},
@@ -538,7 +570,26 @@ function clupoints_d(
 end
 
 """
-    clugen()
+    function clugen(
+        num_dims::Integer,
+        num_clusters::Integer,
+        total_points::Integer,
+        direction::AbstractArray{<:Real, 1},
+        angle_std::Real,
+        cluster_sep::AbstractArray{<:Real, 1},
+        line_length::Real,
+        line_length_std::Real,
+        lateral_std::Real;
+        allow_empty::Bool = false,
+        cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
+        point_dist::Union{String, <:Function} = "norm",
+        point_offset::Union{String, <:Function} = "d-1",
+        clusizes_fn::Function = clusizes,
+        clucenters_fn::Function = clucenters,
+        line_lengths_fn::Function = line_lengths,
+        line_angles_fn::Function = line_angles,
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::NamedTuple
 
 Create clusters.
 
@@ -566,7 +617,8 @@ function clugen(
     clucenters_fn::Function = clucenters,
     line_lengths_fn::Function = line_lengths,
     line_angles_fn::Function = line_angles,
-    rng::AbstractRNG = Random.GLOBAL_RNG)
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::NamedTuple
 
     # ############### #
     # Validate inputs #
