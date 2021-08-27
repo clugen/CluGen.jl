@@ -2,8 +2,8 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# Test points_from_line
-@testset "points_from_line" begin
+# Test points_on_line
+@testset "points_on_line" begin
 
     # Number of line directions to test
     ndirs = 3
@@ -25,8 +25,8 @@
         # Create some random distances from center
         dist2ctr = length .* rand(rng, tpts) .- length / 2
 
-        # Check that the points_from_line function runs without warnings
-        pts = @test_nowarn points_from_line(ctr, dir, dist2ctr)
+        # Check that the points_on_line function runs without warnings
+        pts = @test_nowarn points_on_line(ctr, dir, dist2ctr)
 
         # Check that the dimensions agree
         @test size(pts) == (tpts, nd)

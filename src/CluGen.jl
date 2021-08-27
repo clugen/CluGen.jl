@@ -15,7 +15,7 @@ export clusizes
 export clucenters
 export line_angles
 export line_lengths
-export points_from_line
+export points_on_line
 export rand_unit_vector
 export rand_ortho_vector
 export rand_vector_at_angle
@@ -405,7 +405,7 @@ function rand_vector_at_angle(
 end
 
 """
-    function points_from_line(
+    function points_on_line(
         center::AbstractArray{<:Real, 1},
         direction::AbstractArray{<:Real, 1},
         dist_center::AbstractArray{<:Real, 1},
@@ -430,7 +430,7 @@ all entries equal to 1.
 
 # Examples
 ```jldoctest
-julia> points_from_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
+julia> points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
 5×2 Array{Float64,2}:
  1.0  5.0
  3.0  5.0
@@ -438,13 +438,13 @@ julia> points_from_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
  7.0  5.0
  9.0  5.0
 
-julia> points_from_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
+julia> points_on_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
 2×4 Array{Float64,2}:
  -2.0  0.0  -10.0  2.0
  -2.0  0.0   10.0  2.0
 ```
 """
-function points_from_line(
+function points_on_line(
     center::AbstractArray{<:Real, 1},
     direction::AbstractArray{<:Real, 1},
     dist_center::AbstractArray{<:Real, 1},
@@ -715,7 +715,7 @@ function clugen(
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
-        points_proj[idx_start:idx_end, :] = points_from_line(
+        points_proj[idx_start:idx_end, :] = points_on_line(
             clu_centers[i, :], clu_dirs[i, :], ptproj_dist_center)
 
         # Determine points from their projections on the line

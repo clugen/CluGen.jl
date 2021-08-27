@@ -27,7 +27,7 @@
 
         # Create some point projections
         proj_dist2ctr = length .* rand(rng, tpts) .- length / 2;
-        proj = points_from_line(ctr, dir, proj_dist2ctr)
+        proj = points_on_line(ctr, dir, proj_dist2ctr)
 
         # Check that the clupoints_d_1 function runs without warnings
         pts = @test_nowarn CluGen.clupoints_d_1(proj, lat_std, dir, ctr, rng)
