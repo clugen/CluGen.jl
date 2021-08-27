@@ -58,7 +58,6 @@ julia> clusizes(5, 500, true; rng=MersenneTwister(123))
   89
   67
 ```
-
 """
 function clusizes(
     num_clusters::Integer,
@@ -128,9 +127,50 @@ function clusizes(
 end
 
 """
-    clucenters()
+    function clucenters(
+        num_clusters::Integer,
+        clu_sep::AbstractArray{<:Real, 1},
+        clu_offset::AbstractArray{<:Real, 1};
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real}
 
-Determine cluster centers using the uniform distribution between -0.5 and 0.5.
+Determine cluster centers.
+
+Considering ``n=`` `num_clusters`, ``s=`` `clu_sep`, ``o=`` `clu_offset`,
+``d=`` `length(clu_sep)` (i.e., number of dimensions), cluster centers are
+obtained according with the following formula:
+
+```math
+\\mathbf{C}=n\\mathbf{U} \\cdot \\operatorname{diag}(\\mathbf{s}) + \\mathbf{1}\\,\\mathbf{o}^T
+```
+
+where ``\\mathbf{C}`` is the ``n \\times d`` matrix of cluster centers, and
+``\\mathbf{U}`` is an ``n \\times d`` matrix of random values drawn from the
+uniform distribution.
+
+# Examples
+```jldoctest; setup = :(Random.seed!(123))
+julia> clucenters(4, [10, 50], [0, 0]) # 2D
+4×2 Array{Float64,2}:
+ 10.7379   -37.3512
+ 17.6206    32.511
+  6.95835   17.2044
+ -4.18188  -89.5734
+
+julia> clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
+5×3 Array{Float64,2}:
+ -13.136    15.8746      2.34767
+ -29.1129   -0.715105  -46.6028
+ -23.6334    8.19236    20.879
+   7.30168  -1.20904   -41.2033
+  46.5412    7.3284    -42.8401
+
+julia> clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D
+3×1 Array{Float64,2}:
+  -91.3675026663759
+  140.98964768714384
+ -124.90981996579862
+```
 """
 function clucenters(
     num_clusters::Integer,
