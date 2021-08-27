@@ -228,8 +228,32 @@ function line_lengths(
 end
 
 """
-Obtain angles between main direction and cluster-supporting lines
-using the normal distribution (mean=0, std=`angle_std`)
+    function line_angles(
+        num_clusters::Integer,
+        angle_std::Real;
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real, 1}
+
+Determine angles between base direction and cluster-supporting lines.
+
+These angles are obtained with the normal distribution (μ=0, σ=`angle_std`).
+Note that `angle_std` should be in radians and results are given in radians.
+
+# Examples
+```jldoctest; setup = :(Random.seed!(111))
+julia> line_angles(4, pi/128)
+4-element Array{Float64,1}:
+  0.01888791855096079
+ -0.027851298321307266
+  0.03274154825228484
+ -0.004475798744567242
+
+julia> line_angles(3, pi/32; rng=MersenneTwister(987)) # Reproducible
+3-element Array{Float64,1}:
+  0.08834204306583336
+  0.014678748091943443
+ -0.15202559427536264
+```
 """
 function line_angles(
     num_clusters::Integer,
