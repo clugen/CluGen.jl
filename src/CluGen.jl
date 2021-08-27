@@ -303,9 +303,30 @@ function rand_unit_vector(
 end
 
 """
-Function which returns a random normalized vector orthogonal to `u`
+    function rand_ortho_vector(
+        u::AbstractArray{<:Real, 1};
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real, 1}
 
-`u` is expected to be a unit vector
+Get a random unit vector orthogonal to `u`.
+
+Note that `u` is expected to be a unit vector itself.
+
+# Examples
+```jldoctest; setup = :(Random.seed!(111))
+julia> u = normalize([1,2,5.0,-3,-0.2]); # Define a 5D unit vector
+
+julia> v = rand_ortho_vector(u);
+
+julia> dot(u, v) # Check that vectors are orthogonal (needs LinearAlgebra package)
+0.0
+
+julia> rand_ortho_vector([1,0,0]; rng=MersenneTwister(567)) # 3D, reproducible
+3-element Array{Float64,1}:
+  0.0
+ -0.717797705156548
+  0.6962517177515569
+```
 """
 function rand_ortho_vector(
     u::AbstractArray{<:Real, 1};
