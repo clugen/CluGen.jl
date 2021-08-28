@@ -3,7 +3,12 @@
 # at http://opensource.org/licenses/MIT)
 
 """
-A Julia package for generating multidimensional clusters.
+    CluGen
+
+A Julia module for generating multidimensional clusters. Provides the
+[`clugen`](@ref) function for this purpose, as well as a number of auxiliary
+functions (used internally by [`clugen`](@ref)), which allow users to build their
+own cluster generation algorithms.
 """
 module CluGen
 
@@ -734,8 +739,8 @@ The following instruction displays a scatter plot of the clusters in 3D space:
 julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.points_cluster_index)
 ```
 
-Check out the **Tutorial** and **Examples** sections for more information on how to
-use `clugen()`.
+Check out the [Tutorial](@ref) and [Examples](@ref) sections for more information on
+how to use `clugen()`.
 """
 function clugen(
     num_dims::Integer,
