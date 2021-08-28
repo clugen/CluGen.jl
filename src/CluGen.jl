@@ -622,7 +622,15 @@ end
         line_lengths_fn::Function = line_lengths,
         line_angles_fn::Function = line_angles,
         rng::AbstractRNG = Random.GLOBAL_RNG
-    ) -> NamedTuple
+    ) -> NamedTuple{(
+            :points,                    # Array{<:Real,2}
+            :points_cluster_index,      # Array{<:Real,1}
+            :points_projection,         # Array{<:Real,2}
+            :cluster_number_of_points,  # Array{Integer,1}
+            :cluster_centers,           # Array{<:Real,2}
+            :cluster_directions,        # Array{<:Real,2}
+            :line_lengths               # Array{<:Real,1}
+         )}
 
 Generate multidimensional clusters.
 
@@ -688,8 +696,22 @@ users will need to use.
   before invoking `clugen()`.
 
 # Return values
+The function returns a `NamedTuple` with the following fields:
 
-TODO
+- `points`: a `total_points` x `num_dims` matrix with the generated points for
+   all clusters.
+- `points_cluster_index`: a `total_points` x 1` vector indicating which cluster
+  each point in `points` belongs to.
+- `points_projection`: a `total_points` x `num_dims` matrix with the point
+  projections on the cluster-supporting lines.
+- `cluster_number_of_points`: a `num_clusters` x 1 vector with the number of
+  points in each cluster.
+- `cluster_centers`: a `num_clusters` x `num_dims` matrix with the coordinates
+  of the cluster centers.
+- `cluster_directions`: a `num_clusters` x `num_dims` matrix with the direction
+  of each cluster-supporting line.
+- `line_lengths`: a `num_clusters` x 1 vector with the lengths of the
+  cluster-supporting lines.
 
 # Examples
 
@@ -888,8 +910,7 @@ function clugen(
         cluster_number_of_points = clu_num_points,
         cluster_centers = clu_centers,
         cluster_directions = clu_dirs,
-        line_lengths = lengths,
-        line_angles = angles)
+        line_lengths = lengths)
 
 end
 
