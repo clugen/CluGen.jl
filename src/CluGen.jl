@@ -26,7 +26,7 @@ export rand_vector_at_angle
         total_points::Integer,
         allow_empty::Bool;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Integer, 1}
+    ) -> AbstractArray{<:Integer, 1}
 
 Determine cluster sizes, i.e., number of points in each cluster.
 
@@ -127,12 +127,12 @@ function clusizes(
 end
 
 """
-    function clucenters(
+    clucenters(
         num_clusters::Integer,
         clu_sep::AbstractArray{<:Real, 1},
         clu_offset::AbstractArray{<:Real, 1};
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real}
+    ) ->  AbstractArray{<:Real}
 
 Determine cluster centers.
 
@@ -188,12 +188,12 @@ function clucenters(
 end
 
 """
-    function line_lengths(
+    line_lengths(
         num_clusters::Integer,
         line_length::Real,
         line_length_std::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real, 1}
+    ) -> AbstractArray{<:Real, 1}
 
 Determine length of cluster-supporting lines.
 
@@ -229,11 +229,11 @@ function line_lengths(
 end
 
 """
-    function line_angles(
+    line_angles(
         num_clusters::Integer,
         angle_std::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real, 1}
+    ) -> AbstractArray{<:Real, 1}
 
 Determine angles between base direction and cluster-supporting lines.
 
@@ -267,10 +267,10 @@ function line_angles(
 end
 
 """
-    function rand_unit_vector(
+    rand_unit_vector(
         num_dims::Integer;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real, 1}
+    ) ->  AbstractArray{<:Real, 1}
 
 Get a random unit vector with `num_dims` dimensions.
 
@@ -304,10 +304,10 @@ function rand_unit_vector(
 end
 
 """
-    function rand_ortho_vector(
+    rand_ortho_vector(
         u::AbstractArray{<:Real, 1};
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real, 1}
+    ) -> AbstractArray{<:Real, 1}
 
 Get a random unit vector orthogonal to `u`.
 
@@ -365,11 +365,11 @@ function rand_ortho_vector(
 end
 
 """
-    function rand_vector_at_angle(
+    rand_vector_at_angle(
         u::AbstractArray{<:Real, 1},
         angle::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real, 1}
+    ) ->  AbstractArray{<:Real, 1}
 
 Get a random unit vector which is at `angle` radians of vector `u`.
 
@@ -405,11 +405,11 @@ function rand_vector_at_angle(
 end
 
 """
-    function points_on_line(
+    points_on_line(
         center::AbstractArray{<:Real, 1},
         direction::AbstractArray{<:Real, 1},
         dist_center::AbstractArray{<:Real, 1},
-    )::AbstractArray{<:Real, 2}
+    ) -> AbstractArray{<:Real, 2}
 
 Determine coordinates of points on a line with `center` and `direction`, based
 on the distances from the center given in `dist_center`.
@@ -455,13 +455,13 @@ function points_on_line(
 end
 
 """
-    function clupoints_d_1(
+    CluGen.clupoints_d_1(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1},
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real}
+    ) -> AbstractArray{<:Real}
 
 Generate points from their ``d``-dimensional projections on a cluster-supporting
 line, placing each point `i` on a second line, orthogonal to the first and
@@ -534,13 +534,13 @@ function clupoints_d_1(
 end
 
 """
-    function clupoints_d(
+    GluGen.clupoints_d(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1},
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real}
+    ) -> AbstractArray{<:Real}
 
 Generate points from their ``d``-dimensional projections on a cluster-supporting
 line, placing each point `i` around its projection using the normal distribution
@@ -602,7 +602,7 @@ function clupoints_d(
 end
 
 """
-    function clugen(
+    clugen(
         num_dims::Integer,
         num_clusters::Integer,
         total_points::Integer,
@@ -612,6 +612,7 @@ end
         line_length::Real,
         line_length_std::Real,
         lateral_std::Real;
+        # Keyword arguments
         allow_empty::Bool = false,
         cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
         point_dist::Union{String, <:Function} = "norm",
@@ -621,7 +622,7 @@ end
         line_lengths_fn::Function = line_lengths,
         line_angles_fn::Function = line_angles,
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::NamedTuple
+    ) -> NamedTuple
 
 Generate multidimensional clusters.
 
@@ -642,8 +643,8 @@ users will need to use.
 
 # Arguments (optional)
 - `allow_empty`: allow empty clusters? `false` by default.
-- `cluster_offset`: offset to add to all cluster centers; equal to `zeros(num_dims)`
-  by default.
+- `cluster_offset`: offset to add to all cluster centers; if set to `nothing` (the
+  default), the offset will be equal to `zeros(num_dims)`.
 - `point_dist`: defines the distribution of points along lines, with three possible
   values:
   - `"norm"` (default): distribute point projections along lines using a normal
@@ -686,7 +687,13 @@ users will need to use.
   [`Random.seed!()`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!)
   before invoking `clugen()`.
 
+# Return values
+
+TODO
+
 # Examples
+
+TODO
 
 Example using clusizes_fn parameter for specifying all equal cluster sizes (note
 this does not verify if clusters are empty nor if total points is actually respected)
