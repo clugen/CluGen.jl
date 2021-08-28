@@ -463,11 +463,6 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     )::AbstractArray{<:Real}
 
-Function which generates points for a cluster from their projections in n-D,
-placing points on a second line perpendicular to the cluster-supporting line
-using a normal distribution centered at their intersection.
-
-
 Generate points from their ``d``-dimensional projections on a cluster-supporting
 line, placing each point `i` on a second line, orthogonal to the first and
 centered at the point's projection, using the normal distribution (μ=0, σ=`lat_std`).
@@ -628,7 +623,70 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     )::NamedTuple
 
-Create multidimensional clusters.
+Generate multidimensional clusters.
+
+This is the main function of the CluGen package, and most likely is the only function
+users will need to use.
+
+# Arguments (mandatory)
+- `num_dims`: number of dimensions.
+- `num_clusters`: number of clusters to generate.
+- `total_points`: total points to generate.
+- `direction`: mean direction of the clusters (`num_dims` x 1).
+- `angle_std`: considering the angle of `direction` as the mean of the cluster-supporting
+  line angles, this parameter represents the respective standard deviation, in radians.
+- `cluster_sep`: mean cluster separation in each dimension (`num_dims` x 1).
+- `line_length`: mean length of cluster-supporting lines.
+- `line_length_std`: standard deviation of the length of cluster-supporting lines.
+- `lateral_std`: point dispersion from line, i.e. "cluster fatness".
+
+# Arguments (optional)
+- `allow_empty`: allow empty clusters? `false` by default.
+- `cluster_offset`: offset to add to all cluster centers; equal to `zeros(num_dims)`
+  by default.
+- `point_dist`: defines the distribution of points along lines, with three possible
+  values:
+  - `"norm"` (default): distribute point projections along lines using a normal
+    distribution (μ=_line center_, σ=`line_length/6`).
+  - `"unif"`: distribute points uniformly along the line.
+  - User-defined function, which accepts two parameters, line length (float) and
+    number of points (integer), and returns an array containing the distance of
+    each point to the center of the line. For example, the `"norm"` option
+    roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
+- `point_offset`: controls how points are created from their projections on the lines,
+  with three possible values:
+  - `"d-1"` (default): generate points from their ``d``-dimensional projections on a
+    cluster-supporting line, placing each point `i` on a second line, orthogonal to
+    the first and centered at the point's projection, using the normal distribution
+    (μ=0, σ=`lat_std`). This is done by the [`CluGen.clupoints_d_1()`](@ref) function.
+  - `"d"`: generate points from their ``d``-dimensional projections on a
+    cluster-supporting line, placing each point `i` around its projection using the
+    normal distribution (μ=`0`, σ=`lateral_std`). This is done by the
+    [`CluGen.clupoints_d()`](@ref) function.
+  - User-defined function: the user can specify a custom point placement strategy
+    by passing a function with the same signature as [`CluGen.clupoints_d_1()`](@ref)
+    and [`CluGen.clupoints_d()`](@ref).
+- `clusizes_fn`: by default, cluster sizes are determined by the [`clusizes()`](@ref)
+  function; this parameter allows the user to specify a custom function for this
+  purpose, which must follow [`clusizes()`](@ref)'s signature.
+- `clucenters_fn`: by default, cluster centers are determined by the [`clucenters()`](@ref)
+  function; this parameter allows the user to specify a custom function for this purpose,
+  which must follow [`clucenters()`](@ref)'s signature.
+- `line_lengths_fn`: by default, the lengths of cluster-supporting lines are determined
+  by the [`line_lengths()`](@ref) function; this parameter allows the user to specify a
+  custom function for this purpose, which must follow [`line_lengths()`](@ref)'s
+  signature.
+- `line_angles_fn`: by default, the angles between the main direction and the direction
+  of cluster-supporting lines are determined by the [`line_angles()`](@ref) function;
+  this parameter allows the user to specify a custom function for this purpose, which
+  must follow [`line_angles()`](@ref)'s signature.
+- `rng`: a concrete instance of
+  [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)
+  for reproducible runs. Alternatively, the user can set the global RNG seed with
+  [`Random.seed!()`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!)
+  before invoking `clugen()`.
+
+# Examples
 
 Example using clusizes_fn parameter for specifying all equal cluster sizes (note
 this does not verify if clusters are empty nor if total points is actually respected)
