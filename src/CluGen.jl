@@ -629,9 +629,9 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,                    # Array{<:Real,2}
-            :points_cluster_index,      # Array{<:Real,1}
+            :points_cluster_index,      # Array{<:Integer,1}
             :points_projection,         # Array{<:Real,2}
-            :cluster_number_of_points,  # Array{Integer,1}
+            :cluster_number_of_points,  # Array{<:Integer,1}
             :cluster_centers,           # Array{<:Real,2}
             :cluster_directions,        # Array{<:Real,2}
             :line_lengths               # Array{<:Real,1}
@@ -891,7 +891,7 @@ function clugen(
     cumsum_points = [0; cumsum(clu_num_points)]
 
     # Pre-allocate data structures for holding cluster info and points
-    clu_pts_idx = zeros(total_points)           # Cluster indices of each point
+    clu_pts_idx = zeros(Int, total_points)      # Cluster indices of each point
     points_proj = zeros(total_points, num_dims) # Point projections on cluster-supporting lines
     points = zeros(total_points, num_dims)      # Final points to be generated
 
