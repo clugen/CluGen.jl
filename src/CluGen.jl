@@ -71,7 +71,7 @@ function clusizes(
     # Consider the mean an equal division of points between clusters
     mean = total_points / num_clusters
     # The standard deviation is such that the interval [0, 2 * mean] will contain
-    # approximatelly 99.7% of cluster sizes
+    # ≈99.7% of cluster sizes
     std = mean / 3
 
     # Determine points with the normal distribution
@@ -628,7 +628,7 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     )::NamedTuple
 
-Create clusters.
+Create multidimensional clusters.
 
 Example using clusizes_fn parameter for specifying all equal cluster sizes (note
 this does not verify if clusters are empty nor if total points is actually respected)
@@ -723,7 +723,7 @@ function clugen(
     elseif point_dist == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
-        # TODO CHECK THIS 1/6!
+        # such that the line length contains ≈99.73% of the points
         pointproj_fn = (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
