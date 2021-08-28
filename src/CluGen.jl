@@ -714,14 +714,28 @@ The function returns a `NamedTuple` with the following fields:
   cluster-supporting lines.
 
 # Examples
+```jldoctest; setup = :(Random.seed!(123))
+julia> # Create 5 clusters in 3D space with a total of 10000 points...
 
-TODO
+julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
 
-Example using clusizes_fn parameter for specifying all equal cluster sizes (note
-this does not verify if clusters are empty nor if total points is actually respected)
+julia> out.cluster_centers # What are the cluster centers?
+5×3 Array{Float64,2}:
+   8.12774  -16.8167    -1.80764
+   4.30111   -1.34916  -11.209
+ -22.3933    18.2706    -2.6716
+ -11.568      5.87459    4.11589
+ -19.5565   -10.7151   -12.2009
+```
 
-    clusizes_fn=(nclu,tp,ae;rng=Random.GLOBAL_RNG)-> tp ÷ nclu .* ones(Integer, nclu)
+The following instruction displays a scatter plot of the clusters in 3D space:
 
+```julia-repl
+julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.points_cluster_index)
+```
+
+Check out the **Tutorial** and **Examples** sections for more information on how to
+use `clugen()`.
 """
 function clugen(
     num_dims::Integer,

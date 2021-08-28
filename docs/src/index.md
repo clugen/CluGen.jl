@@ -42,3 +42,13 @@ savefig("clup_d.png"); nothing # hide
 ```
 
 ![](clup_d.png)
+
+
+<!--
+Example using clusizes_fn parameter for specifying all equal cluster sizes (note
+this does not verify if clusters are empty nor if total points is actually respected)
+
+    clusizes_fn=(nclu,tp,ae;rng=Random.GLOBAL_RNG)-> tp ÷ nclu .* ones(Integer, nclu)
+
+
+-->
