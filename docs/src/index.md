@@ -1,3 +1,5 @@
 # CluGen.jl Documentation
 
-TODO
+```@contents
+Pages = ["index.md", "tutorial.md", "gallery.md", "api.md"]
+```

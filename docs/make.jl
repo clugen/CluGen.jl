@@ -8,7 +8,7 @@ DocMeta.setdocmeta!(
 makedocs(
     sitename="CluGen.jl",
     pages = [
-        "Introduction" => "index.md",
+        "Home" => "index.md",
         "Tutorial" => "tutorial.md",
         "Gallery" => "gallery.md",
         "API" => "api.md"

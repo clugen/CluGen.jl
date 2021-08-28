@@ -1,5 +1,11 @@
 # Tutorial
 
+```@contents
+Pages = ["tutorial.md"]
+```
+
+## Basic idea of CluGen
+
 TODO
 
 ## Quick start 2D and 3D
