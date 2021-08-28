@@ -43,7 +43,6 @@
         @test size(result.cluster_number_of_points) == (nclu, )
         @test size(result.cluster_centers) == (nclu, nd)
         @test size(result.cluster_directions) == (nclu, nd)
-        @test size(result.line_angles) == (nclu, )
         @test size(result.line_lengths) == (nclu, )
 
         # Check point cluster indexes
@@ -194,16 +193,6 @@
             allow_empty=ae, cluster_offset=clu_off, point_dist=pt_dist,
             point_offset=()->nothing, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
             line_lengths_fn=llengths_fn, line_angles_fn=langles_fn, rng=rng)
-
-
-
-
-        # @test_throws ArgumentError clugen(
-        #     nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
-        #     allow_empty=ae, cluster_offset=clu_off, point_dist=pt_dist,
-        #     point_offset=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-        #     line_lengths_fn=llengths_fn, line_angles_fn=langles_fn, rng=rng)
-
 
     end
 
