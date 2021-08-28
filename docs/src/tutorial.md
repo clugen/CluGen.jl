@@ -4,13 +4,83 @@
 Pages = ["tutorial.md"]
 ```
 
-## Basic idea of CluGen
+## How CluGen works
 
 TODO
+
+- General algorithm
+- Basic function usage
 
 ## Quick start 2D and 3D
 
 TODO
+
+```@setup ex2D3D_1
+ENV["GKSwstype"] = "100"
+using CluGen, Plots, Random
+```
+
+Create data and see the points...
+
+```@example ex2D3D_1
+Random.seed!(123)
+r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1)
+plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.points_cluster)
+savefig("ex2D3D_1_points.png"); nothing # hide
+```
+
+![](ex2D3D_1_points.png)
+
+How does this work? Let's see step by step:
+
+```@example ex2D3D_1
+plot()
+for i in 1:length(r.clusters_length)
+    l = r.clusters_length[i]
+    p = points_on_line(r.clusters_center[i,:], r.clusters_direction[i, :], [-l/2,l/2])
+    plot!(p[:,1],p[:,2],color="black",legend=false)
+end
+savefig("ex2D3D_1_lines.png"); nothing # hide
+```
+
+And now the projections (similar to setting `lateral_std` to 0):
+
+![](ex2D3D_1_lines.png)
+
+```@example ex2D3D_1
+plot(r.points_projection[:,1], r.points_projection[:,2], seriestype = :scatter, group=r.points_cluster)
+savefig("ex2D3D_1_projs.png"); nothing # hide
+```
+
+![](ex2D3D_1_projs.png)
+
+And finally...
+
+![](ex2D3D_1_points.png)
+
+How about using `d`?
+
+```@example ex2D3D_1
+Random.seed!(123)
+r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_offset="d")
+plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.points_cluster)
+savefig("ex2D3D_1_d.png"); nothing # hide
+```
+
+![](ex2D3D_1_d.png)
+
+
+How about using `unif`?
+
+```@example ex2D3D_1
+Random.seed!(123)
+r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_dist="unif")
+plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.points_cluster)
+savefig("ex2D3D_1_unif.png"); nothing # hide
+```
+
+![](ex2D3D_1_unif.png)
+
 
 ## Testing n-D
 
