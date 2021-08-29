@@ -480,7 +480,8 @@ centered at the point's projection, using the normal distribution (μ=0, σ=`lat
 
 # Arguments
 - `projs`: point projections on the cluster-supporting line.
-- `lat_std`: standard deviation for the normal distribution (or cluster "fatness").
+- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+  dispersion.
 - `clu_dir`: direction of the cluster-supporting line.
 - `clu_ctr` center position of the cluster-supporting line center position (ignored).
 - `rng`: an optional pseudo-random number generator for reproducible executions.
@@ -559,7 +560,8 @@ line, placing each point `i` around its projection using the normal distribution
 
 # Arguments
 - `projs`: point projections on the cluster-supporting line.
-- `lat_std`: standard deviation for the normal distribution (or cluster "fatness").
+- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+  dispersion.
 - `clu_dir`: direction of the cluster-supporting line.
 - `clu_ctr` center position of the cluster-supporting line center position (ignored).
 - `rng`: an optional pseudo-random number generator for reproducible executions.
@@ -652,7 +654,7 @@ users will need to use.
 - `cluster_sep`: mean cluster separation in each dimension (`num_dims` x 1).
 - `line_length`: mean length of cluster-supporting lines.
 - `line_length_std`: standard deviation of the length of cluster-supporting lines.
-- `lateral_std`: point dispersion from line, i.e. "cluster fatness".
+- `lateral_std`: point dispersion from line, i.e., cluster lateral dispersion.
 
 # Arguments (optional)
 - `allow_empty`: allow empty clusters? `false` by default.
