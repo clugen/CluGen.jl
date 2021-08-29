@@ -4,12 +4,84 @@
 Pages = ["tutorial.md"]
 ```
 
+## What is CluGen?
+
+CluGen is an algorithm for generating multidimensional clusters.
+
+TODO Maybe give very general idea of lines as support for clusters?
+
 ## How CluGen works
 
-TODO
+Given a `direction` vector, the number of clusters, `num_clusters`...
+Note that ``^*`` means the step is stochastic, with sane defaults but fully
+controllable by the user.
 
-- General algorithm
-- Basic function usage
+1. Normalize `direction`
+2. Determine cluster sizes``^*``
+3. Determine cluster centers``^*``
+4. Determine lengths of cluster-supporting lines``^*``
+5. Determine angles between `direction` and cluster-supporting lines``^*``
+6. Determine direction of cluster-supporting lines
+7. For each cluster:
+   1. Determine distance of point projections from the center of the cluster-supporting
+      line
+   2. Determine coordinates of point projections on the line
+   3. Determine points from their projections on the line``^*``
+
+The following demonstrates the algorithm steps for 4 clusters in 2D with a total
+of 100 points, with the main `direction` set to ``\mathbf{v}=(1,1)``. Additional
+parameters, which are detailed in the images, are mean cluster separation of 10
+(in both dimensions), an angle standard deviation of ``\pi/32`` radians
+(``\approx{}5.6^{\circ}``), line length of 10, line length standard deviation of
+1.5, lateral dispersion of 1. Other parameters not specified used defaults which
+will be discussed next, although each image hints on how these control the output.
+
+```@eval
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Plots, Random # hide
+Random.seed!(111)
+
+r = clugen(2, 4, 1000, [1, 1], pi/32, [10, 10], 10, 1.5, 1)
+
+# Plot 1
+p1 = plot([0,0],[0,0],label="User-specified direction",legend=:topleft,xlabel="x",ylabel="y",title="Step 1",color="lime",linewidth=2)
+plot!(p1, [0.707,0.707],[0.707,0.707],label="Normalized direction",color="red",linestyle=:dash,linewidth=2)
+plot!(p1,[0,1],[0,1],label="",color="lime",arrow=true,linewidth=2)
+plot!(p1, [0,0.707],[0,0.707],label="",color="red",arrow=true,linestyle=:dash,linewidth=2)
+
+# Plot 2
+p2 = plot(r.clusters_size, seriestype = :bar, group = [1,2,3,4], ylabel="Number of points", xlabel="Clusters", legend=false, title="Step 2")
+
+# Plot 3
+p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter, group=map((x)->"Cluster $x",1:4), markersize=10, ylim=(-25,25),xlim=(-20,20), legend=:bottomleft, xlabel="x", ylabel="y", title="Step 3")
+
+# Plot 4
+p4 = plot(title="Step 4")
+
+# Plot 5
+p5 = plot(title="Step 5")
+
+# Plot 6
+p6 = plot(title="Step 6")
+
+# Plot 7.1
+p71 = plot(title="Step 7.1")
+
+# Plot 7.2
+p72 = plot(title="Step 7.2")
+
+# Plot 7.3
+p73 = plot(title="Step 7.3")
+
+# All plots
+plot(p1, p2, p3, p4, p5, p6, p71, p72, p73, layout = (3, 3), size=(1200,1200))
+
+savefig("algorithm.png")
+
+nothing
+```
+
+![](algorithm.png)
 
 ## Quick start 2D and 3D
 
