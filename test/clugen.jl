@@ -38,18 +38,18 @@
 
         # Check dimensions of result variables
         @test size(result.points) == (tpts, nd)
-        @test size(result.points_cluster_index) == (tpts, )
+        @test size(result.points_cluster) == (tpts, )
         @test size(result.points_projection) == (tpts, nd)
-        @test size(result.cluster_number_of_points) == (nclu, )
-        @test size(result.cluster_centers) == (nclu, nd)
-        @test size(result.cluster_directions) == (nclu, nd)
-        @test size(result.line_lengths) == (nclu, )
+        @test size(result.clusters_size) == (nclu, )
+        @test size(result.clusters_center) == (nclu, nd)
+        @test size(result.clusters_direction) == (nclu, nd)
+        @test size(result.clusters_length) == (nclu, )
 
         # Check point cluster indexes
-        @test unique(result.points_cluster_index) == 1:nclu
+        @test unique(result.points_cluster) == 1:nclu
 
         # Check total points
-        @test sum(result.cluster_number_of_points) == tpts
+        @test sum(result.clusters_size) == tpts
 
     end
 

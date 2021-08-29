@@ -631,7 +631,7 @@ end
             :points,              # Array{<:Real,2}
             :points_cluster,      # Array{<:Integer,1}
             :points_projection,   # Array{<:Real,2}
-            :clusters_num_points, # Array{<:Integer,1}
+            :clusters_size,       # Array{<:Integer,1}
             :clusters_center,     # Array{<:Real,2}
             :clusters_direction,  # Array{<:Real,2}
             :clusters_length      # Array{<:Real,1}
@@ -709,7 +709,7 @@ The function returns a `NamedTuple` with the following fields:
   each point in `points` belongs to.
 - `points_projection`: a `total_points` x `num_dims` matrix with the point
   projections on the cluster-supporting lines.
-- `clusters_num_points`: a `num_clusters` x 1 vector with the number of
+- `clusters_size`: a `num_clusters` x 1 vector with the number of
   points in each cluster.
 - `clusters_center`: a `num_clusters` x `num_dims` matrix with the coordinates
   of the cluster centers.
@@ -926,7 +926,7 @@ function clugen(
         points = points,
         points_cluster = clu_pts_idx,
         points_projection = points_proj,
-        clusters_num_points = clu_num_points,
+        clusters_size = clu_num_points,
         clusters_center = clu_centers,
         clusters_direction = clu_dirs,
         clusters_length = lengths)
