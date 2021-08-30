@@ -243,7 +243,8 @@ end
 Determine angles between base direction and cluster-supporting lines.
 
 These angles are obtained with the normal distribution (μ=0, σ=`angle_std`).
-Note that `angle_std` should be in radians and results are given in radians.
+Note that `angle_std` should be in radians and results are given in radians in
+the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
@@ -251,14 +252,15 @@ julia> line_angles(4, pi/128)
 4-element Array{Float64,1}:
   0.01888791855096079
  -0.027851298321307266
-  0.03274154825228484
+  0.03274154825228485
  -0.004475798744567242
 
 julia> line_angles(3, pi/32; rng=MersenneTwister(987)) # Reproducible
 3-element Array{Float64,1}:
   0.08834204306583336
-  0.014678748091943443
+  0.014678748091943444
  -0.15202559427536264
+
 ```
 """
 function line_angles(
@@ -267,7 +269,24 @@ function line_angles(
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Real, 1}
 
-    return angle_std .* randn(rng, num_clusters)
+    # Helper function to return the minimum valid angle
+    function minangle(a)
+        a = atan(sin(a), cos(a))
+        if a > π/2
+            a -= π
+        elseif a < -π/2
+            a += π
+        end
+        return a
+    end
+
+    # Get random angle differences using the normal distribution
+    angles = angle_std .* randn(rng, num_clusters)
+
+    # Make sure angle differences are within interval [-π/2, π/2]
+    map!(minangle, angles, angles)
+
+    return angles
 
 end
 
@@ -884,7 +903,7 @@ function clugen(
     # Obtain angles between main direction and cluster-supporting lines
     angles = line_angles_fn(num_clusters, angle_std; rng=rng)
 
-    # Determine normalized cluster direction
+    # Determine normalized cluster directions
     clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
 
     # ################################# #
