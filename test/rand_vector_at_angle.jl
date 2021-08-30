@@ -28,7 +28,7 @@
 
         # Check that vectors u and r have an angle of a between them
         if nd > 1 && abs(a) < pi/2
-            @test acos(dot(u, r) / (norm(u) * norm(r))) ≈ abs(a) atol=1e-12
+            @test angle(u, r) ≈ abs(a) atol=1e-12
         end
 
     end

@@ -30,7 +30,7 @@
             result = @test_nowarn clugen(
                 nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std; rng=rng)
         else
-            # ...otherwise and ArgumentError will be thrown
+            # ...otherwise an ArgumentError will be thrown
             @test_throws ArgumentError clugen(
                 nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std; rng=rng)
             continue # In this case, no need for more tests with this parameter set
@@ -51,6 +51,13 @@
 
         # Check total points
         @test sum(result.clusters_size) == tpts
+
+        # Check that cluster directions have the correct angles with the main direction
+        if nd > 1
+            for i in 1:nclu
+                @test angle(dir, result.clusters_direction[i, :]) ≈ abs(result.clusters_angle[i]) atol=1e-11
+            end
+        end
 
     end
 

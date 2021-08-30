@@ -69,11 +69,31 @@ lang_fns = Dict(
     "same_angle" => (nclu, astd; rng=nothing) -> zeros(nclu)
 )
 
-# For compatibility with Julia 1.0, from Compat.jl (MIT license)
+# For compatibility with Julia 1.0, from Compat.jl by Stefan Karpinski and other
+# contributors (MIT license)
 # https://github.com/JuliaLang/Compat.jl/blob/master/src/Compat.jl
 if VERSION < v"1.1.0-DEV.792"
     eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
     eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
+end
+
+# Angle between two vectors, useful for checking correctness of results
+# Previous version was unstable: angle(u, v) = acos(dot(u, v) / (norm(u) * norm(v)))
+# Version below is based on AngleBetweenVectors.jl by Jeffrey Sarnoff (MIT license),
+# in turn based on these notes by Prof. W. Kahan, see page 15:
+# https://people.eecs.berkeley.edu/~wkahan/MathH110/Cross.pdf
+# https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl
+function angle(v1, v2)
+
+    u1 = normalize(v1)
+    u2 = normalize(v2)
+
+    y = u1 .- u2
+    x = u1 .+ u2
+
+    a = 2 * atan(norm(y) / norm(x))
+
+    return !(signbit(a) || signbit(pi - a)) ? a : (signbit(a) ? 0.0 : pi)
 end
 
 # ############################################# #
