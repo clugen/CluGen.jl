@@ -648,7 +648,7 @@ users will need to use.
 - `num_dims`: number of dimensions.
 - `num_clusters`: number of clusters to generate.
 - `total_points`: total points to generate.
-- `direction`: mean direction of the clusters (`num_dims` x 1).
+- `direction`: main direction of the clusters (`num_dims` x 1).
 - `angle_std`: considering the angle of `direction` as the mean of the cluster-supporting
   line angles, this parameter represents the respective standard deviation, in radians.
 - `cluster_sep`: mean cluster separation in each dimension (`num_dims` x 1).
@@ -717,6 +717,8 @@ The function returns a `NamedTuple` with the following fields:
   of the cluster centers.
 - `clusters_direction`: a `num_clusters` x `num_dims` matrix with the direction
   of each cluster-supporting line.
+- `cluster_angles`: a `num_clusters` x 1 vector with the angles between the
+  cluster-supporting lines and the main direction.
 - `clusters_length`: a `num_clusters` x 1 vector with the lengths of the
   cluster-supporting lines.
 
@@ -931,6 +933,7 @@ function clugen(
         clusters_size = clu_num_points,
         clusters_center = clu_centers,
         clusters_direction = clu_dirs,
+        clusters_angle = angles,
         clusters_length = lengths)
 
 end

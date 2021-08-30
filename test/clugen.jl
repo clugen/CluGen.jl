@@ -43,6 +43,7 @@
         @test size(result.clusters_size) == (nclu, )
         @test size(result.clusters_center) == (nclu, nd)
         @test size(result.clusters_direction) == (nclu, nd)
+        @test size(result.clusters_angle) == (nclu, )
         @test size(result.clusters_length) == (nclu, )
 
         # Check point cluster indexes
