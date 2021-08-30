@@ -37,32 +37,71 @@ parameters, which are detailed in the images, are mean cluster separation of 10
 will be discussed next, although each image hints on how these control the output.
 
 ```@eval
-ENV["GKSwstype"] = "100" # hide
-using CluGen, Plots, Random # hide
+ENV["GKSwstype"] = "100"
+using CluGen, LinearAlgebra, Plots, Printf, Random
 Random.seed!(111)
 
-r = clugen(2, 4, 1000, [1, 1], pi/32, [10, 10], 10, 1.5, 1)
+# Create clusters
+d = [1, 1]
+d1 = normalize(d)
+r = clugen(2, 4, 1000, d, pi/16, [10, 10], 10, 1.5, 1)
+
+# Get current theme colors
+theme_colors = theme_palette(:auto).colors.colors
 
 # Plot 1
-p1 = plot([0,0],[0,0],label="User-specified direction",legend=:topleft,xlabel="x",ylabel="y",title="Step 1",color="lime",linewidth=2)
-plot!(p1, [0.707,0.707],[0.707,0.707],label="Normalized direction",color="red",linestyle=:dash,linewidth=2)
-plot!(p1,[0,1],[0,1],label="",color="lime",arrow=true,linewidth=2)
-plot!(p1, [0,0.707],[0,0.707],label="",color="red",arrow=true,linestyle=:dash,linewidth=2)
+p1format = (x) -> x ≈ 1 ? "1" : @sprintf("%.3f", x)
+
+p1 = plot([0,0],[0,0],label="User-specified direction",legend=:topleft,xlabel="x",ylabel="y",title="Step 1",color=theme_colors[2],linewidth=2,grid=false,xlim=(0, 1.1), ylim=(0, 1.1), ticks=[d[1], d1[1]],formatter=p1format)
+
+plot!(p1, [0, d[1]], [d[2], d[2]], linewidth=1, linestyle=:dot, label="", color=theme_colors[2])
+plot!(p1, [d[1], d[1]], [0, d[2]], linewidth=1, linestyle=:dot, label="", color=theme_colors[2])
+
+plot!(p1, [0, d1[1]], [d1[2], d1[2]], linewidth=1, linestyle=:dot, label="", color=theme_colors[1])
+plot!(p1, [d1[1], d1[1]], [0, d1[2]], linewidth=1, linestyle=:dot, label="", color=theme_colors[1])
+
+plot!(p1, d1, d1, label="Normalized direction",color=theme_colors[1],linestyle=:dash,linewidth=2)
+plot!(p1,[0, d[1]],[0, d[2]], label="",color=theme_colors[2],arrow=true,linewidth=2)
+plot!(p1, [0, d1[1]],[0, d1[2]],label="",color=theme_colors[1],arrow=true,linestyle=:dash,linewidth=2)
 
 # Plot 2
 p2 = plot(r.clusters_size, seriestype = :bar, group = [1,2,3,4], ylabel="Number of points", xlabel="Clusters", legend=false, title="Step 2")
 
 # Plot 3
-p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter, group=map((x)->"Cluster $x",1:4), markersize=10, ylim=(-25,25),xlim=(-20,20), legend=:bottomleft, xlabel="x", ylabel="y", title="Step 3")
+p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter, group=map((x)->"Center $x",1:4), markersize=6, xlim=(-25,30), ylim=(-30,30), legend=:bottomleft, xlabel="x", ylabel="y", title="Step 3")
 
 # Plot 4
-p4 = plot(title="Step 4")
+p4 = plot(title="Step 4",xlim=(-25,30), ylim=(-30,30), legend=:bottomleft, xlabel="x", ylabel="y")
+for i in 1:length(r.clusters_length)
+    l = r.clusters_length[i]
+    p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
+    plot!(p4, p[:,1],p[:,2], label="Line $i", linewidth=2, linestyle=:dot)
+end
+for i in 1:length(r.clusters_length)
+    l = r.clusters_length[i]
+    p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
+    plot!(p4, [r.clusters_center[i, 1]], [r.clusters_center[i, 2]], seriestype=:scatter, color="black", label="")
+end
 
 # Plot 5
-p5 = plot(title="Step 5")
+#adiff(cludir) = acos(dot(cludir, d1) / (norm(cludir) * norm(d1)))
+#p5 = plot(adiff.(eachrow(r.clusters_direction)), seriestype = :bar, group = [1,2,3,4], ylabel="Angle
+p5 = plot(r.clusters_angle, seriestype = :bar, group = [1,2,3,4], ylabel="Angle
+diff. to main direction", xlabel="Clusters", legend=false, title="Step 5")
 
 # Plot 6
-p6 = plot(title="Step 6")
+p6 = plot(title="Step 6",xlim=(-25,30), ylim=(-30,30), legend=:bottomleft, xlabel="x", ylabel="y")
+for i in 1:length(r.clusters_length)
+    l = r.clusters_length[i]
+    pf = points_on_line(r.clusters_center[i,:], r.clusters_direction[i, :], [-l/2,l/2])
+    plot!(p6, pf[:,1],pf[:,2], label="Line $i", linewidth=3)
+end
+for i in 1:length(r.clusters_length)
+    l = r.clusters_length[i]
+    plot!(p6, [r.clusters_center[i, 1]], [r.clusters_center[i, 2]], seriestype=:scatter, color="black", label="")
+    po = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
+    plot!(p6, po[:,1],po[:,2], label="", linewidth=1, linestyle=:dot, color="black")
+end
 
 # Plot 7.1
 p71 = plot(title="Step 7.1")
