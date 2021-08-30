@@ -869,8 +869,8 @@ function clugen(
     # Determine cluster properties #
     # ############################ #
 
-    # Normalize base direction
-    dir_unit = normalize(direction)
+    # Normalize main direction
+    direction = normalize(direction)
 
     # Determine cluster sizes
     clu_num_points = clusizes_fn(num_clusters, total_points, allow_empty; rng=rng)
