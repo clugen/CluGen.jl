@@ -242,9 +242,13 @@ end
 
 Determine angles between base direction and cluster-supporting lines.
 
-These angles are obtained with the normal distribution (μ=0, σ=`angle_std`).
 Note that `angle_std` should be in radians and results are given in radians in
 the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
+
+These angles are obtained from a wrapped normal distribution (μ=0, σ=`angle_std`)
+with support in the interval ``\\left[-\\pi/2,\\pi/2\\right]``. Note this is
+different from the standard wrapped normal distribution, the support of which
+is given by the interval ``\\left[-\\pi,\\pi\\right]``.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
@@ -260,7 +264,6 @@ julia> line_angles(3, pi/32; rng=MersenneTwister(987)) # Reproducible
   0.08834204306583336
   0.014678748091943444
  -0.15202559427536264
-
 ```
 """
 function line_angles(
