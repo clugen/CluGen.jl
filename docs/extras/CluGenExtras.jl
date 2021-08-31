@@ -29,55 +29,55 @@ Create a nice descriptive plot for a `clugen()` run in 2D.
 """
 function plot2d(d, r)
 
-    # Create clusters
+    # Normalize direction
     d1 = normalize(d)
+
+    # Obtain number of clusters
     nclu = length(r.clusters_length)
 
     # Get current theme colors
     theme_colors = theme_palette(:auto).colors.colors
 
-    # Plot 1
-    p1format = (x) -> x ≈ 1 ? "1" : @sprintf("%.3f", x)
+    # ###### #
+    # Plot 1 #
+    # ###### #
+    p1format = (x) -> x - trunc(x) ≈ 0 ? "$(round(Int,x))" : @sprintf("%.3f", x)
 
-    p1 = plot([0,0], [0,0], label="User-specified direction",
-        legend=:topleft, xlabel="x", ylabel="y", title="Step 1",
-        color=theme_colors[2], linewidth=2, grid=false,xlim=(0, 1.1),
-        ylim=(0, 1.1), ticks=[d[1], d1[1]], formatter=p1format)
+    # Setup plot
+    p1 = plot(legend=false, title="1. Normalize direction", ticks=[-1, 0, 1],
+        framestyle=:zerolines, xlim=(-1.1,1.1), ylim=(-1.1,1.1))
 
-    plot!(p1, [0, d[1]], [d[2], d[2]], linewidth=1, linestyle=:dot, label="",
-        color=theme_colors[2])
-    plot!(p1, [d[1], d[1]], [0, d[2]], linewidth=1, linestyle=:dot, label="",
-        color=theme_colors[2])
-
-    plot!(p1, [0, d1[1]], [d1[2], d1[2]], linewidth=1, linestyle=:dot, label="",
-        color=theme_colors[1])
-    plot!(p1, [d1[1], d1[1]], [0, d1[2]], linewidth=1, linestyle=:dot, label="",
-        color=theme_colors[1])
-
-    plot!(p1, d1, d1, label="Normalized direction", color=theme_colors[1],
-        linestyle=:dash,linewidth=2)
-    plot!(p1, [0, d[1]], [0, d[2]], label="", color=theme_colors[2], arrow=true,
+    # Draw vector
+    plot!(p1, [0, d1[1]],[0, d1[2]], label="", color=theme_colors[2], arrow=true,
         linewidth=2)
-    plot!(p1, [0, d1[1]],[0, d1[2]], label="", color=theme_colors[1], arrow=true,
-        linestyle=:dash,linewidth=2)
 
-    # Plot 2
+    # Draw unit circle
+    plot!(p1, x->sin(x), x->cos(x), 0, 2π, linewidth = 1, color="grey82")
+
+    # ###### #
+    # Plot 2 #
+    # ###### #
     p2 = plot(r.clusters_size, seriestype = :bar, group = 1:nclu,
         ylabel="Number of points", xlabel="Clusters", legend=false,
-        title="Step 2", ylim=(0, 350))
+        title="2. Determine cluster sizes", ylim=(0, 350))
 
-    # Plot 3
+    # ###### #
+    # Plot 3 #
+    # ###### #
     p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter,
-        group=map((x)->"Cluster $x",1:nclu), markersize=5, xlim=(-25,30),
-        ylim=(-30,30), legend=:bottomleft, xlabel="x", ylabel="y", title="Step 3")
+        group=map((x)->"Cluster $x",1:nclu), markersize=5, xlim=(-30,30),
+        ylim=(-30,30), legend=false, title="3. Determine cluster centers",
+        framestyle=:zerolines, formatter=x->"")
 
-    # Plot 4
-    p4 = plot(title="Step 4",xlim=(-25,30), ylim=(-30,30), legend=:bottomleft,
-        xlabel="x", ylabel="y")
+    # ###### #
+    # Plot 4 #
+    # ###### #
+    p4 = plot(title="4. Determine cluster lengths", framestyle=:zerolines,
+        formatter=x->"", xlim=(-30,30), ylim=(-30,30), legend=false)
     for i in 1:length(r.clusters_length)
         l = r.clusters_length[i]
         p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
-        plot!(p4, p[:,1],p[:,2], label="Cluster $i", linewidth=2, linestyle=:dot)
+        plot!(p4, p[:,1],p[:,2], linewidth=2, linestyle=:dot)
     end
     for i in 1:length(r.clusters_length)
         l = r.clusters_length[i]
@@ -86,19 +86,23 @@ function plot2d(d, r)
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
 
-    # Plot 5
+    # ###### #
+    # Plot 5 #
+    # ###### #
     p5 = plot(abs.(r.clusters_angle), seriestype = :bar, group = 1:nclu,
         ylabel="Angle diff. to main direction", xlabel="Clusters", legend=false,
-        title="Step 5", ylim=(0, 0.33))
+        title="5. Cluster angles w.r.t. direction", ylim=(0, 0.33))
 
-    # Plot 6
-    p6 = plot(title="Step 6",xlim=(-25,30), ylim=(-30,30), legend=:bottomleft,
-        xlabel="x", ylabel="y")
+    # ###### #
+    # Plot 6 #
+    # ###### #
+    p6 = plot(title="6. Determine cluster directions", xlim=(-30,30),
+        ylim=(-30,30), framestyle=:zerolines, formatter=x->"", legend=false)
     for i in 1:nclu
         l = r.clusters_length[i]
         pf = points_on_line(
             r.clusters_center[i,:], r.clusters_direction[i, :], [-l/2,l/2])
-        plot!(p6, pf[:,1],pf[:,2], label="Cluster $i", linewidth=3)
+        plot!(p6, pf[:,1],pf[:,2], linewidth=3)
     end
     for i in 1:nclu
         l = r.clusters_length[i]
@@ -108,17 +112,26 @@ function plot2d(d, r)
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
 
-    # Plot 7.1
-    p71 = plot(title="Step 7.1")
+    # ###### #
+    # Plot 7 #
+    # ###### #
+    p7 = plot(title="7.1. + 7.2. Point projections")
 
-    # Plot 7.2
-    p72 = plot(title="Step 7.2")
+    # ###### #
+    # Plot 8 #
+    # ###### #
+    p8 = plot(title="7.3. Final points")
 
-    # Plot 7.3
-    p73 = plot(title="Step 7.3")
+    # ######## #
+    # Plot 7.3 #
+    # ######## #
+    p9 = plot(framestyle=:none, showaxis=false)
 
-    # All plots
-    allplt = plot(p1, p2, p3, p4, p5, p6, p71, p72, p73, layout = (3, 3), size=(1200,1200))
+    # ################## #
+    # All plots combined #
+    # ################## #
+    allplt = plot(p1, p2, p3, p4, p5, p6, p7, p8, p9, layout = (3, 3),
+        size=(1200,1200))
 
     return allplt
 end
