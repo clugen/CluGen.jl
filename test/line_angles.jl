@@ -15,5 +15,8 @@
         # Check that return value has the correct dimensions
         @test size(angles) == (nclu, )
 
+        # Check that all angles are between -π/2 and π/2
+        @test all(-π/2 .<= angles .<= π/2)
+
     end
 end
