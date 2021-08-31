@@ -22,7 +22,7 @@
         rng in rngs,
         lat_std in lat_stds,
         length in line_lengths_mus,
-        dir in get_vecs(rng, ndirs, nd),
+        dir in get_unitvecs(rng, ndirs, nd),
         ctr in get_vecs(rng, ncts, nd)
 
         # Create some point projections

@@ -19,7 +19,7 @@
         tpts in filter((x) -> x < 1000, total_points),
         rng in rngs,
         length in line_lengths_mus,
-        dir in get_vecs(rng, ndirs, nd),
+        dir in get_unitvecs(rng, ndirs, nd),
         ctr in get_vecs(rng, ncts, nd)
 
         # Create some random distances from center

@@ -11,7 +11,7 @@
     @testset "u=$u, seed=$(Int(rng.seed[1]))" for
         nd in num_dims,
         rng in rngs,
-        u in get_vecs(rng, nvec, nd)
+        u in get_unitvecs(rng, nvec, nd)
 
         # Check that the rand_ortho_vector function runs without warnings
         r = @test_nowarn rand_ortho_vector(u; rng=rng)

@@ -30,7 +30,8 @@ get_clu_offsets = (ndims) -> (
 )
 get_clu_seps = get_clu_offsets
 
-get_vecs = (rng, n, nd) -> [normalize(v) for v in eachcol(rand(rng, nd, n))]
+get_vecs = (rng, n, nd) -> [v for v in eachcol(rand(rng, nd, n))]
+get_unitvecs = (rng, n, nd) -> [normalize(v) for v in eachcol(rand(rng, nd, n))]
 get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
 
 ptdist_fns = Dict(
@@ -80,9 +81,9 @@ end
 # Angle between two vectors, useful for checking correctness of results
 # Previous version was unstable: angle(u, v) = acos(dot(u, v) / (norm(u) * norm(v)))
 # Version below is based on AngleBetweenVectors.jl by Jeffrey Sarnoff (MIT license),
+# https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl
 # in turn based on these notes by Prof. W. Kahan, see page 15:
 # https://people.eecs.berkeley.edu/~wkahan/MathH110/Cross.pdf
-# https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl
 function angle(v1, v2)
 
     u1 = normalize(v1)
