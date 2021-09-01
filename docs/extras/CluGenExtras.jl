@@ -65,15 +65,15 @@ function plot2d(d, r)
     # Plot 3 #
     # ###### #
     p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter,
-        group=map((x)->"Cluster $x",1:nclu), markersize=5, xlim=(-30,30),
-        ylim=(-30,30), legend=false, title="3. Determine cluster centers",
-        framestyle=:zerolines, formatter=x->"")
+        group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
+        title="3. Determine cluster centers", framestyle=:zerolines,
+        formatter=x->"")
 
     # ###### #
     # Plot 4 #
     # ###### #
     p4 = plot(title="4. Determine cluster lengths", framestyle=:zerolines,
-        formatter=x->"", xlim=(-30,30), ylim=(-30,30), legend=false)
+        formatter=x->"", legend=false)
     for i in 1:length(r.clusters_length)
         l = r.clusters_length[i]
         p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
@@ -96,8 +96,8 @@ function plot2d(d, r)
     # ###### #
     # Plot 6 #
     # ###### #
-    p6 = plot(title="6. Determine cluster directions", xlim=(-30,30),
-        ylim=(-30,30), framestyle=:zerolines, formatter=x->"", legend=false)
+    p6 = plot(title="6. Determine cluster directions", framestyle=:zerolines,
+        formatter=x->"", legend=false)
     for i in 1:nclu
         l = r.clusters_length[i]
         pf = points_on_line(
@@ -115,17 +115,48 @@ function plot2d(d, r)
     # ###### #
     # Plot 7 #
     # ###### #
-    p7 = plot(title="7.1. + 7.2. Point projections")
+    p7 = plot(r.points_projection[:,1], r.points_projection[:,2],
+        group=r.points_cluster, title="7.1. + 7.2. Point projections",
+        framestyle=:zerolines, formatter=x->"", legend=false,
+        seriestype=:scatter, markersize=3, markerstrokewidth=0.2)
 
     # ###### #
     # Plot 8 #
     # ###### #
-    p8 = plot(title="7.3. Final points")
 
-    # ######## #
-    # Plot 7.3 #
-    # ######## #
+    p8 = plot(r.points[:,1], r.points[:,2], group=r.points_cluster,
+        title="7.3. Final points", framestyle=:zerolines, formatter=x->"",
+        legend=false, seriestype=:scatter, markersize=4, markerstrokewidth=0.2)
+
+    # ###### #
+    # Plot 9 #
+    # ###### #
     p9 = plot(framestyle=:none, showaxis=false)
+
+    # ###################################################### #
+    # Plot limits adjustment based on existing larger limits #
+    # ###################################################### #
+
+    # Initialize limits for cluster plots
+    xlow, xhigh, ylow, yhigh = Inf, -Inf, Inf, -Inf
+
+    # Relevant plots
+    plts = (p3, p4, p6, p7, p8)
+
+    # Obtain limits
+    for plt in plts
+        xlow_plt, xhigh_plt = xlims(plt)
+        ylow_plt, yhigh_plt = ylims(plt)
+        xlow = min(xlow_plt, xlow)
+        xhigh = max(xhigh_plt, xhigh)
+        ylow = min(ylow_plt, ylow)
+        yhigh = max(yhigh_plt, yhigh)
+    end
+
+    # Apply larget limits to all relevant plots
+    for plt in plts
+        plot!(plt, xlims=(xlow, xhigh), ylims=(ylow, yhigh))
+    end
 
     # ################## #
     # All plots combined #
