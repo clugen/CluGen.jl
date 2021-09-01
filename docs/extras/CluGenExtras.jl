@@ -38,6 +38,9 @@ function plot2d(d, r)
     # Get current theme colors
     theme_colors = theme_palette(:auto).colors.colors
 
+    # Plot background
+    pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
     # ###### #
     # Plot 1 #
     # ###### #
@@ -69,7 +72,7 @@ function plot2d(d, r)
     iclusizes = r.clusters_size ./ maximum(r.clusters_size)
 
     p2 = plot(title="2. Determine cluster sizes", legend=false, showaxis=false,
-        grid=false, ticks=[])
+        foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
     #p2 = plot(title="2. Determine cluster sizes")
 
     for i in 1:nclu
@@ -77,7 +80,7 @@ function plot2d(d, r)
         g_x = (i - 1) % gside
         scal = 0.48 * iclusizes[i]
         an = (g_x, g_y, text("$(r.clusters_size[i]) points", :center,
-            pointsize=8, color=:black)) #theme_colors[i])))
+            pointsize=7, color=:black)) #theme_colors[i])))
         plot!(p2, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
             linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
             annotations = an)
@@ -86,16 +89,24 @@ function plot2d(d, r)
     # ###### #
     # Plot 3 #
     # ###### #
+    # p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter,
+    #     group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
+    #     title="3. Determine cluster centers", framestyle=:zerolines,
+    #     formatter=x->"")
     p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter,
         group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
-        title="3. Determine cluster centers", framestyle=:zerolines,
-        formatter=x->"")
+        title="3. Determine cluster centers", formatter=x->"",
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2)
 
     # ###### #
     # Plot 4 #
     # ###### #
-    p4 = plot(title="4. Determine cluster lengths", framestyle=:zerolines,
-        formatter=x->"", legend=false)
+    # p4 = plot(title="4. Determine cluster lengths", framestyle=:zerolines,
+    #     formatter=x->"", legend=false)
+    p4 = plot(title="4. Determine cluster lengths", formatter=x->"", legend=false,
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2)
     for i in 1:length(r.clusters_length)
         l = r.clusters_length[i]
         p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
@@ -118,8 +129,11 @@ function plot2d(d, r)
     # ###### #
     # Plot 6 #
     # ###### #
-    p6 = plot(title="6. Determine cluster directions", framestyle=:zerolines,
-        formatter=x->"", legend=false)
+    # p6 = plot(title="6. Determine cluster directions", framestyle=:zerolines,
+    #     formatter=x->"", legend=false)
+    p6 = plot(title="6. Determine cluster directions", formatter=x->"", legend=false,
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2)
     for i in 1:nclu
         l = r.clusters_length[i]
         pf = points_on_line(
@@ -137,18 +151,29 @@ function plot2d(d, r)
     # ###### #
     # Plot 7 #
     # ###### #
+    # p7 = plot(r.points_projection[:,1], r.points_projection[:,2],
+    #     group=r.points_cluster, title="7.1. + 7.2. Point projections",
+    #     framestyle=:zerolines, formatter=x->"", legend=false,
+    #     seriestype=:scatter, markersize=3, markerstrokewidth=0.2)
     p7 = plot(r.points_projection[:,1], r.points_projection[:,2],
         group=r.points_cluster, title="7.1. + 7.2. Point projections",
-        framestyle=:zerolines, formatter=x->"", legend=false,
-        seriestype=:scatter, markersize=3, markerstrokewidth=0.2)
+        formatter=x->"", legend=false, seriestype=:scatter, markersize=3,
+        markerstrokewidth=0.2,
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2)
 
     # ###### #
     # Plot 8 #
     # ###### #
 
+    # p8 = plot(r.points[:,1], r.points[:,2], group=r.points_cluster,
+    #     title="7.3. Final points", framestyle=:zerolines, formatter=x->"",
+    #     legend=false, seriestype=:scatter, markersize=4, markerstrokewidth=0.2)
     p8 = plot(r.points[:,1], r.points[:,2], group=r.points_cluster,
-        title="7.3. Final points", framestyle=:zerolines, formatter=x->"",
-        legend=false, seriestype=:scatter, markersize=4, markerstrokewidth=0.2)
+        title="7.3. Final points", formatter=x->"", legend=false,
+        seriestype=:scatter, markersize=4, markerstrokewidth=0.2,
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2)
 
     # ###### #
     # Plot 9 #
