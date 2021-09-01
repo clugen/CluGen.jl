@@ -44,7 +44,7 @@ function plot2d(d, r)
     p1format = (x) -> x - trunc(x) ≈ 0 ? "$(round(Int,x))" : @sprintf("%.3f", x)
 
     # Setup plot
-    p1 = plot(legend=false, title="1. Normalize direction", ticks=[-1, 0, 1],
+    p1 = plot(legend=false, title="1. Normalize direction", ticks=[], grid=false,
         framestyle=:zerolines, xlim=(-1.1,1.1), ylim=(-1.1,1.1))
 
     # Draw vector
@@ -57,9 +57,27 @@ function plot2d(d, r)
     # ###### #
     # Plot 2 #
     # ###### #
-    p2 = plot(r.clusters_size, seriestype = :bar, group = 1:nclu,
-        ylabel="Number of points", xlabel="Clusters", legend=false,
-        title="2. Determine cluster sizes", ylim=(0, 350))
+
+    # Side length of square grid for placing illustrative sized clusters
+    gside = ceil(Int, sqrt(nclu))
+
+    # Relative illustrative cluster sizes
+    iclusizes = r.clusters_size ./ maximum(r.clusters_size)
+
+    p2 = plot(title="2. Determine cluster sizes", legend=false, showaxis=false,
+        grid=false, ticks=[])
+    #p2 = plot(title="2. Determine cluster sizes")
+
+    for i in 1:nclu
+        g_y = -((i - 1) ÷ gside)
+        g_x = (i - 1) % gside
+        scal = 0.48 * iclusizes[i]
+        an = (g_x, g_y, text("$(r.clusters_size[i]) points", :center,
+            pointsize=8, color=:black)) #theme_colors[i])))
+        plot!(p2, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
+            linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
+            annotations = an)
+    end
 
     # ###### #
     # Plot 3 #
