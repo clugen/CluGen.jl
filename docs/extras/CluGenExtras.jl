@@ -54,6 +54,10 @@ function plot2d(d, r)
     # Draw unit circle
     plot!(p1, x->sin(x), x->cos(x), 0, 2π, linewidth = 1, color="grey82")
 
+    # Add 1's to clarify it's the unit circle
+    plot!(p1, annotations = (0.05, 1.05, text("1", pointsize=8, color="grey62")))
+    plot!(p1, annotations = (1.05, 0.05, text("1", pointsize=8, color="grey62")))
+
     # ###### #
     # Plot 2 #
     # ###### #
