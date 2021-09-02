@@ -32,6 +32,9 @@ function plot2d(d, r)
     # Normalize direction
     d1 = normalize(d)
 
+    # Angle of d/d1
+    d_angl = atan(d1[2] / d1[1])
+
     # Obtain number of clusters
     nclu = length(r.clusters_length)
 
@@ -97,7 +100,7 @@ function plot2d(d, r)
         group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
         title="3. Determine cluster centers", formatter=x->"",
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside = pltbg, gridlinewidth=2)
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###### #
     # Plot 4 #
@@ -106,15 +109,13 @@ function plot2d(d, r)
     #     formatter=x->"", legend=false)
     p4 = plot(title="4. Determine cluster lengths", formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside = pltbg, gridlinewidth=2)
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:length(r.clusters_length)
         l = r.clusters_length[i]
         p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
-        plot!(p4, p[:,1],p[:,2], linewidth=2, linestyle=:dot)
+        plot!(p4, p[:,1],p[:,2], linewidth=1, color=theme_colors[i])
     end
     for i in 1:length(r.clusters_length)
-        l = r.clusters_length[i]
-        p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
         plot!(p4, [r.clusters_center[i, 1]], [r.clusters_center[i, 2]],
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
@@ -122,9 +123,30 @@ function plot2d(d, r)
     # ###### #
     # Plot 5 #
     # ###### #
-    p5 = plot(abs.(r.clusters_angle), seriestype = :bar, group = 1:nclu,
-        ylabel="Angle diff. to main direction", xlabel="Clusters", legend=false,
-        title="5. Cluster angles w.r.t. direction", ylim=(0, 0.33))
+    p5 = plot(title="5. Cluster angles w.r.t. direction", formatter=x->"",
+        legend=false, framestyle=:grid, foreground_color_grid=:white,
+        gridalpha=1, background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
+    for i in 1:length(r.clusters_length)
+        l = r.clusters_length[i]
+        v1 = [cos(d_angl + r.clusters_angle[i]), sin(d_angl + r.clusters_angle[i])]
+        v2 = [cos(d_angl - r.clusters_angle[i]), sin(d_angl - r.clusters_angle[i])]
+
+        p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
+        v1edges = points_on_line(r.clusters_center[i,:], v1, [-l/2,l/2])
+        v2edges = points_on_line(r.clusters_center[i,:], v2, [-l/2,l/2])
+
+        poly = Shape([tuple(v1edges[1,:]...), tuple(v1edges[2,:]...),
+            tuple(v2edges[2,:]...), tuple(v2edges[1,:]...), tuple(v1edges[1,:]...)])
+
+        plot!(p5, poly, color=theme_colors[i], linecolor=theme_colors[i],
+            fillalpha=0.3, linealpha=0.3)
+
+        plot!(p5, p[:,1], p[:,2], linewidth=1, color=theme_colors[i])
+    end
+    for i in 1:length(r.clusters_length)
+        plot!(p5, [r.clusters_center[i, 1]], [r.clusters_center[i, 2]],
+            seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
+    end
 
     # ###### #
     # Plot 6 #
@@ -133,17 +155,27 @@ function plot2d(d, r)
     #     formatter=x->"", legend=false)
     p6 = plot(title="6. Determine cluster directions", formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside = pltbg, gridlinewidth=2)
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:nclu
         l = r.clusters_length[i]
+        v1 = [cos(d_angl + r.clusters_angle[i]), sin(d_angl + r.clusters_angle[i])]
+        v2 = [cos(d_angl - r.clusters_angle[i]), sin(d_angl - r.clusters_angle[i])]
+
+        p = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
+        v1edges = points_on_line(r.clusters_center[i,:], v1, [-l/2,l/2])
+        v2edges = points_on_line(r.clusters_center[i,:], v2, [-l/2,l/2])
+
+        poly = Shape([tuple(v1edges[1,:]...), tuple(v1edges[2,:]...),
+            tuple(v2edges[2,:]...), tuple(v2edges[1,:]...), tuple(v1edges[1,:]...)])
+
+        plot!(p6, poly, color=theme_colors[i], linecolor=theme_colors[i],
+            fillalpha=0.15, linealpha=0.15)
+
         pf = points_on_line(
             r.clusters_center[i,:], r.clusters_direction[i, :], [-l/2,l/2])
-        plot!(p6, pf[:,1],pf[:,2], linewidth=3)
+        plot!(p6, pf[:,1],pf[:,2], linewidth=3, linecolor=theme_colors[i])
     end
     for i in 1:nclu
-        l = r.clusters_length[i]
-        po = points_on_line(r.clusters_center[i,:], d1, [-l/2,l/2])
-        plot!(p6, po[:,1],po[:,2], label="", linewidth=1, linestyle=:dot, color="black")
         plot!(p6, [r.clusters_center[i, 1]], [r.clusters_center[i, 2]],
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
@@ -160,7 +192,7 @@ function plot2d(d, r)
         formatter=x->"", legend=false, seriestype=:scatter, markersize=3,
         markerstrokewidth=0.2,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside = pltbg, gridlinewidth=2)
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###### #
     # Plot 8 #
@@ -173,7 +205,7 @@ function plot2d(d, r)
         title="7.3. Final points", formatter=x->"", legend=false,
         seriestype=:scatter, markersize=4, markerstrokewidth=0.2,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside = pltbg, gridlinewidth=2)
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###### #
     # Plot 9 #
@@ -185,24 +217,22 @@ function plot2d(d, r)
     # ###################################################### #
 
     # Initialize limits for cluster plots
-    xlow, xhigh, ylow, yhigh = Inf, -Inf, Inf, -Inf
+    llow, lhigh = Inf, -Inf
 
     # Relevant plots
-    plts = (p3, p4, p6, p7, p8)
+    plts = (p3, p4, p5, p6, p7, p8)
 
     # Obtain limits
     for plt in plts
         xlow_plt, xhigh_plt = xlims(plt)
         ylow_plt, yhigh_plt = ylims(plt)
-        xlow = min(xlow_plt, xlow)
-        xhigh = max(xhigh_plt, xhigh)
-        ylow = min(ylow_plt, ylow)
-        yhigh = max(yhigh_plt, yhigh)
+        llow = min(xlow_plt, ylow_plt, llow)
+        lhigh = max(xhigh_plt, yhigh_plt, lhigh)
     end
 
     # Apply larget limits to all relevant plots
     for plt in plts
-        plot!(plt, xlims=(xlow, xhigh), ylims=(ylow, yhigh))
+        plot!(plt, xlims=(llow, lhigh), ylims=(llow, lhigh))
     end
 
     # ################## #
