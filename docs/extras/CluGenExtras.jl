@@ -76,7 +76,6 @@ function plot2d(d, r)
 
     p2 = plot(title="2. Determine cluster sizes", legend=false, showaxis=false,
         foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
-    #p2 = plot(title="2. Determine cluster sizes")
 
     for i in 1:nclu
         g_y = -((i - 1) ÷ gside)
@@ -92,10 +91,6 @@ function plot2d(d, r)
     # ###### #
     # Plot 3 #
     # ###### #
-    # p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter,
-    #     group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
-    #     title="3. Determine cluster centers", framestyle=:zerolines,
-    #     formatter=x->"")
     p3 = plot(r.clusters_center[:,1], r.clusters_center[:,2], seriestype=:scatter,
         group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
         title="3. Determine cluster centers", formatter=x->"",
@@ -105,8 +100,6 @@ function plot2d(d, r)
     # ###### #
     # Plot 4 #
     # ###### #
-    # p4 = plot(title="4. Determine cluster lengths", framestyle=:zerolines,
-    #     formatter=x->"", legend=false)
     p4 = plot(title="4. Determine cluster lengths", formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
@@ -141,7 +134,7 @@ function plot2d(d, r)
         plot!(p5, poly, color=theme_colors[i], linecolor=theme_colors[i],
             fillalpha=0.3, linealpha=0.3)
 
-        plot!(p5, p[:,1], p[:,2], linewidth=1, color=theme_colors[i])
+        #plot!(p5, p[:,1], p[:,2], linewidth=1, color=theme_colors[i])
     end
     for i in 1:length(r.clusters_length)
         plot!(p5, [r.clusters_center[i, 1]], [r.clusters_center[i, 2]],
@@ -151,8 +144,6 @@ function plot2d(d, r)
     # ###### #
     # Plot 6 #
     # ###### #
-    # p6 = plot(title="6. Determine cluster directions", framestyle=:zerolines,
-    #     formatter=x->"", legend=false)
     p6 = plot(title="6. Determine cluster directions", formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
@@ -183,34 +174,52 @@ function plot2d(d, r)
     # ###### #
     # Plot 7 #
     # ###### #
-    # p7 = plot(r.points_projection[:,1], r.points_projection[:,2],
-    #     group=r.points_cluster, title="7.1. + 7.2. Point projections",
-    #     framestyle=:zerolines, formatter=x->"", legend=false,
-    #     seriestype=:scatter, markersize=3, markerstrokewidth=0.2)
     p7 = plot(r.points_projection[:,1], r.points_projection[:,2],
         group=r.points_cluster, title="7.1. + 7.2. Point projections",
-        formatter=x->"", legend=false, seriestype=:scatter, markersize=3,
-        markerstrokewidth=0.2,
+        formatter=x->"", legend=false, seriestype=:scatter, markersize=2,
+        markerstrokewidth=0.1,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###### #
     # Plot 8 #
     # ###### #
-
-    # p8 = plot(r.points[:,1], r.points[:,2], group=r.points_cluster,
-    #     title="7.3. Final points", framestyle=:zerolines, formatter=x->"",
-    #     legend=false, seriestype=:scatter, markersize=4, markerstrokewidth=0.2)
-    p8 = plot(r.points[:,1], r.points[:,2], group=r.points_cluster,
-        title="7.3. Final points", formatter=x->"", legend=false,
-        seriestype=:scatter, markersize=4, markerstrokewidth=0.2,
+    p8 = plot(title="7.3. ...", formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
+    for i in 1:nclu
+        l = r.clusters_length[i]
+
+        strt = i == 1 ? 0 : cumsum(r.clusters_size[1:i-1])[end]
+        for j in 1:r.clusters_size[i]
+            pti = strt + j
+            plot!(p8, [r.points_projection[pti, 1], r.points[pti, 1]],
+                [r.points_projection[pti, 2], r.points[pti, 2]],
+                linecolor=theme_colors[i])#, linealpha=0.3)
+        end
+
+        fnsh = strt + r.clusters_size[i]
+        strt += 1
+
+        plot!(p8, r.points[strt:fnsh,1], r.points[strt:fnsh,2],
+            seriestype=:scatter, markersize=1.5, markerstrokewidth=0.1,
+            markeralpha=0.6,color=:black)#theme_colors[i])
+
+        pf = points_on_line(
+            r.clusters_center[i,:], r.clusters_direction[i, :], [-l/2,l/2])
+        plot!(p8, pf[:,1],pf[:,2], linewidth=1, linecolor=:black)
+
+    end
+
 
     # ###### #
     # Plot 9 #
     # ###### #
-    p9 = plot(framestyle=:none, showaxis=false)
+    p9 = plot(r.points[:,1], r.points[:,2], group=r.points_cluster,
+        title="Final points", formatter=x->"", legend=false,
+        seriestype=:scatter, markersize=3, markerstrokewidth=0.2,
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###################################################### #
     # Plot limits adjustment based on existing larger limits #
@@ -220,7 +229,7 @@ function plot2d(d, r)
     llow, lhigh = Inf, -Inf
 
     # Relevant plots
-    plts = (p3, p4, p5, p6, p7, p8)
+    plts = (p3, p4, p5, p6, p7, p8, p9)
 
     # Obtain limits
     for plt in plts
