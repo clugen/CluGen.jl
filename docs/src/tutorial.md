@@ -6,13 +6,14 @@ Pages = ["tutorial.md"]
 
 ## What is CluGen?
 
-CluGen is an algorithm for generating multidimensional clusters.
-
-TODO Maybe give very general idea of lines as support for clusters?
+CluGen is an algorithm for generating multidimensional clusters. Each cluster is
+supported by a line, the position, orientation and length of which guide where
+the respective points are placed.
 
 ## How CluGen works
 
-Given a `direction` vector, the number of clusters, `num_clusters`...
+Given a main `direction` vector, a number of clusters (`num_clusters`), a
+total number of points (`total_points`)...
 Note that ``^*`` means the step is stochastic, with sane defaults but fully
 controllable by the user.
 
@@ -45,7 +46,7 @@ Random.seed!(111)
 # Create clusters
 d = [1, 1]
 nclu = 4
-r = clugen(2, nclu, 1000, d, pi/16, [10, 10], 10, 1.5, 1)
+r = clugen(2, nclu, 500, d, pi/16, [10, 10], 10, 1.5, 1)
 plt = Main.CluGenExtras.plot2d(d, r)
 
 savefig(plt, "algorithm.png")
@@ -69,7 +70,7 @@ Create data and see the points...
 ```@example ex2D3D_1
 Random.seed!(123)
 r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1)
-plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.points_cluster)
+plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
 savefig("ex2D3D_1_points.png"); nothing # hide
 ```
 
@@ -79,9 +80,9 @@ How does this work? Let's see step by step:
 
 ```@example ex2D3D_1
 plot()
-for i in 1:length(r.clusters_length)
-    l = r.clusters_length[i]
-    p = points_on_line(r.clusters_center[i,:], r.clusters_direction[i, :], [-l/2,l/2])
+for i in 1:length(r.cluster_lengths)
+    l = r.cluster_lengths[i]
+    p = points_on_line(r.cluster_centers[i,:], r.cluster_directions[i, :], [-l/2,l/2])
     plot!(p[:,1],p[:,2],color="black",legend=false)
 end
 savefig("ex2D3D_1_lines.png"); nothing # hide
@@ -92,7 +93,7 @@ And now the projections (similar to setting `lateral_std` to 0):
 ![](ex2D3D_1_lines.png)
 
 ```@example ex2D3D_1
-plot(r.points_projection[:,1], r.points_projection[:,2], seriestype = :scatter, group=r.points_cluster)
+plot(r.point_projections[:,1], r.point_projections[:,2], seriestype = :scatter, group=r.point_clusters)
 savefig("ex2D3D_1_projs.png"); nothing # hide
 ```
 
@@ -107,7 +108,7 @@ How about using `d`?
 ```@example ex2D3D_1
 Random.seed!(123)
 r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_offset="d")
-plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.points_cluster)
+plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
 savefig("ex2D3D_1_d.png"); nothing # hide
 ```
 
@@ -119,7 +120,7 @@ How about using `unif`?
 ```@example ex2D3D_1
 Random.seed!(123)
 r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_dist="unif")
-plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.points_cluster)
+plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
 savefig("ex2D3D_1_unif.png"); nothing # hide
 ```
 

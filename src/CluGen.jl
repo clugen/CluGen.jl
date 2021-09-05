@@ -653,12 +653,12 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,              # Array{<:Real,2}
-            :points_cluster,      # Array{<:Integer,1}
-            :points_projection,   # Array{<:Real,2}
-            :clusters_size,       # Array{<:Integer,1}
-            :clusters_center,     # Array{<:Real,2}
-            :clusters_direction,  # Array{<:Real,2}
-            :clusters_length      # Array{<:Real,1}
+            :point_clusters,      # Array{<:Integer,1}
+            :point_projections,   # Array{<:Real,2}
+            :cluster_sizes,       # Array{<:Integer,1}
+            :cluster_centers,     # Array{<:Real,2}
+            :cluster_directions,  # Array{<:Real,2}
+            :cluster_lengths      # Array{<:Real,1}
          )}
 
 Generate multidimensional clusters.
@@ -729,19 +729,19 @@ The function returns a `NamedTuple` with the following fields:
 
 - `points`: a `total_points` x `num_dims` matrix with the generated points for
    all clusters.
-- `points_cluster`: a `total_points` x 1` vector indicating which cluster
+- `point_clusters`: a `total_points` x 1` vector indicating which cluster
   each point in `points` belongs to.
-- `points_projection`: a `total_points` x `num_dims` matrix with the point
+- `point_projections`: a `total_points` x `num_dims` matrix with the point
   projections on the cluster-supporting lines.
-- `clusters_size`: a `num_clusters` x 1 vector with the number of
+- `cluster_sizes`: a `num_clusters` x 1 vector with the number of
   points in each cluster.
-- `clusters_center`: a `num_clusters` x `num_dims` matrix with the coordinates
+- `cluster_centers`: a `num_clusters` x `num_dims` matrix with the coordinates
   of the cluster centers.
-- `clusters_direction`: a `num_clusters` x `num_dims` matrix with the direction
+- `cluster_directions`: a `num_clusters` x `num_dims` matrix with the direction
   of each cluster-supporting line.
 - `cluster_angles`: a `num_clusters` x 1 vector with the angles between the
   cluster-supporting lines and the main direction.
-- `clusters_length`: a `num_clusters` x 1 vector with the lengths of the
+- `cluster_lengths`: a `num_clusters` x 1 vector with the lengths of the
   cluster-supporting lines.
 
 # Examples
@@ -750,7 +750,7 @@ julia> # Create 5 clusters in 3D space with a total of 10000 points...
 
 julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
 
-julia> out.clusters_center # What are the cluster centers?
+julia> out.cluster_centers # What are the cluster centers?
 5×3 Array{Float64,2}:
    8.12774  -16.8167    -1.80764
    4.30111   -1.34916  -11.209
@@ -762,7 +762,7 @@ julia> out.clusters_center # What are the cluster centers?
 The following instruction displays a scatter plot of the clusters in 3D space:
 
 ```julia-repl
-julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.points_cluster)
+julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.point_clusters)
 ```
 
 Check the [Tutorial](@ref) section for more information on how to use the `clugen()`
@@ -950,13 +950,13 @@ function clugen(
 
     return (
         points = points,
-        points_cluster = clu_pts_idx,
-        points_projection = points_proj,
-        clusters_size = clu_num_points,
-        clusters_center = clu_centers,
-        clusters_direction = clu_dirs,
-        clusters_angle = angles,
-        clusters_length = lengths)
+        point_clusters = clu_pts_idx,
+        point_projections = points_proj,
+        cluster_sizes = clu_num_points,
+        cluster_centers = clu_centers,
+        cluster_directions = clu_dirs,
+        cluster_angles = angles,
+        cluster_lengths = lengths)
 
 end
 

@@ -38,24 +38,24 @@
 
         # Check dimensions of result variables
         @test size(result.points) == (tpts, nd)
-        @test size(result.points_cluster) == (tpts, )
-        @test size(result.points_projection) == (tpts, nd)
-        @test size(result.clusters_size) == (nclu, )
-        @test size(result.clusters_center) == (nclu, nd)
-        @test size(result.clusters_direction) == (nclu, nd)
-        @test size(result.clusters_angle) == (nclu, )
-        @test size(result.clusters_length) == (nclu, )
+        @test size(result.point_clusters) == (tpts, )
+        @test size(result.point_projections) == (tpts, nd)
+        @test size(result.cluster_sizes) == (nclu, )
+        @test size(result.cluster_centers) == (nclu, nd)
+        @test size(result.cluster_directions) == (nclu, nd)
+        @test size(result.cluster_angles) == (nclu, )
+        @test size(result.cluster_lengths) == (nclu, )
 
         # Check point cluster indexes
-        @test unique(result.points_cluster) == 1:nclu
+        @test unique(result.point_clusters) == 1:nclu
 
         # Check total points
-        @test sum(result.clusters_size) == tpts
+        @test sum(result.cluster_sizes) == tpts
 
         # Check that cluster directions have the correct angles with the main direction
         if nd > 1
             for i in 1:nclu
-                @test angle(dir, result.clusters_direction[i, :]) ≈ abs(result.clusters_angle[i]) atol=1e-11
+                @test angle(dir, result.cluster_directions[i, :]) ≈ abs(result.cluster_angles[i]) atol=1e-11
             end
         end
 
