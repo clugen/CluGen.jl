@@ -30,8 +30,13 @@ works as follows (``^*`` means the algorithm step is stochastic):
    3. ``^*``Determine points from their projections on the line
 
 The following image provides a stylized overview of the algorithm steps when the
-main `direction` is set to ``\mathbf{v}=\begin{bmatrix}1 & 1\end{bmatrix}^T``
-(thus in 2D space), 4 clusters, and a total of 500 points.
+main `direction` is set to ``\mathbf{v}=\begin{bmatrix}1 & 1\end{bmatrix}^T`` (thus
+in 2D space), 4 clusters, and a total of 200 points. Additional parameters include
+a mean cluster separation (`cluster_sep`) of 10 in both dimensions, an angle
+standard deviation of ``\pi/32`` radians (``\approx{}5.6^{\circ}``)—the angle of
+the main `direction` is considered the mean, line length mean (`line_length`) of
+10, line length standard deviation (`line_length_std`) of 1.5, and lateral
+dispersion (`lateral_std`) of 1.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -42,7 +47,7 @@ Random.seed!(111)
 # Create clusters
 d = [1, 1]
 nclu = 4
-r = clugen(2, nclu, 500, d, pi/16, [10, 10], 10, 1.5, 1)
+r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1)
 plt = Main.CluGenExtras.plot2d(d, r)
 
 savefig(plt, "algorithm.png")

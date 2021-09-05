@@ -50,11 +50,12 @@ function plot2d(d, r)
     p1format = (x) -> x - trunc(x) ≈ 0 ? "$(round(Int,x))" : @sprintf("%.3f", x)
 
     # Setup plot
-    p1 = plot(legend=false, title="1. Normalize direction", ticks=[], grid=false,
+    p1 = plot(legend=false, title="1. Normalize `direction`", ticks=[], grid=false,
         framestyle=:zerolines, xlim=(-1.1,1.1), ylim=(-1.1,1.1))
 
     # Draw vector
     plot!(p1, [0, d1[1]],[0, d1[2]], label="", color=theme_colors[2], arrow=true,
+        titlefontsize=8, titlelocation=:left,
         linewidth=2)
 
     # Draw unit circle
@@ -75,6 +76,7 @@ function plot2d(d, r)
     iclusizes = r.cluster_sizes ./ maximum(r.cluster_sizes)
 
     p2 = plot(title="2. Determine cluster sizes", legend=false, showaxis=false,
+        titlefontsize=8, titlelocation=:left,
         foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
 
     for i in 1:nclu
@@ -94,14 +96,16 @@ function plot2d(d, r)
     p3 = plot(r.cluster_centers[:,1], r.cluster_centers[:,2], seriestype=:scatter,
         group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
         title="3. Determine cluster centers", formatter=x->"",
+        titlefontsize=8, titlelocation=:left,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###### #
     # Plot 4 #
     # ###### #
-    p4 = plot(title="4. Determine cluster lengths", formatter=x->"", legend=false,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+    p4 = plot(title="4. Determine lengths of cluster-supporting lines", formatter=x->"",
+        legend=false, framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+        titlefontsize=8, titlelocation=:left,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:length(r.cluster_lengths)
         l = r.cluster_lengths[i]
@@ -116,8 +120,10 @@ function plot2d(d, r)
     # ###### #
     # Plot 5 #
     # ###### #
-    p5 = plot(title="5. Cluster angles w.r.t. direction", formatter=x->"",
+    p5 = plot(title="5. Get angles between `direction` and cluster-supporting lines",
+        formatter=x->"",
         legend=false, framestyle=:grid, foreground_color_grid=:white,
+        titlefontsize=8, titlelocation=:left,
         gridalpha=1, background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:length(r.cluster_lengths)
         l = r.cluster_lengths[i]
@@ -144,7 +150,9 @@ function plot2d(d, r)
     # ###### #
     # Plot 6 #
     # ###### #
-    p6 = plot(title="6. Determine cluster directions", formatter=x->"", legend=false,
+    p6 = plot(title="6. Determine direction of cluster-supporting lines",
+        formatter=x->"", legend=false,
+        titlefontsize=8, titlelocation=:left,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:nclu
@@ -174,19 +182,52 @@ function plot2d(d, r)
     # ###### #
     # Plot 7 #
     # ###### #
-    p7 = plot(r.point_projections[:,1], r.point_projections[:,2],
-        group=r.point_clusters, title="7.1. + 7.2. Point projections",
-        formatter=x->"", legend=false, seriestype=:scatter, markersize=2,
-        markerstrokewidth=0.1,
+    p7 = plot(titlefontsize=8, titlelocation=:left,
+        title="7.1-7.2. Point projections on the cluster-supporting line",
+        formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
+
+    for i in 1:nclu
+        l = r.cluster_lengths[i]
+        pf = points_on_line(
+            r.cluster_centers[i,:], r.cluster_directions[i, :], [-l/2,l/2])
+        plot!(p7, pf[:,1],pf[:,2], linewidth=3, linecolor=theme_colors[i])
+    end
+
+    plot!(p7, r.point_projections[:,1], r.point_projections[:,2],
+        group=r.point_clusters, seriestype=:scatter, markersize=1,
+        markerstrokewidth=0.1, markerstrokealpha=0,color=:black, markeralpha=0.6)
+
+    ol = maximum(r.cluster_lengths) / 9
+
+    for i in 1:nclu
+        l = r.cluster_lengths[i]
+        d_ortho = rand_ortho_vector(r.cluster_directions[i,:])
+
+        strt = i == 1 ? 0 : cumsum(r.cluster_sizes[1:i-1])[end]
+        for j in 1:r.cluster_sizes[i]
+            pti = strt + j
+            pts = points_on_line(r.point_projections[pti,:], d_ortho, [-ol/2,ol/2])
+            plot!(p7, pts[:,1], pts[:,2], linecolor=:black, linewidth=1, linealpha=0.5)
+        end
+    end
+
+    for i in 1:length(r.cluster_lengths)
+        plot!(p7, [r.cluster_centers[i, 1]], [r.cluster_centers[i, 2]],
+            seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
+    end
 
     # ###### #
     # Plot 8 #
     # ###### #
-    p8 = plot(title="7.3. Points from point projections", formatter=x->"",
-        legend=false, framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+
+    p8 = plot(title="7.3. Get points from projections on the cluster-supporting line",
+        formatter=x->"", legend=false,
+        titlefontsize=8, titlelocation=:left,
+        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
+
     for i in 1:nclu
         l = r.cluster_lengths[i]
 
@@ -207,7 +248,7 @@ function plot2d(d, r)
 
         pf = points_on_line(
             r.cluster_centers[i,:], r.cluster_directions[i, :], [-l/2,l/2])
-        plot!(p8, pf[:,1],pf[:,2], linewidth=1, linecolor=:black)
+        plot!(p8, pf[:,1],pf[:,2], linewidth=3, linecolor=theme_colors[i], linealpha=0.5)
 
     end
 
@@ -216,7 +257,8 @@ function plot2d(d, r)
     # Plot 9 #
     # ###### #
     p9 = plot(r.points[:,1], r.points[:,2], group=r.point_clusters,
-        title="Generated clusters", formatter=x->"", legend=false,
+        title="Final points", formatter=x->"", legend=false,
+        titlefontsize=8, titlelocation=:left,
         seriestype=:scatter, markersize=3, markerstrokewidth=0.2,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
