@@ -12,10 +12,10 @@ the respective points are placed.
 
 ## How CluGen works
 
-Given a main `direction` vector, a number of clusters (`num_clusters`), a
-total number of points (`total_points`)...
-Note that ``^*`` means the step is stochastic, with sane defaults but fully
-controllable by the user.
+Given the main `direction` ``$n$``-dimensional vector, the number of clusters
+(`num_clusters`), the total number of points (`total_points`), and a number of
+additional parameters which will be discussed shortly, the _clugen_ algorithm
+works as follows (``^*`` means the algorithm step is stochastic):
 
 1. Normalize `direction`
 2. Determine cluster sizes``^*``
@@ -29,13 +29,13 @@ controllable by the user.
    2. Determine coordinates of point projections on the line
    3. Determine points from their projections on the line``^*``
 
-The following demonstrates the algorithm steps for 4 clusters in 2D with a total
-of 100 points, with the main `direction` set to ``\mathbf{v}=(1,1)``. Additional
-parameters, which are detailed in the images, are mean cluster separation of 10
-(in both dimensions), an angle standard deviation of ``\pi/32`` radians
-(``\approx{}5.6^{\circ}``), line length of 10, line length standard deviation of
-1.5, lateral dispersion of 1. Other parameters not specified used defaults which
-will be discussed next, although each image hints on how these control the output.
+The following image provides a stylized overview of the algorithm steps when the
+main `direction` is set to ``\mathbf{v}=[1 1]^T`` (thus in 2D space), 4 clusters,
+and a total of 500 points. Additional parameters include a mean cluster separation
+(`cluster_sep`) of 10 in both dimensions, an angle standard deviation of ``\pi/32``
+radians (``\approx{}5.6^{\circ}``)—the angle of the main `direction` is considered
+the mean, line length mean of 10, line length standard deviation of 1.5, and lateral
+dispersion of 1.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -55,6 +55,11 @@ nothing
 ```
 
 ![](algorithm.png)
+
+TODO Describe steps
+
+Other parameters not specified used defaults which
+will be discussed next, although each image hints on how these control the output.
 
 ## Quick start 2D and 3D
 
