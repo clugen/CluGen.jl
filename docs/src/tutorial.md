@@ -75,4 +75,66 @@ TODO Describe steps
 
 ## Parameter influences on final results
 
-TODO
+### `point_dist`
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different point_dist's to use
+pdist_names = ("Normal", "Uniform", "Laplace", "Rayleigh")
+
+pdists = Dict(
+   pdist_names[1] => "norm",
+   pdist_names[2] => "unif",
+   pdist_names[3] => (len, n) -> rand(Laplace(0, len / 6), n),
+   pdist_names[4] => (len, n) -> rand(Rayleigh(len / 3), n) .- len / 2
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for pd_name in pdist_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd, point_dist=pdists[pd_name])
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=pd_name)
+   push!(p_all, p)
+end
+
+plt = plot(p_all[1], p_all[2], p_all[3], p_all[4], layout = (2, 2), size=(800,800))
+
+savefig(plt, "point_dist.png")
+
+nothing
+```
+
+![](point_dist.png)
+
+### `point_offset`
+
+### `clusizes_fn`
+
+### `clucenters_fn`
+
+### `line_lengths_fn`
+
+
+### `line_angles_fn`
