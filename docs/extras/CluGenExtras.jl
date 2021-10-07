@@ -184,8 +184,8 @@ function plot2d(d, r)
     # ###### #
     # Plot 8 #
     # ###### #
-    p8 = plot(title="7.3. ...", formatter=x->"", legend=false,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
+    p8 = plot(title="7.3. Points from point projections", formatter=x->"",
+        legend=false, framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:nclu
         l = r.cluster_lengths[i]
@@ -216,7 +216,7 @@ function plot2d(d, r)
     # Plot 9 #
     # ###### #
     p9 = plot(r.points[:,1], r.points[:,2], group=r.point_clusters,
-        title="Final points", formatter=x->"", legend=false,
+        title="Generated clusters", formatter=x->"", legend=false,
         seriestype=:scatter, markersize=3, markerstrokewidth=0.2,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)

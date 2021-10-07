@@ -11,6 +11,7 @@ makedocs(
         "Home" => "index.md",
         "Tutorial" => "tutorial.md",
         "Gallery" => "gallery.md",
+        "To sort" => "to_sort.md",
         "API" => "api.md"
         ]
 )
