@@ -155,8 +155,8 @@ dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts,
 poffs = Dict(
    poffs_names[1] => "d-1",
    poffs_names[2] => "d",
-   poffs_names[3] => (projs, lat_std, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng),
-   poffs_names[4] => (projs, lat_std, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng),
+   poffs_names[3] => (projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng),
+   poffs_names[4] => (projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng),
 )
 
 # Results and plots

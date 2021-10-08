@@ -253,4 +253,27 @@ function plot2d(d, r)
     return allplt
 end
 
+# function clupoints_d_ellipsoid(
+#     projs::AbstractArray{<:Real, 2},
+#     lat_std::Real,
+#     clu_dir::AbstractArray{<:Real, 1},
+#     clu_ctr::AbstractArray{<:Real, 1};
+#     rng::AbstractRNG = Random.GLOBAL_RNG
+# )::AbstractArray{<:Real}
+
+#     # Number of dimensions
+#     num_dims = length(clu_dir)
+
+#     # Number of points in this cluster
+#     clu_num_points = size(projs, 1)
+
+#     # Get random displacement vectors for each point projection
+#     displ = lat_std .* randn(rng, clu_num_points, num_dims)
+
+#     # Add displacement vectors to each point projection
+#     points = projs + displ
+
+#     return points
+# end
+
 end # Module
