@@ -30,7 +30,7 @@
         proj = points_on_line(ctr, dir, proj_dist2ctr)
 
         # Check that the clupoints_d_1 function runs without warnings
-        pts = @test_nowarn CluGen.clupoints_d_1(proj, lat_std, dir, ctr; rng=rng)
+        pts = @test_nowarn CluGen.clupoints_d_1(proj, lat_std, length, dir, ctr; rng=rng)
 
         # Check that number of points is the same as the number of projections
         @test size(pts) == size(proj)
