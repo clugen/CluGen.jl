@@ -42,7 +42,7 @@ ptdist_fns = Dict(
 ptoff_fns = Dict(
     "d-1" => "d-1",
     "d" => "d",
-    "proj+1" => (projs, lstd, cdir, cctr) -> projs + ones(size(projs))
+    "proj+1" => (projs, lstd, cdir, cctr; rng=nothing) -> projs + ones(size(projs))
 )
 csz_fns = Dict(
     "default" => clusizes,
