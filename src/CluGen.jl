@@ -498,8 +498,8 @@ place points on the second line.
 !!! note "Internal package function"
     This function is internally used by the [`clupoints_d_1()`](@ref) function.
     Thus, it's not exported by the package and must be prefixed by the package
-    name, e.g. `CluGen.clupoints_d_1_template(...)`. This function may be useful for
-    constructing user-defined offsets for the `point_offset` parameter of the
+    name, e.g. `CluGen.clupoints_d_1_template(...)`. This function may be useful
+    for constructing user-defined offsets for the `point_offset` parameter of the
     main [`clugen()`](@ref) function.
 
 # Arguments
@@ -547,6 +547,7 @@ end
     CluGen.clupoints_d_1(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
+        line_len::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1};
         rng::AbstractRNG = Random.GLOBAL_RNG
@@ -566,6 +567,7 @@ centered at the point's projection, using the normal distribution (μ=0, σ=`lat
 - `projs`: point projections on the cluster-supporting line.
 - `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
+- `line_len`: length of cluster-supporting line (ignored).
 - `clu_dir`: direction of the cluster-supporting line (unit vector).
 - `clu_ctr`: center position of the cluster-supporting line center position (ignored).
 - `rng`: an optional pseudo-random number generator for reproducible executions.
@@ -580,7 +582,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  7.0  5.0
  9.0  5.0
 
-julia> CluGen.clupoints_d_1(projs, 0.5, [1,0], [0,0]; rng=MersenneTwister(123))
+julia> CluGen.clupoints_d_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
 5×2 Array{Float64,2}:
  1.0  5.59513
  3.0  3.97591
@@ -592,6 +594,7 @@ julia> CluGen.clupoints_d_1(projs, 0.5, [1,0], [0,0]; rng=MersenneTwister(123))
 function clupoints_d_1(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
+    line_len::Real,
     clu_dir::AbstractArray{<:Real, 1},
     clu_ctr::AbstractArray{<:Real, 1};
     rng::AbstractRNG = Random.GLOBAL_RNG
@@ -609,6 +612,7 @@ end
     GluGen.clupoints_d(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
+        line_len::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1};
         rng::AbstractRNG = Random.GLOBAL_RNG
@@ -628,6 +632,7 @@ line, placing each point `i` around its projection using the normal distribution
 - `projs`: point projections on the cluster-supporting line.
 - `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
+- `line_len`: length of cluster-supporting line (ignored).
 - `clu_dir`: direction of the cluster-supporting line.
 - `clu_ctr`: center position of the cluster-supporting line center position (ignored).
 - `rng`: an optional pseudo-random number generator for reproducible executions.
@@ -642,7 +647,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  7.0  5.0
  9.0  5.0
 
-julia> CluGen.clupoints_d(projs, 0.5, [1,0], [0,0]; rng=MersenneTwister(123))
+julia> CluGen.clupoints_d(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
 5×2 Array{Float64,2}:
  1.59513  4.66764
  4.02409  5.49048
@@ -654,6 +659,7 @@ julia> CluGen.clupoints_d(projs, 0.5, [1,0], [0,0]; rng=MersenneTwister(123))
 function clupoints_d(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
+    line_len::Real,
     clu_dir::AbstractArray{<:Real, 1},
     clu_ctr::AbstractArray{<:Real, 1};
     rng::AbstractRNG = Random.GLOBAL_RNG
@@ -911,7 +917,7 @@ function clugen(
     # (default), 'd' or a user-defined function
     if num_dims == 1
         # If 1D was specified, point projections are the points themselves
-        pt_from_proj_fn = (projs, lat_std, clu_dir, clu_ctr; rng=rng) -> projs
+        pt_from_proj_fn = (projs, lat_std, len, clu_dir, clu_ctr; rng=rng) -> projs
     elseif typeof(point_offset) <: Function
         # Use user-defined distribution; assume function accepts point projections
         # on the line, lateral std., cluster direction and cluster center, and
@@ -987,6 +993,7 @@ function clugen(
         points[idx_start:idx_end, :] = pt_from_proj_fn(
             points_proj[idx_start:idx_end, :],
             lateral_std,
+            lengths[i],
             clu_dirs[i, :],
             clu_centers[i, :];
             rng=rng)
