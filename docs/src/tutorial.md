@@ -130,6 +130,60 @@ nothing
 
 ### `point_offset`
 
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different point_dist's to use
+poffs_names = ("d-1", "d", "Exponential", "Bimodal")
+
+dist_exp = (npts, lstd) -> lstd .* rand(Exponential(1/lstd), npts, 1)
+dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts, 1)
+
+poffs = Dict(
+   poffs_names[1] => "d-1",
+   poffs_names[2] => "d",
+   poffs_names[3] => (projs, lat_std, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng),
+   poffs_names[4] => (projs, lat_std, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng),
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for po_name in poffs_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd, point_offset=poffs[po_name])
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=po_name)
+   push!(p_all, p)
+end
+
+plt = plot(p_all[1], p_all[2], p_all[3], p_all[4], layout = (2, 2), size=(800,800))
+
+savefig(plt, "point_offset.png")
+
+nothing
+```
+
+![](point_offset.png)
+
 ### `clusizes_fn`
 
 ### `clucenters_fn`

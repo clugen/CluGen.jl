@@ -16,6 +16,7 @@
 * [Internal functions](@ref)
   * [`CluGen.clupoints_d_1`](@ref)
   * [`CluGen.clupoints_d`](@ref)
+  * [`CluGen.clupoints_d_1_template`](@ref)
 
 ## Module
 
@@ -47,4 +48,5 @@ rand_vector_at_angle
 ```@docs
 CluGen.clupoints_d_1
 CluGen.clupoints_d
+CluGen.clupoints_d_1_template
 ```
