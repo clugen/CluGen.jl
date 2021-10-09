@@ -423,7 +423,9 @@ function rand_vector_at_angle(
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Real, 1}
 
-    if -pi/2 < angle < pi/2 && length(u) > 1
+    if abs(angle) ≈ pi/2 && length(u) > 1
+        return rand_ortho_vector(u; rng=rng)
+    elseif -pi/2 < angle < pi/2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
     else
         return rand_unit_vector(length(u); rng=rng)
