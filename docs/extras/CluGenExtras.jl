@@ -253,27 +253,106 @@ function plot2d(d, r)
     return allplt
 end
 
-# function clupoints_d_ellipsoid(
-#     projs::AbstractArray{<:Real, 2},
-#     lat_std::Real,
-#     clu_dir::AbstractArray{<:Real, 1},
-#     clu_ctr::AbstractArray{<:Real, 1};
-#     rng::AbstractRNG = Random.GLOBAL_RNG
-# )::AbstractArray{<:Real}
+function clupoints_d_ellipsoid(
+    projs::AbstractArray{<:Real, 2},
+    lat_std::Real,
+    line_len::Real,
+    clu_dir::AbstractArray{<:Real, 1},
+    clu_ctr::AbstractArray{<:Real, 1};
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::AbstractArray{<:Real}
 
-#     # Number of dimensions
-#     num_dims = length(clu_dir)
+    # Number of dimensions
+    num_dims = length(clu_dir)
 
-#     # Number of points in this cluster
-#     clu_num_points = size(projs, 1)
+    # Number of points in this cluster
+    clu_num_points = size(projs, 1)
 
-#     # Get random displacement vectors for each point projection
-#     displ = lat_std .* randn(rng, clu_num_points, num_dims)
+    clu_pts = zeros(clu_num_points, num_dims)
 
-#     # Add displacement vectors to each point projection
-#     points = projs + displ
+    # Edges of cluster-supporting line
+    edge1 = clu_ctr + (line_len / 2) .* clu_dir
+    edge2 = clu_ctr - (line_len / 2) .* clu_dir
 
-#     return points
-# end
+    for i in 1:clu_num_points
+
+        prj = projs[i, :]
+
+        # Absolute and relative positions of projection w.r.t. the center
+        pa = norm(prj - clu_ctr)
+        pa_sign = norm(prj - edge1) < norm(prj - edge2) ? 1 : -1
+        pa *= pa_sign
+        pr = clamp(norm(pa / (line_len / 2)), -1, 1)
+
+        # Determine angle associated with this projection
+        a = acos(pr)
+
+        println(pr, " -> ", a, " rad, ", a*180/π, " deg")
+
+        # Get a random vector at this angle
+        v = rand_vector_at_angle(clu_dir, a; rng=rng)
+
+        # Point dispersion along vector at angle
+        f = (lat_std / 2) * randn(rng) + lat_std
+
+        # Determine two possible points at the edges of vector (line) at angle
+        pt1 = prj + f .* v
+        pt2 = prj - f .* v
+
+        # Determine the point which is nearer one of the cluster-supporting line
+        # edges
+        near_dist = Inf
+        pt = nothing
+
+        for pt_curr in (pt1, pt2)
+            for edge_curr in (edge1, edge2)
+                if norm(pt_curr - edge_curr) < near_dist
+                    near_dist = norm(pt_curr - edge_curr)
+                    pt = pt_curr
+                end
+            end
+        end
+
+        clu_pts[i, :] = pt
+    end
+    println()
+    return clu_pts
+end
+
+"""
+
+line_len = 40
+clu_ctr = [1, -1]
+clu_dir = [-1, 0]
+lat_std = 5
+pre_projs = [-10, -3, 0.5, 0, 1, 1.5, 19, -0.1]
+
+projs = points_on_line(clu_ctr, clu_dir, pre_projs)
+
+edge1 = clu_ctr + (line_len / 2) .* clu_dir
+edge2 = clu_ctr - (line_len / 2) .* clu_dir
+
+pts = clupoints_d_ellipsoid(projs, lat_std, line_len, clu_dir, clu_ctr)
+
+plt = plot(legend=false,size=(900,900))
+
+plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange)
+
+plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], seriestype=:scatter, markershape=:vline, markercolor=:orange,markerstrokewidth=0.1)
+
+plot!(plt, [clu_ctr[1]], [clu_ctr[2]], seriestype=:scatter, markershape=:circle, markercolor=:orange, markersize=5,markerstrokewidth=0.1)
+
+for i in 1:size(projs, 1)
+    plot!([pts[i,1], projs[i,1]], [pts[i,2], projs[i,2]],color=:grey,linewidth=0.5)
+end
+
+plot!(plt,projs[:,1],projs[:,2],seriestype=:scatter,markersize=2.5,markerstrokewidth=0.1,markercolor=:red)
+
+plot!(plt,pts[:,1],pts[:,2],markershape=:cross,seriestype=:scatter,markersize=2.5,markerstrokewidth=0.1,markercolor=:green)
+
+
+plot(plt)
+
+"""
 
 end # Module
