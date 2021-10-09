@@ -15,6 +15,7 @@ using CluGen
 using LinearAlgebra
 using Plots
 using Printf
+using Random
 
 export plot2d
 
@@ -322,20 +323,24 @@ function clupoints_d_ellipsoid(
 
         # Absolute and relative positions of projection w.r.t. the center
         pa = norm(prj - clu_ctr)
-        pa_sign = norm(prj - edge1) < norm(prj - edge2) ? 1 : -1
-        pa *= pa_sign
-        pr = clamp(norm(pa / (line_len / 2)), -1, 1)
+        # pa_sign = norm(prj - edge1) < norm(prj - edge2) ? 1 : -1
+        # pa *= pa_sign
+        # pr = clamp(pa / (line_len / 2), -1, 1)
+
+        pr = clamp(pa / (line_len / 2), 0, 1)
 
         # Determine angle associated with this projection
-        a = acos(pr)
+        #a = acos(pr)
+        #a = pi/2 * (pr-1)^2
+        a = -pi/2*(pr-1)
 
-        println(pr, " -> ", a, " rad, ", a*180/π, " deg")
+        #println(pr, " -> ", a, " rad, ", a*180/π, " deg")
 
         # Get a random vector at this angle
         v = rand_vector_at_angle(clu_dir, a; rng=rng)
 
         # Point dispersion along vector at angle
-        f = (lat_std / 2) * randn(rng) + lat_std
+        f = (lat_std / 8) * randn(rng) + lat_std
 
         # Determine two possible points at the edges of vector (line) at angle
         pt1 = prj + f .* v
@@ -343,13 +348,17 @@ function clupoints_d_ellipsoid(
 
         # Determine the point which is nearer one of the cluster-supporting line
         # edges
-        near_dist = Inf
+        #edge_dist = Inf
+        ctr_dist = -Inf
         pt = nothing
 
         for pt_curr in (pt1, pt2)
             for edge_curr in (edge1, edge2)
-                if norm(pt_curr - edge_curr) < near_dist
-                    near_dist = norm(pt_curr - edge_curr)
+                curr_norm = norm(pt_curr - edge_curr)
+                #if curr_norm < edge_dist && curr_norm > ctr_dist
+                if curr_norm > ctr_dist
+                    #edge_dist = curr_norm
+                    ctr_dist = curr_norm
                     pt = pt_curr
                 end
             end
@@ -367,7 +376,8 @@ line_len = 40
 clu_ctr = [1, -1]
 clu_dir = [-1, 0]
 lat_std = 5
-pre_projs = [-10, -3, 0.5, 0, 1, 1.5, 19, -0.1]
+#pre_projs = [19.99, -10, -3, 0.5, 0, 1, 1.5, 19, -0.1, -19.99]
+pre_projs = rand(800) .* 40 .- 20
 
 projs = points_on_line(clu_ctr, clu_dir, pre_projs)
 
@@ -378,11 +388,11 @@ pts = clupoints_d_ellipsoid(projs, lat_std, line_len, clu_dir, clu_ctr)
 
 plt = plot(legend=false,size=(900,900))
 
-plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange)
+plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange, linewidth=4)
 
-plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], seriestype=:scatter, markershape=:vline, markercolor=:orange,markerstrokewidth=0.1)
+plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], seriestype=:scatter, markershape=:vline, markercolor=:orange,markerstrokewidth=0.1,markersize=20)
 
-plot!(plt, [clu_ctr[1]], [clu_ctr[2]], seriestype=:scatter, markershape=:circle, markercolor=:orange, markersize=5,markerstrokewidth=0.1)
+plot!(plt, [clu_ctr[1]], [clu_ctr[2]], seriestype=:scatter, markershape=:circle, markercolor=:orange, markersize=8,markerstrokewidth=0.1)
 
 for i in 1:size(projs, 1)
     plot!([pts[i,1], projs[i,1]], [pts[i,2], projs[i,2]],color=:grey,linewidth=0.5)
@@ -390,8 +400,7 @@ end
 
 plot!(plt,projs[:,1],projs[:,2],seriestype=:scatter,markersize=2.5,markerstrokewidth=0.1,markercolor=:red)
 
-plot!(plt,pts[:,1],pts[:,2],markershape=:cross,seriestype=:scatter,markersize=2.5,markerstrokewidth=0.1,markercolor=:green)
-
+plot!(plt,pts[:,1],pts[:,2],markershape=:cross,seriestype=:scatter,markersize=4,markerstrokewidth=0.1,markercolor=:green)
 
 plot(plt)
 
