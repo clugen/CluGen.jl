@@ -17,6 +17,7 @@
   * [`CluGen.clupoints_d_1`](@ref)
   * [`CluGen.clupoints_d`](@ref)
   * [`CluGen.clupoints_d_1_template`](@ref)
+  * [`CluGen.fix_total_points!`](@ref)
 
 ## Module
 
@@ -49,4 +50,5 @@ rand_vector_at_angle
 CluGen.clupoints_d_1
 CluGen.clupoints_d
 CluGen.clupoints_d_1_template
+CluGen.fix_total_points!
 ```

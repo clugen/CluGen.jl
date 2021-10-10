@@ -26,6 +26,40 @@ export rand_ortho_vector
 export rand_vector_at_angle
 
 """
+    fix_total_points!(
+        clu_num_points::AbstractArray{<:Integer, 1},
+        total_points::Integer)
+
+This function makes sure that the values in the `clu_num_points` array, i.e. the
+number of points in each cluster, add up to `total_points`. If this is not the
+case, the `clu_num_points` array is modified in-place, incrementing the value
+corresponding to the currently smaller cluster while `sum(clu_num_points) < total_points`,
+or decrementing the value corresponding to the currently larger cluster while
+`sum(clu_num_points) > total_points`.
+
+!!! note "Internal package function"
+    This function is used internally by the [`clusizes()`](@ref) function, thus
+    it's not exported by the package and must be prefixed by the package name,
+    e.g. `CluGen.fix_total_points!(...)`. Nonetheless, this function might be
+    useful for custom cluster sizing implementations given as the `clusizes_fn`
+    parameter for the main [`clugen()`](@ref) function.
+"""
+function fix_total_points!(
+    clu_num_points::AbstractArray{<:Integer, 1},
+    total_points::Integer)
+
+    while sum(clu_num_points) < total_points
+        imin = argmin(clu_num_points)
+        clu_num_points[imin] += 1
+    end
+    while sum(clu_num_points) > total_points
+        imax = argmax(clu_num_points)
+        clu_num_points[imax] -= 1
+    end
+
+end
+
+"""
     clusizes(
         num_clusters::Integer,
         total_points::Integer,
@@ -96,14 +130,7 @@ function clusizes(
 
     # Make sure total points is respected, which may not be the case at this time due
     # to rounding
-    while sum(clu_num_points) < total_points
-        imin = argmin(clu_num_points)
-        clu_num_points[imin] += 1
-    end
-    while sum(clu_num_points) > total_points
-        imax = argmax(clu_num_points)
-        clu_num_points[imax] -= 1
-    end
+    fix_total_points!(clu_num_points, total_points)
 
     # If empty clusters are not allowed, make sure there aren't any
     if !allow_empty
