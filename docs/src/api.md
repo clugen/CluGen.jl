@@ -18,6 +18,7 @@
   * [`CluGen.clupoints_d`](@ref)
   * [`CluGen.clupoints_d_1_template`](@ref)
   * [`CluGen.fix_total_points!`](@ref)
+  * [`CluGen.fix_empty!`](@ref)
 
 ## Module
 
@@ -51,4 +52,5 @@ CluGen.clupoints_d_1
 CluGen.clupoints_d
 CluGen.clupoints_d_1_template
 CluGen.fix_total_points!
+CluGen.fix_empty!
 ```

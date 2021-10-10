@@ -60,6 +60,43 @@ function fix_total_points!(
 end
 
 """
+    fix_empty!(clu_num_points::AbstractArray{<:Integer, 1})
+
+This function makes sure that, given enough points, no clusters are left empty.
+This is done by removing a point from the currently larger cluster while there
+are empty clusters. If the total number of points is smaller than the number of
+clusters, this function does nothing.
+
+!!! note "Internal package function"
+    This function is used internally by the [`clusizes()`](@ref) function, thus
+    it's not exported by the package and must be prefixed by the package name,
+    e.g. `CluGen.fix_empty!(...)`. Nonetheless, this function might be useful
+    for custom cluster sizing implementations given as the `clusizes_fn`
+    parameter for the main [`clugen()`](@ref) function.
+"""
+function fix_empty!(clu_num_points::AbstractArray{<:Integer, 1})
+
+    # Find empty clusters
+    empty_clusts = findall(x -> x == 0, clu_num_points)
+
+    # If there are empty clusters and enough points for all clusters...
+    if length(empty_clusts) > 0 && sum(clu_num_points) >= length(clu_num_points)
+
+        # Go through the empty clusters...
+        for i0 in empty_clusts
+
+            # ...get a point from the largest cluster and assign it to the
+            # current empty cluster
+            imax = argmax(clu_num_points)
+            clu_num_points[imax] -= 1
+            clu_num_points[i0] += 1
+
+        end
+    end
+
+end
+
+"""
     clusizes(
         num_clusters::Integer,
         total_points::Integer,
@@ -134,24 +171,7 @@ function clusizes(
 
     # If empty clusters are not allowed, make sure there aren't any
     if !allow_empty
-
-        # Find empty clusters
-        empty_clusts = findall(x -> x == 0, clu_num_points)
-
-        # If there are empty clusters...
-        if length(empty_clusts) > 0
-
-            # Go through the empty clusters...
-            for i0 in empty_clusts
-
-                # ...get a point from the largest cluster and assign it to the
-                # current empty cluster
-                imax = argmax(clu_num_points)
-                clu_num_points[imax] -= 1
-                clu_num_points[i0] += 1
-
-            end
-        end
+        fix_empty!(clu_num_points)
     end
 
     return clu_num_points
