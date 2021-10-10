@@ -768,7 +768,7 @@ users will need to use.
 # Arguments (mandatory)
 - `num_dims`: number of dimensions.
 - `num_clusters`: number of clusters to generate.
-- `total_points`: total points to generate.
+- `total_points`: total number of points to generate.
 - `direction`: main direction of the clusters (`num_dims` x 1).
 - `angle_std`: considering the angle of `direction` as the mean of the cluster-supporting
   line angles, this parameter represents the respective standard deviation, in radians.
@@ -805,7 +805,8 @@ users will need to use.
     and [`CluGen.clupoints_d()`](@ref).
 - `clusizes_fn`: by default, cluster sizes are determined by the [`clusizes()`](@ref)
   function; this parameter allows the user to specify a custom function for this
-  purpose, which must follow [`clusizes()`](@ref)'s signature.
+  purpose, which must follow [`clusizes()`](@ref)'s signature; note that custom
+  functions are not required to strictly obey the `total_points` parameter.
 - `clucenters_fn`: by default, cluster centers are determined by the [`clucenters()`](@ref)
   function; this parameter allows the user to specify a custom function for this purpose,
   which must follow [`clucenters()`](@ref)'s signature.
@@ -995,6 +996,10 @@ function clugen(
 
     # Determine cluster sizes
     clu_num_points = clusizes_fn(num_clusters, total_points, allow_empty; rng=rng)
+
+    # Custom clusizes_fn's are not required to obey total_points, so we update
+    # it here just in case it's different from what the user specified
+    total_points = sum(clu_num_points)
 
     # Determine cluster centers
     clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
