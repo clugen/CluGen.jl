@@ -296,7 +296,7 @@ function plot2d(d, r)
     return allplt
 end
 
-function clupoints_d_ellipsoid(
+function clupoints_d_hollow(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
     line_len::Real,
@@ -323,41 +323,35 @@ function clupoints_d_ellipsoid(
 
         # Absolute and relative positions of projection w.r.t. the center
         pa = norm(prj - clu_ctr)
-        # pa_sign = norm(prj - edge1) < norm(prj - edge2) ? 1 : -1
-        # pa *= pa_sign
-        # pr = clamp(pa / (line_len / 2), -1, 1)
-
         pr = clamp(pa / (line_len / 2), 0, 1)
 
         # Determine angle associated with this projection
-        #a = acos(pr)
-        #a = pi/2 * (pr-1)^2
-        a = -pi/2*(pr-1)
+        a = -pi/2*(pr-1) # linear
 
-        #println(pr, " -> ", a, " rad, ", a*180/π, " deg")
+        # Alternatives:
+        #a = acos(pr)                                   # arccos
+        #a = pi/2 * (pr-1)^2                            # quadratic
+        #a = pi/2 * (1 - 1/(1 + exp(-10 * (pr - 0.5)))) # logistic
+        #a = pi/2 * sqrt(1 - pr^2)                      # half-circle
 
         # Get a random vector at this angle
         v = rand_vector_at_angle(clu_dir, a; rng=rng)
 
         # Point dispersion along vector at angle
-        f = (lat_std / 8) * randn(rng) + lat_std
+        f = (lat_std / 6) * randn(rng) + lat_std
 
         # Determine two possible points at the edges of vector (line) at angle
         pt1 = prj + f .* v
         pt2 = prj - f .* v
 
-        # Determine the point which is nearer one of the cluster-supporting line
-        # edges
-        #edge_dist = Inf
+        # Determine the point which is farther from the center of the cluster-supporting line
         ctr_dist = -Inf
         pt = nothing
 
         for pt_curr in (pt1, pt2)
             for edge_curr in (edge1, edge2)
                 curr_norm = norm(pt_curr - edge_curr)
-                #if curr_norm < edge_dist && curr_norm > ctr_dist
                 if curr_norm > ctr_dist
-                    #edge_dist = curr_norm
                     ctr_dist = curr_norm
                     pt = pt_curr
                 end

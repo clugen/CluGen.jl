@@ -124,7 +124,7 @@ for pd_name in pdist_names
    push!(p_all, p)
 end
 
-plt = plot(p_all[1], p_all[2], p_all[3], p_all[4], layout = (2, 2), size=(800,800))
+plt = plot(p_all..., layout = (2, 2), size=(800,800))
 
 savefig(plt, "point_dist.png")
 
@@ -138,6 +138,7 @@ nothing
 ```@eval
 ENV["GKSwstype"] = "100"
 using CluGen, Distributions, Plots, Random
+Base.include(Main, "extras/CluGenExtras.jl")
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -152,16 +153,18 @@ linelen_std = 1.5
 latstd = 1
 
 # Different point_dist's to use
-poffs_names = ("d-1", "d", "Exponential", "Bimodal")
+poffs_names = ("d-1", "d-1 Exponential", "d-1 Bimodal", "d", "d Hollow", "d Hollow + unif")
 
-dist_exp = (npts, lstd) -> lstd .* rand(Exponential(1/lstd), npts, 1)
+dist_exp = (npts, lstd) -> lstd .* rand(Exponential(2/lstd), npts, 1)
 dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts, 1)
 
 poffs = Dict(
-   poffs_names[1] => "d-1",
-   poffs_names[2] => "d",
-   poffs_names[3] => (projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng),
-   poffs_names[4] => (projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng),
+   poffs_names[1] => ("d-1", "norm"),
+   poffs_names[2] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
+   poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
+   poffs_names[4] => ("d", "norm"),
+   poffs_names[5] => (Main.CluGenExtras.clupoints_d_hollow, "norm"),
+   poffs_names[6] => (Main.CluGenExtras.clupoints_d_hollow, "unif")
 )
 
 # Results and plots
@@ -170,7 +173,7 @@ p_all = []
 
 for po_name in poffs_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd, point_offset=poffs[po_name])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd, point_offset=poffs[po_name][1], point_dist=poffs[po_name][2])
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -180,7 +183,7 @@ for po_name in poffs_names
    push!(p_all, p)
 end
 
-plt = plot(p_all[1], p_all[2], p_all[3], p_all[4], layout = (2, 2), size=(800,800))
+plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
 savefig(plt, "point_offset.png")
 
