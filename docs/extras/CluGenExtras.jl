@@ -253,7 +253,6 @@ function plot2d(d, r)
 
     end
 
-
     # ###### #
     # Plot 9 #
     # ###### #
@@ -296,6 +295,28 @@ function plot2d(d, r)
     return allplt
 end
 
+"""
+    clupoints_d_hollow(
+        projs::AbstractArray{<:Real, 2},
+        lat_std::Real,
+        line_len::Real,
+        clu_dir::AbstractArray{<:Real, 1},
+        clu_ctr::AbstractArray{<:Real, 1};
+        rng::AbstractRNG = Random.GLOBAL_RNG
+    )::AbstractArray{<:Real}
+
+Alternative function for the `point_offset` parameter of the `clugen()` function
+for creating hollow clusters.
+
+# Arguments
+- `projs`: point projections on the cluster-supporting line.
+- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+  dispersion.
+- `line_len`: length of cluster-supporting line.
+- `clu_dir`: direction of the cluster-supporting line (unit vector).
+- `clu_ctr`: center position of the cluster-supporting line center position.
+- `rng`: an optional pseudo-random number generator for reproducible executions.
+"""
 function clupoints_d_hollow(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
@@ -360,44 +381,98 @@ function clupoints_d_hollow(
 
         clu_pts[i, :] = pt
     end
-    println()
     return clu_pts
 end
 
 """
+    plot2d_point_placement(
+        pre_projs::AbstractArray{<:Real, 1},
+        line_len::Integer,
+        clu_ctr::AbstractArray{<:Real, 1},
+        clu_dir::AbstractArray{<:Real, 1},
+        lat_std::Real,
+        clupoints_fn::Function
+    )::Plots.Plot
 
-line_len = 40
-clu_ctr = [1, -1]
-clu_dir = [-1, 0]
-lat_std = 5
-#pre_projs = [19.99, -10, -3, 0.5, 0, 1, 1.5, 19, -0.1, -19.99]
-pre_projs = rand(800) .* 40 .- 20
+Helper/visual debugging function which plots a 2D cluster connecting the point
+projections on the cluster-supporting line to the respective final cluster points.
 
-projs = points_on_line(clu_ctr, clu_dir, pre_projs)
+# Arguments
+- `pre_projs`: distribution of points along the line, with values generally
+   between -1 and 1 (though this function will work even if some points are
+   outside the line); values close to -1 or -1 correspond to points near the
+   edges, while values close to zero correspond to points near the center of the
+   line.
+- `line_len`: length of cluster-supporting line.
+- `clu_ctr`: center position of the cluster-supporting line center position.
+- `clu_dir`: direction of the cluster-supporting line (unit vector).
+- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+  dispersion.
+- `clupoints_fn`: function to place the final points given their projections on
+  the cluster-supporting line.
+- `rng`: an optional pseudo-random number generator for reproducible executions.
 
-edge1 = clu_ctr + (line_len / 2) .* clu_dir
-edge2 = clu_ctr - (line_len / 2) .* clu_dir
+# Examples
+```julia-repl
+julia> include("docs/extras/CluGenExtras.jl")
+Main.CluGenExtras
 
-pts = clupoints_d_ellipsoid(projs, lat_std, line_len, clu_dir, clu_ctr)
-
-plt = plot(legend=false,size=(900,900))
-
-plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange, linewidth=4)
-
-plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], seriestype=:scatter, markershape=:vline, markercolor=:orange,markerstrokewidth=0.1,markersize=20)
-
-plot!(plt, [clu_ctr[1]], [clu_ctr[2]], seriestype=:scatter, markershape=:circle, markercolor=:orange, markersize=8,markerstrokewidth=0.1)
-
-for i in 1:size(projs, 1)
-    plot!([pts[i,1], projs[i,1]], [pts[i,2], projs[i,2]],color=:grey,linewidth=0.5)
-end
-
-plot!(plt,projs[:,1],projs[:,2],seriestype=:scatter,markersize=2.5,markerstrokewidth=0.1,markercolor=:red)
-
-plot!(plt,pts[:,1],pts[:,2],markershape=:cross,seriestype=:scatter,markersize=4,markerstrokewidth=0.1,markercolor=:green)
-
-plot(plt)
-
+julia> Main.CluGenExtras.plot_point_placement(rand(800) .* 40 .- 20, 40, [0,0],
+       normalize([1,1]), 5, Main.CluGenExtras.clupoints_d_hollow)
+```
 """
+function plot2d_point_placement(
+    pre_projs::AbstractArray{<:Real, 1},
+    line_len::Integer,
+    clu_ctr::AbstractArray{<:Real, 1},
+    clu_dir::AbstractArray{<:Real, 1},
+    lat_std::Real,
+    clupoints_fn::Function;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+)::Plots.Plot
+
+    # Determine point projections on the line
+    projs = points_on_line(clu_ctr, clu_dir, pre_projs)
+
+    # Determine line edges
+    edge1 = clu_ctr + (line_len / 2) .* clu_dir
+    edge2 = clu_ctr - (line_len / 2) .* clu_dir
+
+    # Obtain final points from their projections on the line
+    pts = clupoints_fn(projs, lat_std, line_len, clu_dir, clu_ctr; rng=rng)
+
+    # Create plot
+    plt = plot(legend=false, size=(900, 900))
+
+    # Draw line
+    plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange, linewidth=4)
+
+    # Draw edeges
+    plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], seriestype=:scatter,
+        markershape=:vline, markercolor=:orange, markerstrokewidth=0.1, markersize=20)
+
+    # Draw center
+    plot!(plt, [clu_ctr[1]], [clu_ctr[2]], seriestype=:scatter, markershape=:circle,
+        markercolor=:orange, markersize=8, markerstrokewidth=0.1)
+
+    # Draw line from projection to respective point
+    for i in 1:size(projs, 1)
+        plot!([pts[i,1], projs[i,1]], [pts[i,2], projs[i,2]], color=:grey, linewidth=0.5)
+    end
+
+    # Draw projections
+    plot!(plt, projs[:,1], projs[:,2], seriestype=:scatter, markersize=2.5,
+        markerstrokewidth=0.1,markercolor=:red)
+
+    # Draw final points
+    plot!(plt, pts[:,1], pts[:,2], markershape=:cross, seriestype=:scatter,
+        markersize=4, markerstrokewidth=0.1, markercolor=:green)
+
+    # Display plot
+    display(plot(plt))
+
+    # Return plot
+    return plt
+end
 
 end # Module
