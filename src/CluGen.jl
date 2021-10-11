@@ -28,7 +28,8 @@ export rand_vector_at_angle
 """
     fix_total_points!(
         clu_num_points::AbstractArray{<:Integer, 1},
-        total_points::Integer)
+        total_points::Integer
+    ) -> AbstractArray{<:Integer, 1}
 
 This function makes sure that the values in the `clu_num_points` array, i.e. the
 number of points in each cluster, add up to `total_points`. If this is not the
@@ -46,7 +47,8 @@ or decrementing the value corresponding to the currently larger cluster while
 """
 function fix_total_points!(
     clu_num_points::AbstractArray{<:Integer, 1},
-    total_points::Integer)
+    total_points::Integer
+)::AbstractArray{<:Integer, 1}
 
     while sum(clu_num_points) < total_points
         imin = argmin(clu_num_points)
@@ -57,15 +59,21 @@ function fix_total_points!(
         clu_num_points[imax] -= 1
     end
 
+    return clu_num_points
+
 end
 
 """
-    fix_empty!(clu_num_points::AbstractArray{<:Integer, 1})
+    fix_empty!(
+        clu_num_points::AbstractArray{<:Integer, 1},
+        allow_empty::Bool = false
+    ) -> AbstractArray{<:Integer, 1}
 
 This function makes sure that, given enough points, no clusters are left empty.
 This is done by removing a point from the currently larger cluster while there
 are empty clusters. If the total number of points is smaller than the number of
-clusters, this function does nothing.
+clusters (or if the `allow_empty` parameter is set to `true`), this function does
+nothing.
 
 !!! note "Internal package function"
     This function is used internally by the [`clusizes()`](@ref) function, thus
@@ -74,7 +82,14 @@ clusters, this function does nothing.
     for custom cluster sizing implementations given as the `clusizes_fn`
     parameter for the main [`clugen()`](@ref) function.
 """
-function fix_empty!(clu_num_points::AbstractArray{<:Integer, 1})
+function fix_empty!(
+    clu_num_points::AbstractArray{<:Integer, 1},
+    allow_empty::Bool = false
+)::AbstractArray{<:Integer, 1}
+
+    # If the allow_empty parameter is set to true, don't do anything and return
+    # immediately; this is useful for quick `clusizes_fn` one-liners
+    allow_empty && return clu_num_points
 
     # Find empty clusters
     empty_clusts = findall(x -> x == 0, clu_num_points)
@@ -93,6 +108,8 @@ function fix_empty!(clu_num_points::AbstractArray{<:Integer, 1})
 
         end
     end
+
+    return clu_num_points
 
 end
 
@@ -484,7 +501,7 @@ end
     points_on_line(
         center::AbstractArray{<:Real, 1},
         direction::AbstractArray{<:Real, 1},
-        dist_center::AbstractArray{<:Real, 1},
+        dist_center::AbstractArray{<:Real, 1}
     ) -> AbstractArray{<:Real, 2}
 
 Determine coordinates of points on a line with `center` and `direction`, based
@@ -523,7 +540,7 @@ julia> points_on_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
 function points_on_line(
     center::AbstractArray{<:Real, 1},
     direction::AbstractArray{<:Real, 1},
-    dist_center::AbstractArray{<:Real, 1},
+    dist_center::AbstractArray{<:Real, 1}
 )::AbstractArray{<:Real, 2}
 
     return center' .+ dist_center * direction'
