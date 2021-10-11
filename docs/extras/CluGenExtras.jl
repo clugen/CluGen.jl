@@ -70,26 +70,12 @@ function plot2d(d, r)
     # Plot 2 #
     # ###### #
 
-    # Side length of square grid for placing illustrative sized clusters
-    gside = ceil(Int, sqrt(nclu))
-
-    # Relative illustrative cluster sizes
-    iclusizes = r.cluster_sizes ./ maximum(r.cluster_sizes)
-
     p2 = plot(title="2. Determine cluster sizes", legend=false, showaxis=false,
         titlefontsize=8, titlelocation=:left,
         foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
 
-    for i in 1:nclu
-        g_y = -((i - 1) ÷ gside)
-        g_x = (i - 1) % gside
-        scal = 0.48 * iclusizes[i]
-        an = (g_x, g_y, text("$(r.cluster_sizes[i]) points", :center,
-            pointsize=7, color=:black)) #theme_colors[i])))
-        plot!(p2, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
-            linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
-            annotations = an)
-    end
+    # Use auxiliary function to perform plotting
+    plot_clusizes!(p2, r.cluster_sizes)
 
     # ###### #
     # Plot 3 #
@@ -296,6 +282,46 @@ function plot2d(d, r)
 end
 
 """
+    plot_clusizes!(
+        plt::Plots.Plot,
+        clusizes::AbstractArray{<:Integer, 1},
+    ) ->  Plots.Plot
+
+Plots cluster sizes within circles which are themselves sized accordingly.
+"""
+function plot_clusizes!(
+    plt::Plots.Plot,
+    clusizes::AbstractArray{<:Integer, 1},
+)::Plots.Plot
+
+    # Get current theme colors
+    theme_colors = theme_palette(:auto).colors.colors
+
+    # Number of clusters
+    nclu = length(clusizes)
+
+    # Side length of square grid for placing illustrative sized clusters
+    gside = ceil(Int, sqrt(nclu))
+
+    # Relative illustrative cluster sizes
+    iclusizes = clusizes ./ maximum(clusizes)
+
+    # Draw circles with cluster sizes
+    for i in 1:nclu
+        g_y = -((i - 1) ÷ gside)
+        g_x = (i - 1) % gside
+        scal = 0.48 * iclusizes[i]
+        an = (g_x, g_y, text("$(clusizes[i]) points", :center,
+            pointsize=7, color=:black))
+        plot!(plt, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
+            linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
+            annotations = an)
+    end
+
+    return plt
+end
+
+"""
     clupoints_d_hollow(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
@@ -303,7 +329,7 @@ end
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1};
         rng::AbstractRNG = Random.GLOBAL_RNG
-    )::AbstractArray{<:Real}
+    ) -> AbstractArray{<:Real}
 
 Alternative function for the `point_offset` parameter of the `clugen()` function
 for creating hollow clusters.
@@ -392,7 +418,7 @@ end
         clu_dir::AbstractArray{<:Real, 1},
         lat_std::Real,
         clupoints_fn::Function
-    )::Plots.Plot
+    ) -> Plots.Plot
 
 Helper/visual debugging function which plots a 2D cluster connecting the point
 projections on the cluster-supporting line to the respective final cluster points.
