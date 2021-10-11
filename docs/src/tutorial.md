@@ -138,7 +138,6 @@ nothing
 ```@eval
 ENV["GKSwstype"] = "100"
 using CluGen, Distributions, Plots, Random
-Base.include(Main, "extras/CluGenExtras.jl")
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -193,6 +192,58 @@ nothing
 ![](point_offset.png)
 
 ### `clusizes_fn`
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different clusizes_fn's to use
+clusz_names = ("Normal (default)", "Uniform", "Poisson", "Poisson (no fix_total_points!)")
+
+clusz = Dict(
+   clusz_names[1] => clusizes,
+   clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_total_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
+   clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_total_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
+   clusz_names[4] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
+)
+
+# Plots
+p_all = []
+
+for csz_name in clusz_names
+
+   Random.seed!(111)
+
+   cluszs = clusz[csz_name](nclu, npts, false)
+
+   p = plot(title=csz_name, legend=false, showaxis=false,
+      foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
+
+   Main.CluGenExtras.plot_clusizes!(p, cluszs)
+
+   push!(p_all, p)
+end
+
+plt = plot(p_all..., layout = (2, 2), size=(800,800))
+
+savefig(plt, "clusizes.png")
+
+nothing
+```
+
+![](clusizes.png)
 
 ### `clucenters_fn`
 
