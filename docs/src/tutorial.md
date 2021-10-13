@@ -221,17 +221,27 @@ clusz = Dict(
 
 # Plots
 p_all = []
+cluszs_all = Dict()
+maxclu = 0
 
 for csz_name in clusz_names
 
    Random.seed!(111)
 
-   cluszs = clusz[csz_name](nclu, npts, false)
+   cluszs_all[csz_name] = clusz[csz_name](nclu, npts, false)
+
+   if maximum(cluszs_all[csz_name]) > maxclu
+      global maxclu = maximum(cluszs_all[csz_name])
+   end
+
+end
+
+for csz_name in clusz_names
 
    p = plot(title=csz_name, legend=false, showaxis=false,
       foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
 
-   Main.CluGenExtras.plot_clusizes!(p, cluszs)
+   Main.CluGenExtras.plot_clusizes!(p, cluszs_all[csz_name]; maxsize = maxclu)
 
    push!(p_all, p)
 end

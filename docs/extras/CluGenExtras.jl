@@ -291,7 +291,8 @@ Plots cluster sizes within circles which are themselves sized accordingly.
 """
 function plot_clusizes!(
     plt::Plots.Plot,
-    clusizes::AbstractArray{<:Integer, 1},
+    clusizes::AbstractArray{<:Integer, 1};
+    maxsize::Union{Nothing, Integer} = nothing
 )::Plots.Plot
 
     # Get current theme colors
@@ -303,8 +304,14 @@ function plot_clusizes!(
     # Side length of square grid for placing illustrative sized clusters
     gside = ceil(Int, sqrt(nclu))
 
+    # If no reference maximum size was given, get maximum size from the largest
+    # cluster
+    if maxsize === nothing
+        maxsize = maximum(clusizes)
+    end
+
     # Relative illustrative cluster sizes
-    iclusizes = clusizes ./ maximum(clusizes)
+    iclusizes = clusizes ./ maxsize
 
     # Draw circles with cluster sizes
     for i in 1:nclu
