@@ -114,7 +114,7 @@ p_all = []
 
 for pd_name in pdist_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd, point_dist=pdists[pd_name])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_dist=pdists[pd_name])
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -172,7 +172,7 @@ p_all = []
 
 for po_name in poffs_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd, point_offset=poffs[po_name][1], point_dist=poffs[po_name][2])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_offset=poffs[po_name][1], point_dist=poffs[po_name][2])
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -256,6 +256,57 @@ nothing
 ![](clusizes.png)
 
 ### `clucenters_fn`
+
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different clucenter_fn's to use
+cluctr_names = ("Uniform (default)", "Hand-picked")
+
+cluctr = Dict(
+   cluctr_names[1] => clucenters,
+   cluctr_names[2] => (nclu, clusep, cluoff; rng = Random.GLOBAL_RNG) -> rand(rng, nclu, length(clusep)) .* 0 + [-20 -20; -20 20; 20 20; 20 -20]
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for cluc_name in cluctr_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; clucenters_fn = cluctr[cluc_name])
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=cluc_name)
+   push!(p_all, p)
+end
+
+plt = plot(p_all..., layout = (1, 2), size=(800,400))
+
+savefig(plt, "clucenters.png")
+
+nothing
+```
+
+![](clucenters.png)
+
 
 ### `line_lengths_fn`
 
