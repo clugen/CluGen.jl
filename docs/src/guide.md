@@ -95,6 +95,9 @@ see how it all fits together.
 | ``p_l()``        | `point_dist`      | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along lines. |
 | ``p_o()``        | `point_offset`    | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Points placement from projections. |
 | ``c_s()``        | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
+| ``c_c()``        | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
+| ``l_l()``        | `line_lengths_fn` | [`line_lengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
+| ``l_{\Delta\theta}`` | `line_angles_fn` | [`line_angles()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{v}``). |
 
 ### The algorithm in detail
 
