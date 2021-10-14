@@ -7,8 +7,8 @@ Pages = ["guide.md"]
 ## What is CluGen?
 
 CluGen is an algorithm for generating multidimensional clusters. Each cluster is
-supported by a line, the position, orientation and length of which guide where
-the respective points are placed.
+supported by a line, the position, orientation and length of which determine
+where the respective points are placed.
 
 ## Overview
 
@@ -24,10 +24,10 @@ works as follows (``^*`` means the algorithm step is stochastic):
 5. ``^*``Determine angles between `direction` and cluster-supporting lines
 6. Determine direction of cluster-supporting lines
 7. For each cluster:
-   1. Determine distance of point projections from the center of the cluster-supporting
-      line
-   2. Determine coordinates of point projections on the line
-   3. ``^*``Determine points from their projections on the line
+   1. Determine distance of point projections from the center of the
+      cluster-supporting line
+   3. Determine coordinates of point projections on the line
+   4. ``^*``Determine points from their projections on the line
 
 The following image provides a stylized overview of the algorithm steps when the
 main `direction` is set to ``\mathbf{v}=\begin{bmatrix}1 & 1\end{bmatrix}^T`` (thus
@@ -68,13 +68,35 @@ will be discussed next, although each image hints on how these control the outpu
 
 ## Detailed description
 
-| Math             | Code           | Description           |
-|:---------------- |:-------------- |:--------------------- |
-| ``d``            | `num_dims`     | Number of dimensions. |
-| ``n``            | `num_clusters` | Number of clusters.   |
-| ``p_\text{tot}`` | `total_points` | Total points.         |
-| ``\mathbf{v}``   | `direction`    | Main direction.       |
+Here we provide a detailed description of the algorithm and its parameters. We
+start by looking at the mandatory parameters, then the optional ones, and then
+see how it all fits together.
 
+### Mandatory parameters
+
+| Math             | Code              | Description                              |
+|:---------------- |:----------------- |:---------------------------------------- |
+| ``d``            | `num_dims`        | Number of dimensions.                    |
+| ``n``            | `num_clusters`    | Number of clusters.                      |
+| ``p_\text{tot}`` | `total_points`    | Total points.                            |
+| ``\mathbf{v}``   | `direction`       | Main direction (``d \times 1``).         |
+| ``\sigma_\theta``| `angle_std`       | Angle standard deviation (radians).      |
+| ``\mathbf{s}``   | `cluster_sep`     | Cluster separation (``d \times 1``).     |
+| ``l``            | `line_length`     | Mean length of cluster-supporting lines. |
+| ``\sigma_l``     | `line_length_std` | Standard deviation of the length of cluster-supporting lines. |
+| ``\sigma_f``     | `lateral_std`     | Point dispersion from line, i.e., cluster lateral dispersion. |
+
+### Optional parameters
+
+| Math             | Code              | Default value                                   | Description                               |
+|:---------------- |:----------------- | :---------------------------------------------- | :---------------------------------------- |
+| ``\phi``         | `allow_empty`     | `false`                                         | Allow empty clusters?                     |
+| ``\mathbf{o}``   | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers.     |
+| ``p_l()``        | `point_dist`      | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along lines. |
+| ``p_o()``        | `point_offset`    | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Points placement from projections. |
+| ``c_s()``        | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
+
+### The algorithm in detail
 
 TODO Describe steps
 
