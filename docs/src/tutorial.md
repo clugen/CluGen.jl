@@ -310,5 +310,58 @@ nothing
 
 ### `line_lengths_fn`
 
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = 0 # To better see line lengths
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 0 # To better see line lengths
+
+# Different line_lengths_fn's to use
+ll_names = ("Normal (default)", "Poisson", "Uniform", "Hand-picked")
+
+ll = Dict(
+   ll_names[1] => line_lengths,
+   ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
+   ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, DiscreteUniform(0, ll * 2), nclu),
+   ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for ll_name in ll_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; line_lengths_fn = ll[ll_name], point_dist="unif")
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=ll_name)
+   push!(p_all, p)
+end
+
+plt = plot(p_all..., layout = (2, 2), size=(800,800))
+
+savefig(plt, "line_lengths.png")
+
+nothing
+```
+
+![](line_lengths.png)
+
+
+
 
 ### `line_angles_fn`
