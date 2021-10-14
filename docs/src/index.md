@@ -1,5 +1,5 @@
 # CluGen.jl Documentation
 
 ```@contents
-Pages = ["index.md", "tutorial.md", "gallery.md", "api.md"]
+Pages = ["index.md", "guide.md", "gallery.md", "api.md"]
 ```

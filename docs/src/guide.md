@@ -1,7 +1,7 @@
-# Tutorial
+# Guide
 
 ```@contents
-Pages = ["tutorial.md"]
+Pages = ["guide.md"]
 ```
 
 ## What is CluGen?
@@ -10,7 +10,7 @@ CluGen is an algorithm for generating multidimensional clusters. Each cluster is
 supported by a line, the position, orientation and length of which guide where
 the respective points are placed.
 
-## Algorithm Overview
+## Overview
 
 Given the main `direction` ``$n$``-dimensional vector, the number of clusters
 (`num_clusters`), the total number of points (`total_points`), and a number of
@@ -66,7 +66,7 @@ line length standard deviation of 1.5, and lateral dispersion of 1.
 Other parameters not specified used defaults which
 will be discussed next, although each image hints on how these control the output.
 
-## Parameters and algorithm details
+## Detailed description
 
 | Math             | Code           | Description           |
 |:---------------- |:-------------- |:--------------------- |
@@ -78,7 +78,7 @@ will be discussed next, although each image hints on how these control the outpu
 
 TODO Describe steps
 
-## Parameter influences on final results
+## Algorithm parameters in depth
 
 ### `point_dist`
 
