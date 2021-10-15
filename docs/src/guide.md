@@ -93,7 +93,7 @@ see how it all fits together.
 | ``\phi``            | `allow_empty`     | `false`                                         | Allow empty clusters?                                        |
 | ``\mathbf{o}``      | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers (``n \times 1``).       |
 | ``p_\text{proj}()`` | `proj_dist_fn`    | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along cluster-supporting lines. |
-| ``p_\text{final}()``| `point_dist_fn`   | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Distribution of final points from their projections. |
+| ``p_\text{final}()``| `point_dist_fn`   | `"n-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Distribution of final points from their projections. |
 | ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
 | ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
 | ``l()``             | `llengths_fn`     | [`llengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
@@ -177,16 +177,16 @@ linelen_std = 1.5
 latstd = 1
 
 # Different proj_dist_fn's to use
-poffs_names = ("d-1", "d-1 Exponential", "d-1 Bimodal", "d", "d Hollow", "d Hollow + unif")
+poffs_names = ("n-1", "d-1 Exponential", "d-1 Bimodal", "n", "d Hollow", "d Hollow + unif")
 
 dist_exp = (npts, lstd) -> lstd .* rand(Exponential(2/lstd), npts, 1)
 dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts, 1)
 
 poffs = Dict(
-   poffs_names[1] => ("d-1", "norm"),
+   poffs_names[1] => ("n-1", "norm"),
    poffs_names[2] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
    poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
-   poffs_names[4] => ("d", "norm"),
+   poffs_names[4] => ("n", "norm"),
    poffs_names[5] => (Main.CluGenExtras.clupoints_d_hollow, "norm"),
    poffs_names[6] => (Main.CluGenExtras.clupoints_d_hollow, "unif")
 )

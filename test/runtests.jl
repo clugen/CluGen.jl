@@ -40,8 +40,8 @@ ptdist_fns = Dict(
     "equidistant" =>  (len, n) -> (-len/2:len/n:len/2)[1:n]
 )
 ptoff_fns = Dict(
-    "d-1" => "d-1",
-    "d" => "d",
+    "n-1" => "n-1",
+    "n" => "n",
     "proj+1" => (projs, lstd, len, cdir, cctr; rng=nothing) -> projs + ones(size(projs))
 )
 csz_fns = Dict(

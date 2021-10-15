@@ -625,7 +625,7 @@ centered at the point's projection, using the normal distribution (μ=0, σ=`lat
 
 !!! note "Internal package function"
     This function's main intended use is by the [`clugen()`](@ref) function,
-    generating points when its `point_dist_fn` parameter is set to `"d-1"`. Thus,
+    generating points when its `point_dist_fn` parameter is set to `"n-1"`. Thus,
     it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.clupoints_d_1(...)`.
 
@@ -690,7 +690,7 @@ line, placing each point `i` around its projection using the normal distribution
 
 !!! note "Internal package function"
     This function's main intended use is by the [`clugen()`](@ref) function,
-    generating points when its `point_dist_fn` parameter is set to `"d"`. Thus,
+    generating points when its `point_dist_fn` parameter is set to `"n"`. Thus,
     it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.clupoints_d(...)`.
 
@@ -761,7 +761,7 @@ end
         allow_empty::Bool = false,
         cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
         proj_dist_fn::Union{String, <:Function} = "norm",
-        point_dist_fn::Union{String, <:Function} = "d-1",
+        point_dist_fn::Union{String, <:Function} = "n-1",
         clusizes_fn::Function = clusizes,
         clucenters_fn::Function = clucenters,
         llengths_fn::Function = llengths,
@@ -809,11 +809,11 @@ users will need to use.
     roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
 - `point_dist_fn`: controls how points are created from their projections on the lines,
   with three possible values:
-  - `"d-1"` (default): generate points from their ``d``-dimensional projections on a
+  - `"n-1"` (default): generate points from their ``d``-dimensional projections on a
     cluster-supporting line, placing each point `i` on a second line, orthogonal to
     the first and centered at the point's projection, using the normal distribution
     (μ=0, σ=`lat_std`). This is done by the [`CluGen.clupoints_d_1()`](@ref) function.
-  - `"d"`: generate points from their ``d``-dimensional projections on a
+  - `"n"`: generate points from their ``d``-dimensional projections on a
     cluster-supporting line, placing each point `i` around its projection using the
     normal distribution (μ=`0`, σ=`lateral_disp`). This is done by the
     [`CluGen.clupoints_d()`](@ref) function.
@@ -898,7 +898,7 @@ function clugen(
     allow_empty::Bool = false,
     cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
     proj_dist_fn::Union{String, <:Function} = "norm",
-    point_dist_fn::Union{String, <:Function} = "d-1",
+    point_dist_fn::Union{String, <:Function} = "n-1",
     clusizes_fn::Function = clusizes,
     clucenters_fn::Function = clucenters,
     llengths_fn::Function = llengths,
@@ -991,11 +991,11 @@ function clugen(
         # returns a num_points x num_dims matrix containing the final points
         # for the current cluster
         pt_from_proj_fn = point_dist_fn
-    elseif point_dist_fn == "d-1"
+    elseif point_dist_fn == "n-1"
         # Points will be placed on a second line perpendicular to the cluster
         # line using a normal distribution centered at their intersection
         pt_from_proj_fn = clupoints_d_1
-    elseif point_dist_fn == "d"
+    elseif point_dist_fn == "n"
         # Points will be placed using a multivariate normal distribution
         # centered at the point projection
         pt_from_proj_fn = clupoints_d

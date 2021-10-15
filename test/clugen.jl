@@ -112,7 +112,7 @@
         ae = true
         clu_off = [-1.5, 0, 2]
         pt_dist = "unif"
-        pt_off = "d-1"
+        pt_off = "n-1"
         csizes_fn = clusizes
         ccenters_fn = clucenters
         llengths_fn = llengths
