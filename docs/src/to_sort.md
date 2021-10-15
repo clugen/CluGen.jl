@@ -36,7 +36,7 @@ end
 savefig("ex2D3D_1_lines.png"); nothing # hide
 ```
 
-And now the projections (similar to setting `lateral_std` to 0):
+And now the projections (similar to setting `lateral_disp` to 0):
 
 ![](ex2D3D_1_lines.png)
 

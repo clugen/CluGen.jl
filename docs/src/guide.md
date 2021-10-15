@@ -35,8 +35,8 @@ in 2D space), 4 clusters, and a total of 200 points. Additional parameters inclu
 a mean cluster separation (`cluster_sep`) of 10 in both dimensions, an angle
 standard deviation of ``\pi/32`` radians (``\approx{}5.6^{\circ}``)—the angle of
 the main `direction` is considered the mean, line length mean (`line_length`) of
-10, line length standard deviation (`line_length_std`) of 1.5, and lateral
-dispersion (`lateral_std`) of 1.
+10, line length standard deviation (`line_length_disp`) of 1.5, and lateral
+dispersion (`lateral_disp`) of 1.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -74,24 +74,24 @@ see how it all fits together.
 
 ### Mandatory parameters
 
-| Math             | Code              | Description                              |
-|:---------------- |:----------------- |:---------------------------------------- |
-| ``d``            | `num_dims`        | Number of dimensions.                    |
-| ``n``            | `num_clusters`    | Number of clusters.                      |
-| ``p_\text{tot}`` | `total_points`    | Total points.                            |
-| ``\mathbf{v}``   | `direction`       | Main direction (``d \times 1``).         |
-| ``\sigma_\theta``| `angle_std`       | Angle standard deviation (radians).      |
-| ``\mathbf{s}``   | `cluster_sep`     | Cluster separation (``d \times 1``).     |
-| ``l``            | `line_length`     | Mean length of cluster-supporting lines. |
-| ``\sigma_l``     | `line_length_std` | Standard deviation of the length of cluster-supporting lines. |
-| ``\sigma_f``     | `lateral_std`     | Point dispersion from line, i.e., cluster lateral dispersion. |
+| Math             | Code              | Description                                                      |
+|:---------------- |:----------------- |:---------------------------------------------------------------- |
+| ``n``            | `num_dims`        | Number of dimensions.                                            |
+| ``c``            | `num_clusters`    | Number of clusters.                                              |
+| ``p``            | `total_points`    | Total points in all clusters.                                    |
+| ``\mathbf{d}``   | `direction`       | Average direction of cluster-supporting lines (``n \times 1``).  |
+| ``\theta_\sigma``| `angle_disp`      | Angle dispersion of cluster-supporting lines (radians).          |
+| ``\mathbf{s}``   | `cluster_sep`     | Average cluster separation (``n \times 1``).                     |
+| ``l``            | `line_length`     | Average length of cluster-supporting lines.                      |
+| ``l_\sigma``     | `line_length_disp`| Length dispersion of cluster-supporting lines.                   |
+| ``f_\sigma``     | `lateral_disp`    | Cluster lateral dispersion, i.e., dispersion of points from their projection on the cluster-supporting line. |
 
 ### Optional parameters
 
-| Math             | Code              | Default value                                   | Description                               |
-|:---------------- |:----------------- | :---------------------------------------------- | :---------------------------------------- |
-| ``\phi``         | `allow_empty`     | `false`                                         | Allow empty clusters?                     |
-| ``\mathbf{o}``   | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers.     |
+| Math             | Code              | Default value                                   | Description                                                  |
+|:---------------- |:----------------- | :---------------------------------------------- | :----------------------------------------------------------- |
+| ``\phi``         | `allow_empty`     | `false`                                         | Allow empty clusters?                                        |
+| ``\mathbf{o}``   | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers (``n \times 1``).       |
 | ``p_l()``        | `point_dist`      | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along lines. |
 | ``p_o()``        | `point_offset`    | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Points placement from projections. |
 | ``c_s()``        | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |

@@ -260,14 +260,14 @@ end
     line_lengths(
         num_clusters::Integer,
         line_length::Real,
-        line_length_std::Real;
+        line_length_disp::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real, 1}
 
 Determine length of cluster-supporting lines.
 
 These lengths are obtained using the folded normal distribution (μ=`line_length`,
-σ=`line_length_std`).
+σ=`line_length_disp`).
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
@@ -289,27 +289,27 @@ julia> line_lengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
 function line_lengths(
     num_clusters::Integer,
     line_length::Real,
-    line_length_std::Real;
+    line_length_disp::Real;
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Real, 1}
 
-    return abs.(line_length .+ line_length_std .* randn(rng, num_clusters))
+    return abs.(line_length .+ line_length_disp .* randn(rng, num_clusters))
 
 end
 
 """
     line_angles(
         num_clusters::Integer,
-        angle_std::Real;
+        angle_disp::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real, 1}
 
 Determine angles between base direction and cluster-supporting lines.
 
-Note that `angle_std` should be in radians and results are given in radians in
+Note that `angle_disp` should be in radians and results are given in radians in
 the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
 
-These angles are obtained from a wrapped normal distribution (μ=0, σ=`angle_std`)
+These angles are obtained from a wrapped normal distribution (μ=0, σ=`angle_disp`)
 with support in the interval ``\\left[-\\pi/2,\\pi/2\\right]``. Note this is
 different from the standard wrapped normal distribution, the support of which
 is given by the interval ``\\left[-\\pi,\\pi\\right]``.
@@ -332,7 +332,7 @@ julia> line_angles(3, pi/32; rng=MersenneTwister(987)) # Reproducible
 """
 function line_angles(
     num_clusters::Integer,
-    angle_std::Real;
+    angle_disp::Real;
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Real, 1}
 
@@ -348,7 +348,7 @@ function line_angles(
     end
 
     # Get random angle differences using the normal distribution
-    angles = angle_std .* randn(rng, num_clusters)
+    angles = angle_disp .* randn(rng, num_clusters)
 
     # Make sure angle differences are within interval [-π/2, π/2]
     map!(minangle, angles, angles)
@@ -752,11 +752,11 @@ end
         num_clusters::Integer,
         total_points::Integer,
         direction::AbstractArray{<:Real, 1},
-        angle_std::Real,
+        angle_disp::Real,
         cluster_sep::AbstractArray{<:Real, 1},
         line_length::Real,
-        line_length_std::Real,
-        lateral_std::Real;
+        line_length_disp::Real,
+        lateral_disp::Real;
         # Keyword arguments
         allow_empty::Bool = false,
         cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
@@ -787,12 +787,12 @@ users will need to use.
 - `num_clusters`: number of clusters to generate.
 - `total_points`: total number of points to generate.
 - `direction`: main direction of the clusters (`num_dims` x 1).
-- `angle_std`: considering the angle of `direction` as the mean of the cluster-supporting
+- `angle_disp`: considering the angle of `direction` as the mean of the cluster-supporting
   line angles, this parameter represents the respective standard deviation, in radians.
 - `cluster_sep`: mean cluster separation in each dimension (`num_dims` x 1).
 - `line_length`: mean length of cluster-supporting lines.
-- `line_length_std`: standard deviation of the length of cluster-supporting lines.
-- `lateral_std`: point dispersion from line, i.e., cluster lateral dispersion.
+- `line_length_disp`: standard deviation of the length of cluster-supporting lines.
+- `lateral_disp`: point dispersion from line, i.e., cluster lateral dispersion.
 
 # Arguments (optional)
 - `allow_empty`: allow empty clusters? `false` by default.
@@ -815,7 +815,7 @@ users will need to use.
     (μ=0, σ=`lat_std`). This is done by the [`CluGen.clupoints_d_1()`](@ref) function.
   - `"d"`: generate points from their ``d``-dimensional projections on a
     cluster-supporting line, placing each point `i` around its projection using the
-    normal distribution (μ=`0`, σ=`lateral_std`). This is done by the
+    normal distribution (μ=`0`, σ=`lateral_disp`). This is done by the
     [`CluGen.clupoints_d()`](@ref) function.
   - User-defined function: the user can specify a custom point placement strategy
     by passing a function with the same signature as [`CluGen.clupoints_d_1()`](@ref)
@@ -890,11 +890,11 @@ function clugen(
     num_clusters::Integer,
     total_points::Integer,
     direction::AbstractArray{<:Real, 1},
-    angle_std::Real,
+    angle_disp::Real,
     cluster_sep::AbstractArray{<:Real, 1},
     line_length::Real,
-    line_length_std::Real,
-    lateral_std::Real;
+    line_length_disp::Real,
+    lateral_disp::Real;
     allow_empty::Bool = false,
     cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
     point_dist::Union{String, <:Function} = "norm",
@@ -1022,10 +1022,10 @@ function clugen(
     clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
 
     # Determine length of lines supporting clusters
-    lengths = line_lengths_fn(num_clusters, line_length, line_length_std; rng=rng)
+    lengths = line_lengths_fn(num_clusters, line_length, line_length_disp; rng=rng)
 
     # Obtain angles between main direction and cluster-supporting lines
-    angles = line_angles_fn(num_clusters, angle_std; rng=rng)
+    angles = line_angles_fn(num_clusters, angle_disp; rng=rng)
 
     # Determine normalized cluster directions
     clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
@@ -1063,7 +1063,7 @@ function clugen(
         # Determine points from their projections on the line
         points[idx_start:idx_end, :] = pt_from_proj_fn(
             points_proj[idx_start:idx_end, :],
-            lateral_std,
+            lateral_disp,
             lengths[i],
             clu_dirs[i, :],
             clu_centers[i, :];
