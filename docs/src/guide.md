@@ -88,16 +88,16 @@ see how it all fits together.
 
 ### Optional parameters
 
-| Symbol              | Parameter         | Default value                                   | Description                                                  |
-|:------------------- |:----------------- | :---------------------------------------------- | :----------------------------------------------------------- |
-| ``\phi``            | `allow_empty`     | `false`                                         | Allow empty clusters?                                        |
-| ``\mathbf{o}``      | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers (``n \times 1``).       |
-| ``p_\text{proj}()`` | `proj_dist_fn`    | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along cluster-supporting lines. |
-| ``p_\text{final}()``| `point_dist_fn`   | `"n-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Distribution of final points from their projections. |
-| ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
-| ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
-| ``l()``             | `llengths_fn`     | [`llengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
-| ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{d}``). |
+| Symbol              | Parameter         | Default value            | Description                                                       |
+|:------------------- |:----------------- | :----------------------- | :---------------------------------------------------------------- |
+| ``\phi``            | `allow_empty`     | `false`                  | Allow empty clusters?                                             |
+| ``\mathbf{o}``      | `cluster_offset`  | `zeros(num_dims)`        | Offset to add to all cluster centers (``n \times 1``).            |
+| ``p_\text{proj}()`` | `proj_dist_fn`    | `"norm"`                 | Distribution of point projections along cluster-supporting lines. |
+| ``p_\text{final}()``| `point_dist_fn`   | `"n-1"`                  | Distribution of final points from their projections.              |
+| ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref)     | Distribution of cluster sizes.                                    |
+| ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref)   | Distribution of cluster centers.                                  |
+| ``l()``             | `llengths_fn`     | [`llengths()`](@ref)     | Distribution of line lengths.                                     |
+| ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) | Distribution of line angle deltas (w.r.t. ``\mathbf{d}``).        |
 
 ### The algorithm in detail
 
