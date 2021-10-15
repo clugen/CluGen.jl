@@ -2,8 +2,8 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# Test line_lengths
-@testset "line_lengths" begin
+# Test llengths
+@testset "llengths" begin
     @testset """
         nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, llength_mu=$llength_mu,
         llength_sigma=$llength_sigma
@@ -11,11 +11,11 @@
         rng in rngs,
         nd in num_dims,
         nclu in num_clusters,
-        llength_mu in line_lengths_mus,
-        llength_sigma = line_lengths_sigmas
+        llength_mu in llengths_mus,
+        llength_sigma = llengths_sigmas
 
-        # Check that the line_lengths function runs without warnings
-        lens = @test_nowarn line_lengths(nclu, llength_mu, llength_sigma; rng=rng)
+        # Check that the llengths function runs without warnings
+        lens = @test_nowarn llengths(nclu, llength_mu, llength_sigma; rng=rng)
 
         # Check that return value has the correct dimensions
         @test size(lens) == (nclu, )

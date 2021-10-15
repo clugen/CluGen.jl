@@ -8,7 +8,7 @@
   * [`clucenters`](@ref)
   * [`clusizes`](@ref)
   * [`angle_deltas`](@ref)
-  * [`line_lengths`](@ref)
+  * [`llengths`](@ref)
   * [`points_on_line`](@ref)
   * [`rand_ortho_vector`](@ref)
   * [`rand_unit_vector`](@ref)
@@ -38,7 +38,7 @@ clugen
 clucenters
 clusizes
 angle_deltas
-line_lengths
+llengths
 points_on_line
 rand_ortho_vector
 rand_unit_vector

@@ -19,7 +19,7 @@ export clugen
 export clusizes
 export clucenters
 export angle_deltas
-export line_lengths
+export llengths
 export points_on_line
 export rand_unit_vector
 export rand_ortho_vector
@@ -257,21 +257,21 @@ function clucenters(
 end
 
 """
-    line_lengths(
+    llengths(
         num_clusters::Integer,
-        line_length::Real,
-        line_length_disp::Real;
+        llength::Real,
+        llength_disp::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real, 1}
 
 Determine length of cluster-supporting lines.
 
-These lengths are obtained using the folded normal distribution (μ=`line_length`,
-σ=`line_length_disp`).
+These lengths are obtained using the folded normal distribution (μ=`llength`,
+σ=`llength_disp`).
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
-julia> line_lengths(5, 10, 3)
+julia> llengths(5, 10, 3)
 5-element Array{Float64,1}:
  13.57080364295883
  16.14453912336772
@@ -279,21 +279,21 @@ julia> line_lengths(5, 10, 3)
  11.37824686122124
   8.809962762114331
 
-julia> line_lengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
+julia> llengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
 3-element Array{Float64,1}:
  146.1737820482947
   31.914161161783426
  180.04064126207396
 ```
 """
-function line_lengths(
+function llengths(
     num_clusters::Integer,
-    line_length::Real,
-    line_length_disp::Real;
+    llength::Real,
+    llength_disp::Real;
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Real, 1}
 
-    return abs.(line_length .+ line_length_disp .* randn(rng, num_clusters))
+    return abs.(llength .+ llength_disp .* randn(rng, num_clusters))
 
 end
 
@@ -754,8 +754,8 @@ end
         direction::AbstractArray{<:Real, 1},
         angle_disp::Real,
         cluster_sep::AbstractArray{<:Real, 1},
-        line_length::Real,
-        line_length_disp::Real,
+        llength::Real,
+        llength_disp::Real,
         lateral_disp::Real;
         # Keyword arguments
         allow_empty::Bool = false,
@@ -764,7 +764,7 @@ end
         point_dist_fn::Union{String, <:Function} = "d-1",
         clusizes_fn::Function = clusizes,
         clucenters_fn::Function = clucenters,
-        line_lengths_fn::Function = line_lengths,
+        llengths_fn::Function = llengths,
         angle_deltas_fn::Function = angle_deltas,
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
@@ -790,8 +790,8 @@ users will need to use.
 - `angle_disp`: considering the angle of `direction` as the mean of the cluster-supporting
   line angles, this parameter represents the respective standard deviation, in radians.
 - `cluster_sep`: mean cluster separation in each dimension (`num_dims` x 1).
-- `line_length`: mean length of cluster-supporting lines.
-- `line_length_disp`: standard deviation of the length of cluster-supporting lines.
+- `llength`: mean length of cluster-supporting lines.
+- `llength_disp`: standard deviation of the length of cluster-supporting lines.
 - `lateral_disp`: point dispersion from line, i.e., cluster lateral dispersion.
 
 # Arguments (optional)
@@ -801,7 +801,7 @@ users will need to use.
 - `proj_dist_fn`: defines the distribution of points along lines, with three possible
   values:
   - `"norm"` (default): distribute point projections along lines using a normal
-    distribution (μ=_line center_, σ=`line_length/6`).
+    distribution (μ=_line center_, σ=`llength/6`).
   - `"unif"`: distribute points uniformly along the line.
   - User-defined function, which accepts two parameters, line length (float) and
     number of points (integer), and returns an array containing the distance of
@@ -827,9 +827,9 @@ users will need to use.
 - `clucenters_fn`: by default, cluster centers are determined by the [`clucenters()`](@ref)
   function; this parameter allows the user to specify a custom function for this purpose,
   which must follow [`clucenters()`](@ref)'s signature.
-- `line_lengths_fn`: by default, the lengths of cluster-supporting lines are determined
-  by the [`line_lengths()`](@ref) function; this parameter allows the user to specify a
-  custom function for this purpose, which must follow [`line_lengths()`](@ref)'s
+- `llengths_fn`: by default, the lengths of cluster-supporting lines are determined
+  by the [`llengths()`](@ref) function; this parameter allows the user to specify a
+  custom function for this purpose, which must follow [`llengths()`](@ref)'s
   signature.
 - `angle_deltas_fn`: by default, the angles between the main direction and the direction
   of cluster-supporting lines are determined by the [`angle_deltas()`](@ref) function;
@@ -892,8 +892,8 @@ function clugen(
     direction::AbstractArray{<:Real, 1},
     angle_disp::Real,
     cluster_sep::AbstractArray{<:Real, 1},
-    line_length::Real,
-    line_length_disp::Real,
+    llength::Real,
+    llength_disp::Real,
     lateral_disp::Real;
     allow_empty::Bool = false,
     cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
@@ -901,7 +901,7 @@ function clugen(
     point_dist_fn::Union{String, <:Function} = "d-1",
     clusizes_fn::Function = clusizes,
     clucenters_fn::Function = clucenters,
-    line_lengths_fn::Function = line_lengths,
+    llengths_fn::Function = llengths,
     angle_deltas_fn::Function = angle_deltas,
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::NamedTuple
@@ -1022,7 +1022,7 @@ function clugen(
     clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
 
     # Determine length of lines supporting clusters
-    lengths = line_lengths_fn(num_clusters, line_length, line_length_disp; rng=rng)
+    lengths = llengths_fn(num_clusters, llength, llength_disp; rng=rng)
 
     # Obtain angles between main direction and cluster-supporting lines
     angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)

@@ -18,8 +18,8 @@ num_dims = (1, 2, 3, 4, 30)
 num_points = (1, 10, 500, 10000)
 num_clusters = (1, 2, 5, 10, 100)
 lat_stds = (0.0, 5.0, 500)
-line_lengths_mus = (0, 10)
-line_lengths_sigmas = (0, 15)
+llengths_mus = (0, 10)
+llengths_sigmas = (0, 15)
 angles_stds = (0, pi/256, pi/32, pi/4, pi/2, pi, 2*pi)
 
 allow_empties = (true, false)
@@ -61,7 +61,7 @@ cctr_fns = Dict(
         (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu)
 )
 llen_fns = Dict(
-    "default" => line_lengths,
+    "default" => llengths,
     "unif_btw10-20" =>
         (nclu, llen, llenstd; rng = Random.GLOBAL_RNG) -> 10 .+ 10 * rand(rng, nclu)
 )
@@ -103,7 +103,7 @@ end
 
 include("clusizes.jl")
 include("clucenters.jl")
-include("line_lengths.jl")
+include("llengths.jl")
 include("angle_deltas.jl")
 include("points_on_line.jl")
 include("rand_unit_vector.jl")

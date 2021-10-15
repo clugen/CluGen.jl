@@ -18,7 +18,7 @@
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
-        length in line_lengths_mus,
+        length in llengths_mus,
         dir in get_unitvecs(rng, ndirs, nd),
         ctr in get_vecs(rng, ncts, nd)
 

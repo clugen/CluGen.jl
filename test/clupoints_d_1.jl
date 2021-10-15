@@ -21,7 +21,7 @@
         tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
         lat_std in lat_stds,
-        length in line_lengths_mus,
+        length in llengths_mus,
         dir in get_unitvecs(rng, ndirs, nd),
         ctr in get_vecs(rng, ncts, nd)
 

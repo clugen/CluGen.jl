@@ -34,8 +34,8 @@ main `direction` is set to ``\mathbf{v}=\begin{bmatrix}1 & 1\end{bmatrix}^T`` (t
 in 2D space), 4 clusters, and a total of 200 points. Additional parameters include
 a mean cluster separation (`cluster_sep`) of 10 in both dimensions, an angle
 standard deviation of ``\pi/32`` radians (``\approx{}5.6^{\circ}``)—the angle of
-the main `direction` is considered the mean, line length mean (`line_length`) of
-10, line length standard deviation (`line_length_disp`) of 1.5, and lateral
+the main `direction` is considered the mean, line length mean (`llength`) of
+10, line length standard deviation (`llength_disp`) of 1.5, and lateral
 dispersion (`lateral_disp`) of 1.
 
 ```@eval
@@ -82,8 +82,8 @@ see how it all fits together.
 | ``\mathbf{d}``   | `direction`       | Average direction of cluster-supporting lines (``n \times 1``).  |
 | ``\theta_\sigma``| `angle_disp`      | Angle dispersion of cluster-supporting lines (radians).          |
 | ``\mathbf{s}``   | `cluster_sep`     | Average cluster separation (``n \times 1``).                     |
-| ``l``            | `line_length`     | Average length of cluster-supporting lines.                      |
-| ``l_\sigma``     | `line_length_disp`| Length dispersion of cluster-supporting lines.                   |
+| ``l``            | `llength`         | Average length of cluster-supporting lines.                      |
+| ``l_\sigma``     | `llength_disp`    | Length dispersion of cluster-supporting lines.                   |
 | ``f_\sigma``     | `lateral_disp`    | Cluster lateral dispersion, i.e., dispersion of points from their projection on the cluster-supporting line. |
 
 ### Optional parameters
@@ -96,7 +96,7 @@ see how it all fits together.
 | ``p_\text{final}()``| `point_dist_fn`   | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Distribution of final points from their projections. |
 | ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
 | ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
-| ``l()``             | `line_lengths_fn` | [`line_lengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
+| ``l()``             | `llengths_fn`     | [`llengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
 | ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{d}``). |
 
 ### The algorithm in detail
@@ -333,7 +333,7 @@ nothing
 ![](clucenters.png)
 
 
-### `line_lengths_fn`
+### `llengths_fn`
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -351,11 +351,11 @@ linelen = 10
 linelen_std = 1.5
 latstd = 0 # To better see line lengths
 
-# Different line_lengths_fn's to use
+# Different llengths_fn's to use
 ll_names = ("Normal (default)", "Poisson", "Uniform", "Hand-picked")
 
 ll = Dict(
-   ll_names[1] => line_lengths,
+   ll_names[1] => llengths,
    ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
    ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, DiscreteUniform(0, ll * 2), nclu),
    ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
@@ -367,7 +367,7 @@ p_all = []
 
 for ll_name in ll_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; line_lengths_fn = ll[ll_name], proj_dist_fn="unif")
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; llengths_fn = ll[ll_name], proj_dist_fn="unif")
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -379,12 +379,12 @@ end
 
 plt = plot(p_all..., layout = (2, 2), size=(800,800))
 
-savefig(plt, "line_lengths.png")
+savefig(plt, "llengths.png")
 
 nothing
 ```
 
-![](line_lengths.png)
+![](llengths.png)
 
 ### `angle_deltas_fn`
 

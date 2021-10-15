@@ -19,8 +19,8 @@
         dir in get_vecs(rng, ndirs, nd),
         astd in angles_stds[1:end-1],
         clu_sep in get_clu_seps(nd),
-        len_mu in line_lengths_mus,
-        len_std in line_lengths_sigmas,
+        len_mu in llengths_mus,
+        len_std in llengths_sigmas,
         lat_std in lat_stds[1:end-1]
 
         # By default, allow_empty is false, so clugen() must be given more points
@@ -93,7 +93,7 @@
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=ptdist_fn,
             point_dist_fn=ptoff_fn, clusizes_fn=csz_fn, clucenters_fn=cctr_fn,
-            line_lengths_fn=llen_fn, angle_deltas_fn=lang_fn, rng=rng)
+            llengths_fn=llen_fn, angle_deltas_fn=lang_fn, rng=rng)
 
     end
 
@@ -115,7 +115,7 @@
         pt_off = "d-1"
         csizes_fn = clusizes
         ccenters_fn = clucenters
-        llengths_fn = line_lengths
+        llengths_fn = llengths
         langles_fn = angle_deltas
 
         # Test passes with valid arguments
@@ -123,84 +123,84 @@
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Test passes with zero points since allow_empty is set to true
         @test_nowarn clugen(
             nd, nclu, 0, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Invalid number of dimensions
         @test_throws ArgumentError clugen(
             0, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Invalid number of clusters
         @test_throws ArgumentError clugen(
             nd, 0, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Direction needs to have magnitude > 0
         @test_throws ArgumentError clugen(
             nd, nclu, tpts, [0, 0, 0], astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Direction needs to have nd dims
         @test_throws ArgumentError clugen(
             nd, nclu, tpts, [1, 1], astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # cluster_sep needs to have nd dims
         @test_throws ArgumentError clugen(
             nd, nclu, tpts, dir, astd, [10, 0, 5, 1.4], len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # cluster_offset needs to have nd dims
         @test_throws ArgumentError clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=[0, 1], proj_dist_fn=pt_dist,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Unknown proj_dist_fn given as string
         @test_throws ArgumentError clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn="bad_proj_dist_fn",
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Invalid proj_dist_fn given as function
         @test_throws MethodError clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=()->nothing,
             point_dist_fn=pt_off, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Unknown point_dist_fn given as string
         @test_throws ArgumentError clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn="bad_pt_off", clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Invalid point_dist_fn given as function
         @test_throws MethodError clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=()->nothing, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
-            line_lengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+            llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
     end
 
