@@ -17,7 +17,7 @@
         """ for
         # Only for num_dims > 1
         nd in filter((x) ->  x > 1, num_dims),
-        tpts in total_points,
+        tpts in num_points,
         rng in rngs,
         lat_std in lat_stds,
         length in line_lengths_mus,

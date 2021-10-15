@@ -13,7 +13,7 @@ where the respective points are placed.
 ## Overview
 
 Given the main `direction` ``$n$``-dimensional vector, the number of clusters
-(`num_clusters`), the total number of points (`total_points`), and a number of
+(`num_clusters`), the total number of points (`num_points`), and a number of
 additional parameters which will be discussed shortly, the _clugen_ algorithm
 works as follows (``^*`` means the algorithm step is stochastic):
 
@@ -74,11 +74,11 @@ see how it all fits together.
 
 ### Mandatory parameters
 
-| Math             | Parameter         | Description                                                      |
+| Symbol           | Parameter         | Description                                                      |
 |:---------------- |:----------------- |:---------------------------------------------------------------- |
 | ``n``            | `num_dims`        | Number of dimensions.                                            |
 | ``c``            | `num_clusters`    | Number of clusters.                                              |
-| ``p``            | `total_points`    | Total points in all clusters.                                    |
+| ``p``            | `num_points`      | Total number of points to generate.                              |
 | ``\mathbf{d}``   | `direction`       | Average direction of cluster-supporting lines (``n \times 1``).  |
 | ``\theta_\sigma``| `angle_disp`      | Angle dispersion of cluster-supporting lines (radians).          |
 | ``\mathbf{s}``   | `cluster_sep`     | Average cluster separation (``n \times 1``).                     |
@@ -88,7 +88,7 @@ see how it all fits together.
 
 ### Optional parameters
 
-| Math                | Parameter         | Default value                                   | Description                                                  |
+| Symbol              | Parameter         | Default value                                   | Description                                                  |
 |:------------------- |:----------------- | :---------------------------------------------- | :----------------------------------------------------------- |
 | ``\phi``            | `allow_empty`     | `false`                                         | Allow empty clusters?                                        |
 | ``\mathbf{o}``      | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers (``n \times 1``).       |
@@ -97,7 +97,7 @@ see how it all fits together.
 | ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
 | ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
 | ``l()``             | `line_lengths_fn` | [`line_lengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
-| ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{v}``). |
+| ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{d}``). |
 
 ### The algorithm in detail
 
@@ -235,12 +235,12 @@ linelen_std = 1.5
 latstd = 1
 
 # Different clusizes_fn's to use
-clusz_names = ("Normal (default)", "Uniform", "Poisson", "Poisson (no fix_total_points!)")
+clusz_names = ("Normal (default)", "Uniform", "Poisson", "Poisson (no fix_num_points!)")
 
 clusz = Dict(
    clusz_names[1] => clusizes,
-   clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_total_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
-   clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_total_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
+   clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_num_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
+   clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_num_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
    clusz_names[4] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
 )
 

@@ -9,7 +9,7 @@
         """ for
         rng in rngs,
         nclu in num_clusters,
-        tpts in total_points,
+        tpts in num_points,
         ae in allow_empties
 
         # Don't test if number of points is less than number of

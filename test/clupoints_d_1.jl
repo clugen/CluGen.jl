@@ -18,7 +18,7 @@
         # Only for num_dims > 1
         nd in filter((x) ->  x > 1, num_dims),
         # Avoid too many points, otherwise testing will be very slow
-        tpts in filter((x) -> x < 1000, total_points),
+        tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
         lat_std in lat_stds,
         length in line_lengths_mus,

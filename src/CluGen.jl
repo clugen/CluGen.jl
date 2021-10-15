@@ -26,35 +26,35 @@ export rand_ortho_vector
 export rand_vector_at_angle
 
 """
-    fix_total_points!(
+    fix_num_points!(
         clu_num_points::AbstractArray{<:Integer, 1},
-        total_points::Integer
+        num_points::Integer
     ) -> AbstractArray{<:Integer, 1}
 
 This function makes sure that the values in the `clu_num_points` array, i.e. the
-number of points in each cluster, add up to `total_points`. If this is not the
+number of points in each cluster, add up to `num_points`. If this is not the
 case, the `clu_num_points` array is modified in-place, incrementing the value
-corresponding to the currently smaller cluster while `sum(clu_num_points) < total_points`,
+corresponding to the currently smaller cluster while `sum(clu_num_points) < num_points`,
 or decrementing the value corresponding to the currently larger cluster while
-`sum(clu_num_points) > total_points`.
+`sum(clu_num_points) > num_points`.
 
 !!! note "Internal package function"
     This function is used internally by the [`clusizes()`](@ref) function, thus
     it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.fix_total_points!(...)`. Nonetheless, this function might be
+    e.g. `CluGen.fix_num_points!(...)`. Nonetheless, this function might be
     useful for custom cluster sizing implementations given as the `clusizes_fn`
     parameter for the main [`clugen()`](@ref) function.
 """
-function fix_total_points!(
+function fix_num_points!(
     clu_num_points::AbstractArray{<:Integer, 1},
-    total_points::Integer
+    num_points::Integer
 )::AbstractArray{<:Integer, 1}
 
-    while sum(clu_num_points) < total_points
+    while sum(clu_num_points) < num_points
         imin = argmin(clu_num_points)
         clu_num_points[imin] += 1
     end
-    while sum(clu_num_points) > total_points
+    while sum(clu_num_points) > num_points
         imax = argmax(clu_num_points)
         clu_num_points[imax] -= 1
     end
@@ -116,16 +116,16 @@ end
 """
     clusizes(
         num_clusters::Integer,
-        total_points::Integer,
+        num_points::Integer,
         allow_empty::Bool;
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Integer, 1}
 
 Determine cluster sizes, i.e., number of points in each cluster.
 
-The function uses the normal distribution (`μ=total_points/num_clusters`,
+The function uses the normal distribution (`μ=num_points/num_clusters`,
 `σ=μ/3`) for obtaining cluster sizes, and then assures that the final,
-absolute cluster sizes add up to `total_points`.
+absolute cluster sizes add up to `num_points`.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(90))
@@ -154,7 +154,7 @@ julia> clusizes(5, 500, true; rng=MersenneTwister(123)) # Reproducible
 """
 function clusizes(
     num_clusters::Integer,
-    total_points::Integer,
+    num_points::Integer,
     allow_empty::Bool;
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Integer, 1}
@@ -162,7 +162,7 @@ function clusizes(
     # Determine number of points in each cluster using the normal distribution
 
     # Consider the mean an equal division of points between clusters
-    mean = total_points / num_clusters
+    mean = num_points / num_clusters
     # The standard deviation is such that the interval [0, 2 * mean] will contain
     # ≈99.7% of cluster sizes
     std = mean / 3
@@ -173,9 +173,9 @@ function clusizes(
     # Set negative values to zero
     map!((x) -> x > 0 ? x : 0, clu_num_points, clu_num_points)
 
-    # Fix imbalances, so that total_points is respected
+    # Fix imbalances, so that num_points is respected
     if sum(clu_num_points) > 0 # Be careful not to divide by zero
-        clu_num_points .*=  total_points / sum(clu_num_points)
+        clu_num_points .*=  num_points / sum(clu_num_points)
     end
 
     # Round the real values to integers since a cluster sizes is represented by an integer
@@ -184,7 +184,7 @@ function clusizes(
 
     # Make sure total points is respected, which may not be the case at this time due
     # to rounding
-    fix_total_points!(clu_num_points, total_points)
+    fix_num_points!(clu_num_points, num_points)
 
     # If empty clusters are not allowed, make sure there aren't any
     if !allow_empty
@@ -750,7 +750,7 @@ end
     clugen(
         num_dims::Integer,
         num_clusters::Integer,
-        total_points::Integer,
+        num_points::Integer,
         direction::AbstractArray{<:Real, 1},
         angle_disp::Real,
         cluster_sep::AbstractArray{<:Real, 1},
@@ -785,7 +785,7 @@ users will need to use.
 # Arguments (mandatory)
 - `num_dims`: number of dimensions.
 - `num_clusters`: number of clusters to generate.
-- `total_points`: total number of points to generate.
+- `num_points`: total number of points to generate.
 - `direction`: main direction of the clusters (`num_dims` x 1).
 - `angle_disp`: considering the angle of `direction` as the mean of the cluster-supporting
   line angles, this parameter represents the respective standard deviation, in radians.
@@ -823,7 +823,7 @@ users will need to use.
 - `clusizes_fn`: by default, cluster sizes are determined by the [`clusizes()`](@ref)
   function; this parameter allows the user to specify a custom function for this
   purpose, which must follow [`clusizes()`](@ref)'s signature; note that custom
-  functions are not required to strictly obey the `total_points` parameter.
+  functions are not required to strictly obey the `num_points` parameter.
 - `clucenters_fn`: by default, cluster centers are determined by the [`clucenters()`](@ref)
   function; this parameter allows the user to specify a custom function for this purpose,
   which must follow [`clucenters()`](@ref)'s signature.
@@ -844,11 +844,11 @@ users will need to use.
 # Return values
 The function returns a `NamedTuple` with the following fields:
 
-- `points`: a `total_points` x `num_dims` matrix with the generated points for
+- `points`: a `num_points` x `num_dims` matrix with the generated points for
    all clusters.
-- `point_clusters`: a `total_points` x 1` vector indicating which cluster
+- `point_clusters`: a `num_points` x 1` vector indicating which cluster
   each point in `points` belongs to.
-- `point_projections`: a `total_points` x `num_dims` matrix with the point
+- `point_projections`: a `num_points` x `num_dims` matrix with the point
   projections on the cluster-supporting lines.
 - `cluster_sizes`: a `num_clusters` x 1 vector with the number of
   points in each cluster.
@@ -888,7 +888,7 @@ function, and the [Gallery](@ref) section for a number of illustrative examples.
 function clugen(
     num_dims::Integer,
     num_clusters::Integer,
-    total_points::Integer,
+    num_points::Integer,
     direction::AbstractArray{<:Real, 1},
     angle_disp::Real,
     cluster_sep::AbstractArray{<:Real, 1},
@@ -935,9 +935,9 @@ function clugen(
 
     # If allow_empty is false, make sure there are enough points to distribute
     # by the clusters
-    if !allow_empty && total_points < num_clusters
+    if !allow_empty && num_points < num_clusters
         throw(ArgumentError(
-            "A total of $total_points points is not enough for " *
+            "A total of $num_points points is not enough for " *
             "$num_clusters non-empty clusters"))
     end
 
@@ -1012,11 +1012,11 @@ function clugen(
     direction = normalize(direction)
 
     # Determine cluster sizes
-    clu_num_points = clusizes_fn(num_clusters, total_points, allow_empty; rng=rng)
+    clu_num_points = clusizes_fn(num_clusters, num_points, allow_empty; rng=rng)
 
-    # Custom clusizes_fn's are not required to obey total_points, so we update
+    # Custom clusizes_fn's are not required to obey num_points, so we update
     # it here just in case it's different from what the user specified
-    total_points = sum(clu_num_points)
+    num_points = sum(clu_num_points)
 
     # Determine cluster centers
     clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
@@ -1038,9 +1038,9 @@ function clugen(
     cumsum_points = [0; cumsum(clu_num_points)]
 
     # Pre-allocate data structures for holding cluster info and points
-    clu_pts_idx = zeros(Int, total_points)      # Cluster indices of each point
-    points_proj = zeros(total_points, num_dims) # Point projections on cluster-supporting lines
-    points = zeros(total_points, num_dims)      # Final points to be generated
+    clu_pts_idx = zeros(Int, num_points)      # Cluster indices of each point
+    points_proj = zeros(num_points, num_dims) # Point projections on cluster-supporting lines
+    points = zeros(num_points, num_dims)      # Final points to be generated
 
     # Loop through cluster and create points for each one
     for i in 1:num_clusters

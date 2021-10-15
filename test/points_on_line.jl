@@ -16,7 +16,7 @@
         """ for
         nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
-        tpts in filter((x) -> x < 1000, total_points),
+        tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
         length in line_lengths_mus,
         dir in get_unitvecs(rng, ndirs, nd),
