@@ -2,15 +2,15 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# Test line_angles
-@testset "line_angles" begin
+# Test angle_deltas
+@testset "angle_deltas" begin
     @testset "seed=$(Int(rng.seed[1])), nclu=$nclu, astd=$astd" for
         rng in rngs,
         nclu in num_clusters,
         astd in angles_stds
 
-        # Check that the line_angles function runs without warnings
-        angles = @test_nowarn line_angles(nclu, astd; rng=rng)
+        # Check that the angle_deltas function runs without warnings
+        angles = @test_nowarn angle_deltas(nclu, astd; rng=rng)
 
         # Check that return value has the correct dimensions
         @test size(angles) == (nclu, )

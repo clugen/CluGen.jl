@@ -18,7 +18,7 @@ using Random
 export clugen
 export clusizes
 export clucenters
-export line_angles
+export angle_deltas
 export line_lengths
 export points_on_line
 export rand_unit_vector
@@ -298,7 +298,7 @@ function line_lengths(
 end
 
 """
-    line_angles(
+    angle_deltas(
         num_clusters::Integer,
         angle_disp::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
@@ -316,21 +316,21 @@ is given by the interval ``\\left[-\\pi,\\pi\\right]``.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
-julia> line_angles(4, pi/128)
+julia> angle_deltas(4, pi/128)
 4-element Array{Float64,1}:
   0.01888791855096079
  -0.027851298321307266
   0.03274154825228485
  -0.004475798744567242
 
-julia> line_angles(3, pi/32; rng=MersenneTwister(987)) # Reproducible
+julia> angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
 3-element Array{Float64,1}:
   0.08834204306583336
   0.014678748091943444
  -0.15202559427536264
 ```
 """
-function line_angles(
+function angle_deltas(
     num_clusters::Integer,
     angle_disp::Real;
     rng::AbstractRNG = Random.GLOBAL_RNG
@@ -565,7 +565,7 @@ place points on the second line.
     This function is internally used by the [`clupoints_d_1()`](@ref) function.
     Thus, it's not exported by the package and must be prefixed by the package
     name, e.g. `CluGen.clupoints_d_1_template(...)`. This function may be useful
-    for constructing user-defined offsets for the `point_offset` parameter of the
+    for constructing user-defined offsets for the `point_dist_fn` parameter of the
     main [`clugen()`](@ref) function.
 
 # Arguments
@@ -625,7 +625,7 @@ centered at the point's projection, using the normal distribution (μ=0, σ=`lat
 
 !!! note "Internal package function"
     This function's main intended use is by the [`clugen()`](@ref) function,
-    generating points when its `point_offset` parameter is set to `"d-1"`. Thus,
+    generating points when its `point_dist_fn` parameter is set to `"d-1"`. Thus,
     it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.clupoints_d_1(...)`.
 
@@ -690,7 +690,7 @@ line, placing each point `i` around its projection using the normal distribution
 
 !!! note "Internal package function"
     This function's main intended use is by the [`clugen()`](@ref) function,
-    generating points when its `point_offset` parameter is set to `"d"`. Thus,
+    generating points when its `point_dist_fn` parameter is set to `"d"`. Thus,
     it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.clupoints_d(...)`.
 
@@ -760,12 +760,12 @@ end
         # Keyword arguments
         allow_empty::Bool = false,
         cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
-        point_dist::Union{String, <:Function} = "norm",
-        point_offset::Union{String, <:Function} = "d-1",
+        proj_dist_fn::Union{String, <:Function} = "norm",
+        point_dist_fn::Union{String, <:Function} = "d-1",
         clusizes_fn::Function = clusizes,
         clucenters_fn::Function = clucenters,
         line_lengths_fn::Function = line_lengths,
-        line_angles_fn::Function = line_angles,
+        angle_deltas_fn::Function = angle_deltas,
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,              # Array{<:Real,2}
@@ -798,7 +798,7 @@ users will need to use.
 - `allow_empty`: allow empty clusters? `false` by default.
 - `cluster_offset`: offset to add to all cluster centers; if set to `nothing` (the
   default), the offset will be equal to `zeros(num_dims)`.
-- `point_dist`: defines the distribution of points along lines, with three possible
+- `proj_dist_fn`: defines the distribution of points along lines, with three possible
   values:
   - `"norm"` (default): distribute point projections along lines using a normal
     distribution (μ=_line center_, σ=`line_length/6`).
@@ -807,7 +807,7 @@ users will need to use.
     number of points (integer), and returns an array containing the distance of
     each point to the center of the line. For example, the `"norm"` option
     roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
-- `point_offset`: controls how points are created from their projections on the lines,
+- `point_dist_fn`: controls how points are created from their projections on the lines,
   with three possible values:
   - `"d-1"` (default): generate points from their ``d``-dimensional projections on a
     cluster-supporting line, placing each point `i` on a second line, orthogonal to
@@ -831,10 +831,10 @@ users will need to use.
   by the [`line_lengths()`](@ref) function; this parameter allows the user to specify a
   custom function for this purpose, which must follow [`line_lengths()`](@ref)'s
   signature.
-- `line_angles_fn`: by default, the angles between the main direction and the direction
-  of cluster-supporting lines are determined by the [`line_angles()`](@ref) function;
+- `angle_deltas_fn`: by default, the angles between the main direction and the direction
+  of cluster-supporting lines are determined by the [`angle_deltas()`](@ref) function;
   this parameter allows the user to specify a custom function for this purpose, which
-  must follow [`line_angles()`](@ref)'s signature.
+  must follow [`angle_deltas()`](@ref)'s signature.
 - `rng`: a concrete instance of
   [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)
   for reproducible runs. Alternatively, the user can set the global RNG seed with
@@ -897,12 +897,12 @@ function clugen(
     lateral_disp::Real;
     allow_empty::Bool = false,
     cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
-    point_dist::Union{String, <:Function} = "norm",
-    point_offset::Union{String, <:Function} = "d-1",
+    proj_dist_fn::Union{String, <:Function} = "norm",
+    point_dist_fn::Union{String, <:Function} = "d-1",
     clusizes_fn::Function = clusizes,
     clucenters_fn::Function = clucenters,
     line_lengths_fn::Function = line_lengths,
-    line_angles_fn::Function = line_angles,
+    angle_deltas_fn::Function = angle_deltas,
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::NamedTuple
 
@@ -959,49 +959,49 @@ function clugen(
             "($(length(cluster_offset)) != $num_dims)"))
     end
 
-    # Check that point_dist specifies a valid way for projecting points along
+    # Check that proj_dist_fn specifies a valid way for projecting points along
     # cluster-supporting lines i.e., either 'norm' (default), 'unif' or a
     # user-defined function
-    if typeof(point_dist) <: Function
+    if typeof(proj_dist_fn) <: Function
         # Use user-defined distribution; assume function accepts length of line
         # and number of points, and returns a num_dims x 1 vector
-        pointproj_fn = point_dist
-    elseif point_dist == "unif"
+        pointproj_fn = proj_dist_fn
+    elseif proj_dist_fn == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
         pointproj_fn = (len, n) -> len .* rand(rng, n) .- len / 2
-    elseif point_dist == "norm"
+    elseif proj_dist_fn == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
         # such that the line length contains ≈99.73% of the points
         pointproj_fn = (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
-            "`point_dist` has to be either \"norm\", \"unif\" or user-defined function"))
+            "`proj_dist_fn` has to be either \"norm\", \"unif\" or user-defined function"))
     end
 
-    # Check that point_offset specifies a valid way for generating points given
+    # Check that point_dist_fn specifies a valid way for generating points given
     # their projections along cluster-supporting lines, i.e., either 'd-1'
     # (default), 'd' or a user-defined function
     if num_dims == 1
         # If 1D was specified, point projections are the points themselves
         pt_from_proj_fn = (projs, lat_std, len, clu_dir, clu_ctr; rng=rng) -> projs
-    elseif typeof(point_offset) <: Function
+    elseif typeof(point_dist_fn) <: Function
         # Use user-defined distribution; assume function accepts point projections
         # on the line, lateral std., cluster direction and cluster center, and
         # returns a num_points x num_dims matrix containing the final points
         # for the current cluster
-        pt_from_proj_fn = point_offset
-    elseif point_offset == "d-1"
+        pt_from_proj_fn = point_dist_fn
+    elseif point_dist_fn == "d-1"
         # Points will be placed on a second line perpendicular to the cluster
         # line using a normal distribution centered at their intersection
         pt_from_proj_fn = clupoints_d_1
-    elseif point_offset == "d"
+    elseif point_dist_fn == "d"
         # Points will be placed using a multivariate normal distribution
         # centered at the point projection
         pt_from_proj_fn = clupoints_d
     else
         throw(ArgumentError(
-            "point_offset has to be either \"d-1\", \"d\" or a user-defined function"))
+            "point_dist_fn has to be either \"d-1\", \"d\" or a user-defined function"))
     end
 
     # ############################ #
@@ -1025,7 +1025,7 @@ function clugen(
     lengths = line_lengths_fn(num_clusters, line_length, line_length_disp; rng=rng)
 
     # Obtain angles between main direction and cluster-supporting lines
-    angles = line_angles_fn(num_clusters, angle_disp; rng=rng)
+    angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
 
     # Determine normalized cluster directions
     clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
@@ -1053,12 +1053,12 @@ function clugen(
         clu_pts_idx[idx_start:idx_end] .= i;
 
         # Determine distance of point projections from the center of the line
-        ptproj_dist_center = pointproj_fn(lengths[i], clu_num_points[i])
+        ptproj_dist_fn_center = pointproj_fn(lengths[i], clu_num_points[i])
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
         points_proj[idx_start:idx_end, :] = points_on_line(
-            clu_centers[i, :], clu_dirs[i, :], ptproj_dist_center)
+            clu_centers[i, :], clu_dirs[i, :], ptproj_dist_fn_center)
 
         # Determine points from their projections on the line
         points[idx_start:idx_end, :] = pt_from_proj_fn(

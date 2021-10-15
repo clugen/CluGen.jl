@@ -66,7 +66,7 @@ llen_fns = Dict(
         (nclu, llen, llenstd; rng = Random.GLOBAL_RNG) -> 10 .+ 10 * rand(rng, nclu)
 )
 lang_fns = Dict(
-    "default" => line_angles,
+    "default" => angle_deltas,
     "same_angle" => (nclu, astd; rng=nothing) -> zeros(nclu)
 )
 
@@ -104,7 +104,7 @@ end
 include("clusizes.jl")
 include("clucenters.jl")
 include("line_lengths.jl")
-include("line_angles.jl")
+include("angle_deltas.jl")
 include("points_on_line.jl")
 include("rand_unit_vector.jl")
 include("rand_ortho_vector.jl")

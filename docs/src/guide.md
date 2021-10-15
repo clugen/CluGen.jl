@@ -74,7 +74,7 @@ see how it all fits together.
 
 ### Mandatory parameters
 
-| Math             | Code              | Description                                                      |
+| Math             | Parameter         | Description                                                      |
 |:---------------- |:----------------- |:---------------------------------------------------------------- |
 | ``n``            | `num_dims`        | Number of dimensions.                                            |
 | ``c``            | `num_clusters`    | Number of clusters.                                              |
@@ -88,16 +88,16 @@ see how it all fits together.
 
 ### Optional parameters
 
-| Math             | Code              | Default value                                   | Description                                                  |
-|:---------------- |:----------------- | :---------------------------------------------- | :----------------------------------------------------------- |
-| ``\phi``         | `allow_empty`     | `false`                                         | Allow empty clusters?                                        |
-| ``\mathbf{o}``   | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers (``n \times 1``).       |
-| ``p_l()``        | `point_dist`      | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along lines. |
-| ``p_o()``        | `point_offset`    | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Points placement from projections. |
-| ``c_s()``        | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
-| ``c_c()``        | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
-| ``l_l()``        | `line_lengths_fn` | [`line_lengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
-| ``l_{\Delta\theta}`` | `line_angles_fn` | [`line_angles()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{v}``). |
+| Math                | Parameter         | Default value                                   | Description                                                  |
+|:------------------- |:----------------- | :---------------------------------------------- | :----------------------------------------------------------- |
+| ``\phi``            | `allow_empty`     | `false`                                         | Allow empty clusters?                                        |
+| ``\mathbf{o}``      | `cluster_offset`  | ``\begin{bmatrix}0 & \dots & 0\end{bmatrix}^T`` | Offset to add to all cluster centers (``n \times 1``).       |
+| ``p_\text{proj}()`` | `proj_dist_fn`    | `"norm"` ``\rightarrow`` ``\mathcal{N}(0, (l/6)^2)``          | Distribution of point projections along cluster-supporting lines. |
+| ``p_\text{final}()``| `point_dist_fn`   | `"d-1"` ``\rightarrow`` ``\perp\mathcal{N}(0, \sigma_f^2)``   | Distribution of final points from their projections. |
+| ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref) ``\rightarrow`` ``\mathcal{N}(\frac{p_\text{tot}}{n}, \frac{p_\text{tot}}{3n}^2)`` | Distribution of cluster sizes. |
+| ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref) ``\rightarrow`` ``\mathcal{U}()`` | Distribution of cluster centers. |
+| ``l()``             | `line_lengths_fn` | [`line_lengths()`](@ref) ``\rightarrow`` ``\|\mathcal{N}(l,\sigma_l^2)\|`` |  Distribution of line lengths. |
+| ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) ``\rightarrow`` ``\mathcal{WN}_{\frac{-\pi}{2}}^{\frac{\pi}{2}}(0,\sigma_\theta)`` |  Distribution of line angle deltas (w.r.t. ``\mathbf{v}``). |
 
 ### The algorithm in detail
 
@@ -105,7 +105,7 @@ TODO Describe steps
 
 ## Algorithm parameters in depth
 
-### `point_dist`
+### `proj_dist_fn`
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -123,7 +123,7 @@ linelen = 10
 linelen_std = 1.5
 latstd = 1
 
-# Different point_dist's to use
+# Different proj_dist_fn's to use
 pdist_names = ("Normal", "Uniform", "Laplace", "Rayleigh")
 
 pdists = Dict(
@@ -139,7 +139,7 @@ p_all = []
 
 for pd_name in pdist_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_dist=pdists[pd_name])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; proj_dist_fn=pdists[pd_name])
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -151,14 +151,14 @@ end
 
 plt = plot(p_all..., layout = (2, 2), size=(800,800))
 
-savefig(plt, "point_dist.png")
+savefig(plt, "proj_dist_fn.png")
 
 nothing
 ```
 
-![](point_dist.png)
+![](proj_dist_fn.png)
 
-### `point_offset`
+### `point_dist_fn`
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -176,7 +176,7 @@ linelen = 10
 linelen_std = 1.5
 latstd = 1
 
-# Different point_dist's to use
+# Different proj_dist_fn's to use
 poffs_names = ("d-1", "d-1 Exponential", "d-1 Bimodal", "d", "d Hollow", "d Hollow + unif")
 
 dist_exp = (npts, lstd) -> lstd .* rand(Exponential(2/lstd), npts, 1)
@@ -197,7 +197,7 @@ p_all = []
 
 for po_name in poffs_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_offset=poffs[po_name][1], point_dist=poffs[po_name][2])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_dist_fn=poffs[po_name][1], proj_dist_fn=poffs[po_name][2])
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -209,12 +209,12 @@ end
 
 plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
-savefig(plt, "point_offset.png")
+savefig(plt, "point_dist_fn.png")
 
 nothing
 ```
 
-![](point_offset.png)
+![](point_dist_fn.png)
 
 ### `clusizes_fn`
 
@@ -367,7 +367,7 @@ p_all = []
 
 for ll_name in ll_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; line_lengths_fn = ll[ll_name], point_dist="unif")
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; line_lengths_fn = ll[ll_name], proj_dist_fn="unif")
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -386,7 +386,7 @@ nothing
 
 ![](line_lengths.png)
 
-### `line_angles_fn`
+### `angle_deltas_fn`
 
 
 ```@eval
@@ -405,11 +405,11 @@ linelen = 10
 linelen_std = 0 # To better see line angles
 latstd = 0 # To better see line angles
 
-# Different line_angles_fn's to use
+# Different angle_deltas_fn's to use
 la_names = ("Wrapped Normal (default)", "Hand-picked")
 
 la = Dict(
-   la_names[1] => line_angles,
+   la_names[1] => angle_deltas,
    la_names[2] => (nclu, astd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [0, pi/2, 0, pi/2]
 )
 
@@ -419,7 +419,7 @@ p_all = []
 
 for la_name in la_names
    Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; line_angles_fn = la[la_name], point_dist="unif")
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; angle_deltas_fn = la[la_name], proj_dist_fn="unif")
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -431,10 +431,10 @@ end
 
 plt = plot(p_all..., layout = (1, 2), size=(800,400))
 
-savefig(plt, "line_angles.png")
+savefig(plt, "angle_deltas.png")
 
 nothing
 ```
 
-![](line_angles.png)
+![](angle_deltas.png)
 

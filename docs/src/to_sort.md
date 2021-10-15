@@ -55,7 +55,7 @@ How about using `d`?
 
 ```@example ex2D3D_1
 Random.seed!(123)
-r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_offset="d")
+r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_dist_fn="d")
 plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
 savefig("ex2D3D_1_d.png"); nothing # hide
 ```
@@ -67,7 +67,7 @@ How about using `unif`?
 
 ```@example ex2D3D_1
 Random.seed!(123)
-r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; point_dist="unif")
+r = clugen(2, 5, 1000, [1, 1], pi/64, [10, 10], 12, 2, 1; proj_dist_fn="unif")
 plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
 savefig("ex2D3D_1_unif.png"); nothing # hide
 ```

@@ -338,7 +338,7 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
-Alternative function for the `point_offset` parameter of the `clugen()` function
+Alternative function for the `point_dist_fn` parameter of the `clugen()` function
 for creating hollow clusters.
 
 # Arguments

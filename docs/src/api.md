@@ -7,7 +7,7 @@
 * [Auxiliary functions](@ref)
   * [`clucenters`](@ref)
   * [`clusizes`](@ref)
-  * [`line_angles`](@ref)
+  * [`angle_deltas`](@ref)
   * [`line_lengths`](@ref)
   * [`points_on_line`](@ref)
   * [`rand_ortho_vector`](@ref)
@@ -37,7 +37,7 @@ clugen
 ```@docs
 clucenters
 clusizes
-line_angles
+angle_deltas
 line_lengths
 points_on_line
 rand_ortho_vector
