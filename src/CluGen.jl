@@ -5,10 +5,12 @@
 """
     CluGen
 
-A Julia module for generating multidimensional clusters. Provides the
+A Julia package for generating multidimensional clusters. Provides the
 [`clugen`](@ref) function for this purpose, as well as a number of auxiliary
-functions (used internally by [`clugen`](@ref)), which allow users to build their
-own cluster generation algorithms.
+functions, used internally and modularly by [`clugen`](@ref). Users can swap
+these auxiliary functions by their own customized versions, fine-tuning their
+cluster generation strategies, or even use them as the basis for their own
+generation algorithms.
 """
 module CluGen
 
