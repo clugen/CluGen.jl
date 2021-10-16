@@ -36,16 +36,16 @@ export rand_vector_at_angle
 This function makes sure that the values in the `clu_num_points` array, i.e. the
 number of points in each cluster, add up to `num_points`. If this is not the
 case, the `clu_num_points` array is modified in-place, incrementing the value
-corresponding to the currently smaller cluster while `sum(clu_num_points) < num_points`,
-or decrementing the value corresponding to the currently larger cluster while
-`sum(clu_num_points) > num_points`.
+corresponding to the currently smallest cluster while
+`sum(clu_num_points) < num_points`, or decrementing the value corresponding to
+the currently largest cluster while `sum(clu_num_points) > num_points`.
 
 !!! note "Internal package function"
     This function is used internally by the [`clusizes()`](@ref) function, thus
     it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.fix_num_points!(...)`. Nonetheless, this function might be
     useful for custom cluster sizing implementations given as the `clusizes_fn`
-    parameter for the main [`clugen()`](@ref) function.
+    parameter of the main [`clugen()`](@ref) function.
 """
 function fix_num_points!(
     clu_num_points::AbstractArray{<:Integer, 1},
@@ -72,7 +72,7 @@ end
     ) -> AbstractArray{<:Integer, 1}
 
 This function makes sure that, given enough points, no clusters are left empty.
-This is done by removing a point from the currently larger cluster while there
+This is done by removing a point from the currently largest cluster while there
 are empty clusters. If the total number of points is smaller than the number of
 clusters (or if the `allow_empty` parameter is set to `true`), this function does
 nothing.
@@ -82,7 +82,7 @@ nothing.
     it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.fix_empty!(...)`. Nonetheless, this function might be useful
     for custom cluster sizing implementations given as the `clusizes_fn`
-    parameter for the main [`clugen()`](@ref) function.
+    parameter of the main [`clugen()`](@ref) function.
 """
 function fix_empty!(
     clu_num_points::AbstractArray{<:Integer, 1},
@@ -123,11 +123,10 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Integer, 1}
 
-Determine cluster sizes, i.e., number of points in each cluster.
-
-The function uses the normal distribution (μ=`num_points`/`num_clusters`,
-σ=μ/3) for obtaining cluster sizes, and then assures that the final,
-absolute cluster sizes add up to `num_points`.
+Determine cluster sizes, i.e., the number of points in each cluster, using the
+normal distribution (μ=`num_points`/`num_clusters`, σ=μ/3), and then assuring
+that the final cluster sizes add up to `num_points` via the
+[`fix_num_points!()`](@ref) function.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(90))
