@@ -306,15 +306,15 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real, 1}
 
-Determine angles between base direction and cluster-supporting lines.
+Determine the angles between the average cluster direction and the
+cluster-supporting lines. These angles are obtained from a wrapped normal
+distribution (μ=0, σ=`angle_disp`) with support in the interval
+``\\left[-\\pi/2,\\pi/2\\right]``. Note this is different from the standard
+wrapped normal distribution, the support of which is given by the interval
+``\\left[-\\pi,\\pi\\right]``.
 
-Note that `angle_disp` should be in radians and results are given in radians in
-the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
-
-These angles are obtained from a wrapped normal distribution (μ=0, σ=`angle_disp`)
-with support in the interval ``\\left[-\\pi/2,\\pi/2\\right]``. Note this is
-different from the standard wrapped normal distribution, the support of which
-is given by the interval ``\\left[-\\pi,\\pi\\right]``.
+The `angle_disp` parameter must be specified in radians and results are given in
+radians in the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
