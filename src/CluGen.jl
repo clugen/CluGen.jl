@@ -125,8 +125,8 @@ end
 
 Determine cluster sizes, i.e., number of points in each cluster.
 
-The function uses the normal distribution (`μ=num_points/num_clusters`,
-`σ=μ/3`) for obtaining cluster sizes, and then assures that the final,
+The function uses the normal distribution (μ=`num_points`/`num_clusters`,
+σ=μ/3) for obtaining cluster sizes, and then assures that the final,
 absolute cluster sizes add up to `num_points`.
 
 # Examples
@@ -205,9 +205,8 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) ->  AbstractArray{<:Real}
 
-Determine cluster centers using the uniform distribution, considering the
-specified number of clusters (`num_clusters`) and the average cluster
-separation (`clu_sep`).
+Determine cluster centers using the uniform distribution, taking into account the
+number of clusters (`num_clusters`) and the average cluster separation (`clu_sep`).
 
 Let ``c=`` `num_clusters`, ``\\mathbf{s}=`` `clu_sep`, ``\\mathbf{o}=``
 `clu_offset`, ``n=`` `length(clu_sep)` (i.e., number of dimensions). Cluster
@@ -783,63 +782,75 @@ end
 
 Generate multidimensional clusters.
 
-This is the main function of the CluGen package, and most likely is the only function
+This is the main function of the CluGen package, and possibly the only function
 users will need to use.
 
 # Arguments (mandatory)
-- `num_dims`: number of dimensions.
-- `num_clusters`: number of clusters to generate.
-- `num_points`: total number of points to generate.
-- `direction`: main direction of the clusters (`num_dims` x 1).
-- `angle_disp`: considering the angle of `direction` as the mean of the cluster-supporting
-  line angles, this parameter represents the respective standard deviation, in radians.
-- `cluster_sep`: mean cluster separation in each dimension (`num_dims` x 1).
-- `llength`: mean length of cluster-supporting lines.
-- `llength_disp`: standard deviation of the length of cluster-supporting lines.
-- `lateral_disp`: point dispersion from line, i.e., cluster lateral dispersion.
+- `num_dims`: Number of dimensions.
+- `num_clusters`: Number of clusters to generate.
+- `num_points`: Total number of points to generate.
+- `direction`: Average direction of the cluster-supporting lines (`num_dims` x 1).
+- `angle_disp`: Angle dispersion of cluster-supporting lines (radians).
+- `cluster_sep`: Average cluster separation in each dimension (`num_dims` x 1).
+- `llength`: Average length of cluster-supporting lines.
+- `llength_disp`: Length dispersion of cluster-supporting lines.
+- `lateral_disp`: Cluster lateral dispersion, i.e., dispersion of points from their
+  projection on the cluster-supporting line.
+
+Note that the terms "average" and "dispersion" refer to measures of central tendency
+and statistical dispersion, respectively. Their exact meaning depends on the optional
+arguments, described next.
 
 # Arguments (optional)
-- `allow_empty`: allow empty clusters? `false` by default.
-- `cluster_offset`: offset to add to all cluster centers; if set to `nothing` (the
+- `allow_empty`: Allow empty clusters? `false` by default.
+- `cluster_offset`: Offset to add to all cluster centers. If set to `nothing` (the
   default), the offset will be equal to `zeros(num_dims)`.
-- `proj_dist_fn`: defines the distribution of points along lines, with three possible
-  values:
-  - `"norm"` (default): distribute point projections along lines using a normal
+- `proj_dist_fn`: Distribution of point projections along cluster-supporting lines,
+  with three possible values:
+  - `"norm"` (default): Distribute point projections along lines using a normal
     distribution (μ=_line center_, σ=`llength/6`).
-  - `"unif"`: distribute points uniformly along the line.
+  - `"unif"`: Distribute points uniformly along the line.
   - User-defined function, which accepts two parameters, line length (float) and
     number of points (integer), and returns an array containing the distance of
     each point to the center of the line. For example, the `"norm"` option
     roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
-- `point_dist_fn`: controls how points are created from their projections on the lines,
-  with three possible values:
-  - `"n-1"` (default): generate points from their ``d``-dimensional projections on a
-    cluster-supporting line, placing each point `i` on a second line, orthogonal to
-    the first and centered at the point's projection, using the normal distribution
-    (μ=0, σ=`lat_std`). This is done by the [`CluGen.clupoints_d_1()`](@ref) function.
-  - `"n"`: generate points from their ``d``-dimensional projections on a
-    cluster-supporting line, placing each point `i` around its projection using the
-    normal distribution (μ=`0`, σ=`lateral_disp`). This is done by the
+- `point_dist_fn`: Controls how the final points are created from their projections
+  on the cluster-supporting lines, with three possible values:
+  - `"n-1"` (default): Final points are placed on a hyperplane orthogonal to
+    the cluster-supporting line, centered at each point's projection, using the
+    normal distribution (μ=0, σ=`lateral_disp`). This is done by the
+    [`CluGen.clupoints_d_1()`](@ref) function.
+  - `"n"`: Final points are placed around their projection on the cluster-supporting
+    line using the normal distribution (μ=0, σ=`lateral_disp`). This is done by the
     [`CluGen.clupoints_d()`](@ref) function.
-  - User-defined function: the user can specify a custom point placement strategy
+  - User-defined function: The user can specify a custom point placement strategy
     by passing a function with the same signature as [`CluGen.clupoints_d_1()`](@ref)
     and [`CluGen.clupoints_d()`](@ref).
-- `clusizes_fn`: by default, cluster sizes are determined by the [`clusizes()`](@ref)
-  function; this parameter allows the user to specify a custom function for this
-  purpose, which must follow [`clusizes()`](@ref)'s signature; note that custom
-  functions are not required to strictly obey the `num_points` parameter.
-- `clucenters_fn`: by default, cluster centers are determined by the [`clucenters()`](@ref)
-  function; this parameter allows the user to specify a custom function for this purpose,
-  which must follow [`clucenters()`](@ref)'s signature.
-- `llengths_fn`: by default, the lengths of cluster-supporting lines are determined
-  by the [`llengths()`](@ref) function; this parameter allows the user to specify a
-  custom function for this purpose, which must follow [`llengths()`](@ref)'s
+- `clusizes_fn`: Distribution of cluster sizes. By default, cluster sizes are
+  determined by the [`clusizes()`](@ref) function, which uses the normal distribution
+  (μ=`num_points`/`num_clusters`, σ=μ/3), and assures that the final cluster sizes
+  add up to `num_points`. This parameter allows the user to specify a custom function
+  for this purpose, which must follow [`clusizes()`](@ref)'s signature. Note that
+  custom functions are not required to strictly obey the `num_points` parameter.
+- `clucenters_fn`: Distribution of cluster centers. By default, cluster centers
+  are determined by the [`clucenters()`](@ref) function, which uses the uniform
+  distribution, and takes into account the `num_clusters` and `cluster_sep`
+  parameters for generating well-distributed cluster centers. This parameter allows
+  the user to specify a custom function for this purpose, which must follow
+  [`clucenters()`](@ref)'s signature.
+- `llengths_fn`: Distribution of line lengths. By default, the lengths of
+  cluster-supporting lines are determined by the [`llengths()`](@ref) function,
+  which uses the folded normal distribution (μ=`llength`, σ=`llength_disp`). This
+  parameter allows the user to specify a custom function for this purpose, which
+  must follow [`llengths()`](@ref)'s signature.
+- `angle_deltas_fn`: Distribution of line angle deltas with respect to `direction`.
+  By default, the angles between `direction` and the direction of cluster-supporting
+  lines are determined by the [`angle_deltas()`](@ref) function, which uses the
+  wrapped normal distribution (μ=0, σ=`angle_disp`) with support in the interval
+  ``\\left[-\\pi/2,\\pi/2\\right]``. This parameter allows the user to specify a
+  custom function for this purpose, which must follow [`angle_deltas()`](@ref)'s
   signature.
-- `angle_deltas_fn`: by default, the angles between the main direction and the direction
-  of cluster-supporting lines are determined by the [`angle_deltas()`](@ref) function;
-  this parameter allows the user to specify a custom function for this purpose, which
-  must follow [`angle_deltas()`](@ref)'s signature.
-- `rng`: a concrete instance of
+- `rng`: A concrete instance of
   [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)
   for reproducible runs. Alternatively, the user can set the global RNG seed with
   [`Random.seed!()`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!)
@@ -848,21 +859,21 @@ users will need to use.
 # Return values
 The function returns a `NamedTuple` with the following fields:
 
-- `points`: a `num_points` x `num_dims` matrix with the generated points for
+- `points`: A `num_points` x `num_dims` matrix with the generated points for
    all clusters.
-- `point_clusters`: a `num_points` x 1` vector indicating which cluster
+- `point_clusters`: A `num_points` x 1 vector indicating which cluster
   each point in `points` belongs to.
-- `point_projections`: a `num_points` x `num_dims` matrix with the point
+- `point_projections`: A `num_points` x `num_dims` matrix with the point
   projections on the cluster-supporting lines.
-- `cluster_sizes`: a `num_clusters` x 1 vector with the number of
+- `cluster_sizes`: A `num_clusters` x 1 vector with the number of
   points in each cluster.
-- `cluster_centers`: a `num_clusters` x `num_dims` matrix with the coordinates
+- `cluster_centers`: A `num_clusters` x `num_dims` matrix with the coordinates
   of the cluster centers.
-- `cluster_directions`: a `num_clusters` x `num_dims` matrix with the direction
+- `cluster_directions`: A `num_clusters` x `num_dims` matrix with the direction
   of each cluster-supporting line.
-- `cluster_angles`: a `num_clusters` x 1 vector with the angles between the
+- `cluster_angles`: A `num_clusters` x 1 vector with the angles between the
   cluster-supporting lines and the main direction.
-- `cluster_lengths`: a `num_clusters` x 1 vector with the lengths of the
+- `cluster_lengths`: A `num_clusters` x 1 vector with the lengths of the
   cluster-supporting lines.
 
 # Examples

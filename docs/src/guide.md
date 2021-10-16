@@ -81,7 +81,7 @@ see how it all fits together.
 | ``p``            | `num_points`      | Total number of points to generate.                              |
 | ``\mathbf{d}``   | `direction`       | Average direction of cluster-supporting lines (``n \times 1``).  |
 | ``\theta_\sigma``| `angle_disp`      | Angle dispersion of cluster-supporting lines (radians).          |
-| ``\mathbf{s}``   | `cluster_sep`     | Average cluster separation (``n \times 1``).                     |
+| ``\mathbf{s}``   | `cluster_sep`     | Average cluster separation in each dimension (``n \times 1``).   |
 | ``l``            | `llength`         | Average length of cluster-supporting lines.                      |
 | ``l_\sigma``     | `llength_disp`    | Length dispersion of cluster-supporting lines.                   |
 | ``f_\sigma``     | `lateral_disp`    | Cluster lateral dispersion, i.e., dispersion of points from their projection on the cluster-supporting line. |
