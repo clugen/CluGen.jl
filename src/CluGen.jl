@@ -208,9 +208,9 @@ end
 Determine cluster centers using the uniform distribution, taking into account the
 number of clusters (`num_clusters`) and the average cluster separation (`clu_sep`).
 
-Let ``c=`` `num_clusters`, ``\\mathbf{s}=`` `clu_sep`, ``\\mathbf{o}=``
-`clu_offset`, ``n=`` `length(clu_sep)` (i.e., number of dimensions). Cluster
-centers are obtained according to the following equation:
+More specifically, let ``c=`` `num_clusters`, ``\\mathbf{s}=`` `clu_sep`,
+``\\mathbf{o}=`` `clu_offset`, ``n=`` `length(clu_sep)` (i.e., number of dimensions).
+Cluster centers are obtained according to the following equation:
 
 ```math
 \\mathbf{C}=c\\mathbf{U} \\cdot \\operatorname{diag}(\\mathbf{s}) + \\mathbf{1}\\,\\mathbf{o}^T
