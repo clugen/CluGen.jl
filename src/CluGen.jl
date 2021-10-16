@@ -203,19 +203,21 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) ->  AbstractArray{<:Real}
 
-Determine cluster centers.
+Determine cluster centers using the uniform distribution, considering the
+specified number of clusters (`num_clusters`) and the average cluster
+separation (`clu_sep`).
 
-Considering ``n=`` `num_clusters`, ``\\mathbf{s}=`` `clu_sep`, ``\\mathbf{o}=``
-`clu_offset`, ``d=`` `length(clu_sep)` (i.e., number of dimensions), cluster
-centers are obtained according to the following formula:
+Let ``c=`` `num_clusters`, ``\\mathbf{s}=`` `clu_sep`, ``\\mathbf{o}=``
+`clu_offset`, ``n=`` `length(clu_sep)` (i.e., number of dimensions). Cluster
+centers are obtained according to the following equation:
 
 ```math
-\\mathbf{C}=n\\mathbf{U} \\cdot \\operatorname{diag}(\\mathbf{s}) + \\mathbf{1}\\,\\mathbf{o}^T
+\\mathbf{C}=c\\mathbf{U} \\cdot \\operatorname{diag}(\\mathbf{s}) + \\mathbf{1}\\,\\mathbf{o}^T
 ```
 
-where ``\\mathbf{C}`` is the ``n \\times d`` matrix of cluster centers,
-``\\mathbf{U}`` is an ``n \\times d`` matrix of random values drawn from the
-uniform distribution between -0.5 and 0.5, and ``\\mathbf{1}`` is an ``n \\times
+where ``\\mathbf{C}`` is the ``c \\times n`` matrix of cluster centers,
+``\\mathbf{U}`` is an ``c \\times n`` matrix of random values drawn from the
+uniform distribution between -0.5 and 0.5, and ``\\mathbf{1}`` is an ``c \\times
 1`` vector with all entries equal to 1.
 
 # Examples
