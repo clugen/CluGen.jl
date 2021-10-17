@@ -266,10 +266,8 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real, 1}
 
-Determine length of cluster-supporting lines.
-
-These lengths are obtained using the folded normal distribution (μ=`llength`,
-σ=`llength_disp`).
+Determine length of cluster-supporting lines using the folded normal distribution
+(μ=`llength`, σ=`llength_disp`).
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
@@ -510,17 +508,17 @@ Determine coordinates of points on a line with `center` and `direction`, based
 on the distances from the center given in `dist_center`.
 
 This works by using the vector formulation of the line equation assuming
-`direction` is a ``d``-dimensional unit vector. In other words, considering
-``\\mathbf{v}=`` `direction` (``d \\times 1``), ``\\mathbf{c}=`` `center` (``
-d \\times 1``), and ``\\mathbf{w}=`` `dist_center` (``p_\\text{tot} \\times
-1``), the coordinates of points on the line are given by:
+`direction` is a ``n``-dimensional unit vector. In other words, considering
+``\\mathbf{d}=`` `direction` (``n \\times 1``), ``\\mathbf{c}=`` `center` (``
+n \\times 1``), and ``\\mathbf{w}=`` `dist_center` (``p \\times 1``), the
+coordinates of points on the line are given by:
 
 ```math
-\\mathbf{P}=\\mathbf{1}\\,\\mathbf{c}^T + \\mathbf{w}\\mathbf{v}^T
+\\mathbf{P}=\\mathbf{1}\\,\\mathbf{c}^T + \\mathbf{w}\\mathbf{d}^T
 ```
 
-where ``\\mathbf{P}`` is the ``p_\\text{tot} \\times d`` matrix of point
-coordinates on the line, and ``\\mathbf{1}`` is an ``d \\times 1`` vector with
+where ``\\mathbf{P}`` is the ``p \\times n`` matrix of point
+coordinates on the line, and ``\\mathbf{1}`` is an ``n \\times 1`` vector with
 all entries equal to 1.
 
 # Examples
