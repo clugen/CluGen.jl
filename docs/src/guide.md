@@ -94,10 +94,10 @@ see how it all fits together.
 | ``\mathbf{o}``      | `cluster_offset`  | `zeros(num_dims)`        | Offset to add to all cluster centers (``n \times 1``).            |
 | ``p_\text{proj}()`` | `proj_dist_fn`    | `"norm"`                 | Distribution of point projections along cluster-supporting lines. |
 | ``p_\text{final}()``| `point_dist_fn`   | `"n-1"`                  | Distribution of final points from their projections.              |
-| ``c_s()``           | `clusizes_fn`     | [`clusizes()`](@ref)     | Distribution of cluster sizes.                                    |
-| ``c_c()``           | `clucenters_fn`   | [`clucenters()`](@ref)   | Distribution of cluster centers.                                  |
-| ``l()``             | `llengths_fn`     | [`llengths()`](@ref)     | Distribution of line lengths.                                     |
-| ``\theta_\Delta()`` | `angle_deltas_fn` | [`angle_deltas()`](@ref) | Distribution of line angle deltas (w.r.t. ``\mathbf{d}``).        |
+| ``c_s()``           | `clusizes_fn`     | [`CluGen.clusizes()`](@ref)     | Distribution of cluster sizes.                                    |
+| ``c_c()``           | `clucenters_fn`   | [`CluGen.clucenters()`](@ref)   | Distribution of cluster centers.                                  |
+| ``l()``             | `llengths_fn`     | [`CluGen.llengths()`](@ref)     | Distribution of line lengths.                                     |
+| ``\theta_\Delta()`` | `angle_deltas_fn` | [`CluGen.angle_deltas()`](@ref) | Distribution of line angle deltas (w.r.t. ``\mathbf{d}``).        |
 
 ### The algorithm in detail
 
@@ -238,7 +238,7 @@ latstd = 1
 clusz_names = ("Normal (default)", "Uniform", "Poisson", "Poisson (no fix_num_points!)")
 
 clusz = Dict(
-   clusz_names[1] => clusizes,
+   clusz_names[1] => CluGen.clusizes,
    clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_num_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
    clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_num_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
    clusz_names[4] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
@@ -303,7 +303,7 @@ latstd = 1
 cluctr_names = ("Uniform (default)", "Hand-picked")
 
 cluctr = Dict(
-   cluctr_names[1] => clucenters,
+   cluctr_names[1] => CluGen.clucenters,
    cluctr_names[2] => (nclu, clusep, cluoff; rng = Random.GLOBAL_RNG) -> rand(rng, nclu, length(clusep)) .* 0 + [-20 -20; -20 20; 20 20; 20 -20]
 )
 
@@ -355,7 +355,7 @@ latstd = 0 # To better see line lengths
 ll_names = ("Normal (default)", "Poisson", "Uniform", "Hand-picked")
 
 ll = Dict(
-   ll_names[1] => llengths,
+   ll_names[1] => CluGen.llengths,
    ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
    ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, DiscreteUniform(0, ll * 2), nclu),
    ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
@@ -409,7 +409,7 @@ latstd = 0 # To better see line angles
 la_names = ("Wrapped Normal (default)", "Hand-picked")
 
 la = Dict(
-   la_names[1] => angle_deltas,
+   la_names[1] => CluGen.angle_deltas,
    la_names[2] => (nclu, astd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [0, pi/2, 0, pi/2]
 )
 
