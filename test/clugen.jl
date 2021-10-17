@@ -113,10 +113,10 @@
         clu_off = [-1.5, 0, 2]
         pt_dist = "unif"
         pt_off = "n-1"
-        csizes_fn = clusizes
-        ccenters_fn = clucenters
-        llengths_fn = llengths
-        langles_fn = angle_deltas
+        csizes_fn = CluGen.clusizes
+        ccenters_fn = CluGen.clucenters
+        llengths_fn = CluGen.llengths
+        langles_fn = CluGen.angle_deltas
 
         # Test passes with valid arguments
         @test_nowarn clugen(

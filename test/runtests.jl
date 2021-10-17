@@ -45,7 +45,7 @@ ptoff_fns = Dict(
     "proj+1" => (projs, lstd, len, cdir, cctr; rng=nothing) -> projs + ones(size(projs))
 )
 csz_fns = Dict(
-    "default" => clusizes,
+    "default" => CluGen.clusizes,
     "equi_size" =>
         function (nclu, tpts, ae; rng=nothing)
             cs = zeros(Integer, nclu)
@@ -56,17 +56,17 @@ csz_fns = Dict(
         end
 )
 cctr_fns = Dict(
-    "default" => clucenters,
+    "default" => CluGen.clucenters,
     "on_a_line" =>
         (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu)
 )
 llen_fns = Dict(
-    "default" => llengths,
+    "default" => CluGen.llengths,
     "unif_btw10-20" =>
         (nclu, llen, llenstd; rng = Random.GLOBAL_RNG) -> 10 .+ 10 * rand(rng, nclu)
 )
 lang_fns = Dict(
-    "default" => angle_deltas,
+    "default" => CluGen.angle_deltas,
     "same_angle" => (nclu, astd; rng=nothing) -> zeros(nclu)
 )
 

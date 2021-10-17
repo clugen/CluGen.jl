@@ -15,7 +15,7 @@
         llength_sigma = llengths_sigmas
 
         # Check that the llengths function runs without warnings
-        lens = @test_nowarn llengths(nclu, llength_mu, llength_sigma; rng=rng)
+        lens = @test_nowarn CluGen.llengths(nclu, llength_mu, llength_sigma; rng=rng)
 
         # Check that return value has the correct dimensions
         @test size(lens) == (nclu, )

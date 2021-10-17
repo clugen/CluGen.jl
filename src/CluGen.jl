@@ -18,10 +18,6 @@ using LinearAlgebra
 using Random
 
 export clugen
-export clusizes
-export clucenters
-export angle_deltas
-export llengths
 export points_on_line
 export rand_unit_vector
 export rand_ortho_vector
@@ -41,8 +37,8 @@ corresponding to the currently smallest cluster while
 the currently largest cluster while `sum(clu_num_points) > num_points`.
 
 !!! note "Internal package function"
-    This function is used internally by the [`clusizes()`](@ref) function, thus
-    it's not exported by the package and must be prefixed by the package name,
+    This function is used internally by the [`CluGen.clusizes()`](@ref) function,
+    thus it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.fix_num_points!(...)`. Nonetheless, this function might be
     useful for custom cluster sizing implementations given as the `clusizes_fn`
     parameter of the main [`clugen()`](@ref) function.
@@ -78,8 +74,8 @@ clusters (or if the `allow_empty` parameter is set to `true`), this function doe
 nothing.
 
 !!! note "Internal package function"
-    This function is used internally by the [`clusizes()`](@ref) function, thus
-    it's not exported by the package and must be prefixed by the package name,
+    This function is used internally by the [`CluGen.clusizes()`](@ref) function,
+    thus it's not exported by the package and must be prefixed by the package name,
     e.g. `CluGen.fix_empty!(...)`. Nonetheless, this function might be useful
     for custom cluster sizing implementations given as the `clusizes_fn`
     parameter of the main [`clugen()`](@ref) function.
@@ -130,21 +126,21 @@ that the final cluster sizes add up to `num_points` via the
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(90))
-julia> clusizes(4, 6, true)
+julia> CluGen.clusizes(4, 6, true)
 4-element Array{Int64,1}:
  1
  0
  3
  2
 
-julia> clusizes(4, 100, false)
+julia> CluGen.clusizes(4, 100, false)
 4-element Array{Int64,1}:
  29
  26
  24
  21
 
-julia> clusizes(5, 500, true; rng=MersenneTwister(123)) # Reproducible
+julia> CluGen.clusizes(5, 500, true; rng=MersenneTwister(123)) # Reproducible
 5-element Array{Int64,1}:
  108
  129
@@ -222,14 +218,14 @@ uniform distribution between -0.5 and 0.5, and ``\\mathbf{1}`` is an ``c \\times
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
-julia> clucenters(4, [10, 50], [0, 0]) # 2D
+julia> CluGen.clucenters(4, [10, 50], [0, 0]) # 2D
 4×2 Array{Float64,2}:
  10.7379   -37.3512
  17.6206    32.511
   6.95835   17.2044
  -4.18188  -89.5734
 
-julia> clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
+julia> CluGen.clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
 5×3 Array{Float64,2}:
  -13.136    15.8746      2.34767
  -29.1129   -0.715105  -46.6028
@@ -237,7 +233,7 @@ julia> clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
    7.30168  -1.20904   -41.2033
   46.5412    7.3284    -42.8401
 
-julia> clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D, reproducible
+julia> CluGen.clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D, reproducible
 3×1 Array{Float64,2}:
   -91.3675026663759
   140.98964768714384
@@ -271,7 +267,7 @@ Determine length of cluster-supporting lines using the folded normal distributio
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
-julia> llengths(5, 10, 3)
+julia> CluGen.llengths(5, 10, 3)
 5-element Array{Float64,1}:
  13.57080364295883
  16.14453912336772
@@ -279,7 +275,7 @@ julia> llengths(5, 10, 3)
  11.37824686122124
   8.809962762114331
 
-julia> llengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
+julia> CluGen.llengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
 3-element Array{Float64,1}:
  146.1737820482947
   31.914161161783426
@@ -316,14 +312,14 @@ radians in the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
-julia> angle_deltas(4, pi/128)
+julia> CluGen.angle_deltas(4, pi/128)
 4-element Array{Float64,1}:
   0.01888791855096079
  -0.027851298321307266
   0.03274154825228485
  -0.004475798744567242
 
-julia> angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
+julia> CluGen.angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
 3-element Array{Float64,1}:
   0.08834204306583336
   0.014678748091943444
@@ -556,13 +552,13 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
-Generate points from their ``d``-dimensional projections on a cluster-supporting
-line, placing each point `i` on a second line, orthogonal to the first and
-centered at the point's projection, using the function specified in `dist_fn` to
-place points on the second line.
+Generate points from their ``n``-dimensional projections on a cluster-supporting
+line, placing each point on a hyperplane orthogonal to that line and centered at
+the point's projection. The function specified in `dist_fn` is used to perform
+the actual placement.
 
 !!! note "Internal package function"
-    This function is internally used by the [`clupoints_n_1()`](@ref) function.
+    This function is internally used by the [`CluGen.clupoints_n_1()`](@ref) function.
     Thus, it's not exported by the package and must be prefixed by the package
     name, e.g. `CluGen.clupoints_n_1_template(...)`. This function may be useful
     for constructing user-defined offsets for the `point_dist_fn` parameter of the
@@ -824,28 +820,28 @@ arguments, described next.
     by passing a function with the same signature as [`CluGen.clupoints_n_1()`](@ref)
     and [`CluGen.clupoints_n()`](@ref).
 - `clusizes_fn`: Distribution of cluster sizes. By default, cluster sizes are
-  determined by the [`clusizes()`](@ref) function, which uses the normal distribution
+  determined by the [`CluGen.clusizes()`](@ref) function, which uses the normal distribution
   (μ=`num_points`/`num_clusters`, σ=μ/3), and assures that the final cluster sizes
   add up to `num_points`. This parameter allows the user to specify a custom function
-  for this purpose, which must follow [`clusizes()`](@ref)'s signature. Note that
+  for this purpose, which must follow [`CluGen.clusizes()`](@ref)'s signature. Note that
   custom functions are not required to strictly obey the `num_points` parameter.
 - `clucenters_fn`: Distribution of cluster centers. By default, cluster centers
-  are determined by the [`clucenters()`](@ref) function, which uses the uniform
+  are determined by the [`CluGen.clucenters()`](@ref) function, which uses the uniform
   distribution, and takes into account the `num_clusters` and `cluster_sep`
   parameters for generating well-distributed cluster centers. This parameter allows
   the user to specify a custom function for this purpose, which must follow
-  [`clucenters()`](@ref)'s signature.
+  [`CluGen.clucenters()`](@ref)'s signature.
 - `llengths_fn`: Distribution of line lengths. By default, the lengths of
-  cluster-supporting lines are determined by the [`llengths()`](@ref) function,
+  cluster-supporting lines are determined by the [`CluGen.llengths()`](@ref) function,
   which uses the folded normal distribution (μ=`llength`, σ=`llength_disp`). This
   parameter allows the user to specify a custom function for this purpose, which
-  must follow [`llengths()`](@ref)'s signature.
+  must follow [`CluGen.llengths()`](@ref)'s signature.
 - `angle_deltas_fn`: Distribution of line angle deltas with respect to `direction`.
   By default, the angles between `direction` and the direction of cluster-supporting
-  lines are determined by the [`angle_deltas()`](@ref) function, which uses the
+  lines are determined by the [`CluGen.angle_deltas()`](@ref) function, which uses the
   wrapped normal distribution (μ=0, σ=`angle_disp`) with support in the interval
   ``\\left[-\\pi/2,\\pi/2\\right]``. This parameter allows the user to specify a
-  custom function for this purpose, which must follow [`angle_deltas()`](@ref)'s
+  custom function for this purpose, which must follow [`CluGen.angle_deltas()`](@ref)'s
   signature.
 - `rng`: A concrete instance of
   [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)

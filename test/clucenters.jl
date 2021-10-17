@@ -14,7 +14,7 @@
         clu_off in get_clu_offsets(nd)
 
         # Check that the clucenters function runs without warnings
-        clu_ctrs = @test_nowarn clucenters(nclu, clu_sep, clu_off; rng=rng)
+        clu_ctrs = @test_nowarn CluGen.clucenters(nclu, clu_sep, clu_off; rng=rng)
 
         # Check that return value has the correct dimensions
         @test size(clu_ctrs) == (nclu, nd)

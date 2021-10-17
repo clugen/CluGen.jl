@@ -19,7 +19,7 @@
         end
 
         # Check that the clusizes function runs without warnings
-        clu_sizes = @test_nowarn clusizes(nclu, tpts, ae; rng=rng)
+        clu_sizes = @test_nowarn CluGen.clusizes(nclu, tpts, ae; rng=rng)
 
         # Check that the output has the correct number of clusters
         @test size(clu_sizes) == (nclu, )

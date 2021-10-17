@@ -10,7 +10,7 @@
         astd in angles_stds
 
         # Check that the angle_deltas function runs without warnings
-        angles = @test_nowarn angle_deltas(nclu, astd; rng=rng)
+        angles = @test_nowarn CluGen.angle_deltas(nclu, astd; rng=rng)
 
         # Check that return value has the correct dimensions
         @test size(angles) == (nclu, )
