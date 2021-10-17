@@ -2,8 +2,8 @@
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
-# Test clupoints_d
-@testset "clupoints_d" begin
+# Test clupoints_n
+@testset "clupoints_n" begin
 
     # Number of line directions to test
     ndirs = 3
@@ -28,8 +28,8 @@
         proj_dist_fn2ctr = length .* rand(rng, tpts) .- length / 2
         proj = points_on_line(ctr, dir, proj_dist_fn2ctr)
 
-        # Check that the clupoints_d function runs without warnings
-        pts = @test_nowarn CluGen.clupoints_d(proj, lat_std, length, dir, ctr; rng=rng)
+        # Check that the clupoints_n function runs without warnings
+        pts = @test_nowarn CluGen.clupoints_n(proj, lat_std, length, dir, ctr; rng=rng)
 
         # Check that number of points is the same as the number of projections
         @test size(pts) == size(proj)

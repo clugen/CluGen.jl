@@ -329,7 +329,7 @@ function plot_clusizes!(
 end
 
 """
-    clupoints_d_hollow(
+    clupoints_n_hollow(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
         line_len::Real,
@@ -350,7 +350,7 @@ for creating hollow clusters.
 - `clu_ctr`: center position of the cluster-supporting line center position.
 - `rng`: an optional pseudo-random number generator for reproducible executions.
 """
-function clupoints_d_hollow(
+function clupoints_n_hollow(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
     line_len::Real,
@@ -451,7 +451,7 @@ julia> include("docs/extras/CluGenExtras.jl")
 Main.CluGenExtras
 
 julia> Main.CluGenExtras.plot_point_placement(rand(800) .* 40 .- 20, 40, [0,0],
-       normalize([1,1]), 5, Main.CluGenExtras.clupoints_d_hollow)
+       normalize([1,1]), 5, Main.CluGenExtras.clupoints_n_hollow)
 ```
 """
 function plot2d_point_placement(

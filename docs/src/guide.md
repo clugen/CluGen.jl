@@ -184,11 +184,11 @@ dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts,
 
 poffs = Dict(
    poffs_names[1] => ("n-1", "norm"),
-   poffs_names[2] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
-   poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_d_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
+   poffs_names[2] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
+   poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
    poffs_names[4] => ("n", "norm"),
-   poffs_names[5] => (Main.CluGenExtras.clupoints_d_hollow, "norm"),
-   poffs_names[6] => (Main.CluGenExtras.clupoints_d_hollow, "unif")
+   poffs_names[5] => (Main.CluGenExtras.clupoints_n_hollow, "norm"),
+   poffs_names[6] => (Main.CluGenExtras.clupoints_n_hollow, "unif")
 )
 
 # Results and plots

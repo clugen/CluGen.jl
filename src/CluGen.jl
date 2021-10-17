@@ -548,7 +548,7 @@ function points_on_line(
 end
 
 """
-    CluGen.clupoints_d_1_template(
+    CluGen.clupoints_n_1_template(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
         clu_dir::AbstractArray{<:Real, 1},
@@ -562,9 +562,9 @@ centered at the point's projection, using the function specified in `dist_fn` to
 place points on the second line.
 
 !!! note "Internal package function"
-    This function is internally used by the [`clupoints_d_1()`](@ref) function.
+    This function is internally used by the [`clupoints_n_1()`](@ref) function.
     Thus, it's not exported by the package and must be prefixed by the package
-    name, e.g. `CluGen.clupoints_d_1_template(...)`. This function may be useful
+    name, e.g. `CluGen.clupoints_n_1_template(...)`. This function may be useful
     for constructing user-defined offsets for the `point_dist_fn` parameter of the
     main [`clugen()`](@ref) function.
 
@@ -575,7 +575,7 @@ place points on the second line.
 - `dist_fn`: function to place points on a second line, orthogonal to the first.
 - `rng`: an optional pseudo-random number generator for reproducible executions.
 """
-function clupoints_d_1_template(
+function clupoints_n_1_template(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
     clu_dir::AbstractArray{<:Real, 1},
@@ -610,7 +610,7 @@ function clupoints_d_1_template(
 end
 
 """
-    CluGen.clupoints_d_1(
+    CluGen.clupoints_n_1(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
         line_len::Real,
@@ -627,7 +627,7 @@ centered at the point's projection, using the normal distribution (μ=0, σ=`lat
     This function's main intended use is by the [`clugen()`](@ref) function,
     generating points when its `point_dist_fn` parameter is set to `"n-1"`. Thus,
     it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.clupoints_d_1(...)`.
+    e.g. `CluGen.clupoints_n_1(...)`.
 
 # Arguments
 - `projs`: point projections on the cluster-supporting line.
@@ -648,7 +648,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  7.0  5.0
  9.0  5.0
 
-julia> CluGen.clupoints_d_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
+julia> CluGen.clupoints_n_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
 5×2 Array{Float64,2}:
  1.0  5.59513
  3.0  3.97591
@@ -657,7 +657,7 @@ julia> CluGen.clupoints_d_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(1
  9.0  4.80166
 ```
 """
-function clupoints_d_1(
+function clupoints_n_1(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
     line_len::Real,
@@ -669,13 +669,13 @@ function clupoints_d_1(
     # Get distances from points to their projections on the line
     dist_fn = (clu_num_points, lstd) -> lstd .* randn(rng, clu_num_points, 1)
 
-    # Use clupoints_d_1_template() to do the heavy lifting
-    return clupoints_d_1_template(projs, lat_std, clu_dir, dist_fn; rng=rng)
+    # Use clupoints_n_1_template() to do the heavy lifting
+    return clupoints_n_1_template(projs, lat_std, clu_dir, dist_fn; rng=rng)
 
 end
 
 """
-    GluGen.clupoints_d(
+    GluGen.clupoints_n(
         projs::AbstractArray{<:Real, 2},
         lat_std::Real,
         line_len::Real,
@@ -692,7 +692,7 @@ line, placing each point `i` around its projection using the normal distribution
     This function's main intended use is by the [`clugen()`](@ref) function,
     generating points when its `point_dist_fn` parameter is set to `"n"`. Thus,
     it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.clupoints_d(...)`.
+    e.g. `CluGen.clupoints_n(...)`.
 
 # Arguments
 - `projs`: point projections on the cluster-supporting line.
@@ -713,7 +713,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  7.0  5.0
  9.0  5.0
 
-julia> CluGen.clupoints_d(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
+julia> CluGen.clupoints_n(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
 5×2 Array{Float64,2}:
  1.59513  4.66764
  4.02409  5.49048
@@ -722,7 +722,7 @@ julia> CluGen.clupoints_d(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123
  8.80166  4.90289
 ```
 """
-function clupoints_d(
+function clupoints_n(
     projs::AbstractArray{<:Real, 2},
     lat_std::Real,
     line_len::Real,
@@ -816,13 +816,13 @@ arguments, described next.
   - `"n-1"` (default): Final points are placed on a hyperplane orthogonal to
     the cluster-supporting line, centered at each point's projection, using the
     normal distribution (μ=0, σ=`lateral_disp`). This is done by the
-    [`CluGen.clupoints_d_1()`](@ref) function.
+    [`CluGen.clupoints_n_1()`](@ref) function.
   - `"n"`: Final points are placed around their projection on the cluster-supporting
     line using the normal distribution (μ=0, σ=`lateral_disp`). This is done by the
-    [`CluGen.clupoints_d()`](@ref) function.
+    [`CluGen.clupoints_n()`](@ref) function.
   - User-defined function: The user can specify a custom point placement strategy
-    by passing a function with the same signature as [`CluGen.clupoints_d_1()`](@ref)
-    and [`CluGen.clupoints_d()`](@ref).
+    by passing a function with the same signature as [`CluGen.clupoints_n_1()`](@ref)
+    and [`CluGen.clupoints_n()`](@ref).
 - `clusizes_fn`: Distribution of cluster sizes. By default, cluster sizes are
   determined by the [`clusizes()`](@ref) function, which uses the normal distribution
   (μ=`num_points`/`num_clusters`, σ=μ/3), and assures that the final cluster sizes
@@ -1006,11 +1006,11 @@ function clugen(
     elseif point_dist_fn == "n-1"
         # Points will be placed on a second line perpendicular to the cluster
         # line using a normal distribution centered at their intersection
-        pt_from_proj_fn = clupoints_d_1
+        pt_from_proj_fn = clupoints_n_1
     elseif point_dist_fn == "n"
         # Points will be placed using a multivariate normal distribution
         # centered at the point projection
-        pt_from_proj_fn = clupoints_d
+        pt_from_proj_fn = clupoints_n
     else
         throw(ArgumentError(
             "point_dist_fn has to be either \"d-1\", \"d\" or a user-defined function"))

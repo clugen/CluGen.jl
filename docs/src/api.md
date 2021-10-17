@@ -14,9 +14,9 @@
   * [`rand_unit_vector`](@ref)
   * [`rand_vector_at_angle`](@ref)
 * [Internal functions](@ref)
-  * [`CluGen.clupoints_d_1`](@ref)
-  * [`CluGen.clupoints_d`](@ref)
-  * [`CluGen.clupoints_d_1_template`](@ref)
+  * [`CluGen.clupoints_n_1`](@ref)
+  * [`CluGen.clupoints_n`](@ref)
+  * [`CluGen.clupoints_n_1_template`](@ref)
   * [`CluGen.fix_num_points!`](@ref)
   * [`CluGen.fix_empty!`](@ref)
 
@@ -48,9 +48,9 @@ rand_vector_at_angle
 ## Internal functions
 
 ```@docs
-CluGen.clupoints_d_1
-CluGen.clupoints_d
-CluGen.clupoints_d_1_template
+CluGen.clupoints_n_1
+CluGen.clupoints_n
+CluGen.clupoints_n_1_template
 CluGen.fix_num_points!
 CluGen.fix_empty!
 ```

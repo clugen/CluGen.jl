@@ -109,8 +109,8 @@ include("points_on_line.jl")
 include("rand_unit_vector.jl")
 include("rand_ortho_vector.jl")
 include("rand_vector_at_angle.jl")
-include("clupoints_d_1.jl")
-include("clupoints_d.jl")
+include("clupoints_n_1.jl")
+include("clupoints_n.jl")
 include("clugen.jl")
 
 # Run doctests
