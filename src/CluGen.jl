@@ -29,19 +29,19 @@ export rand_vector_at_angle
         num_points::Integer
     ) -> AbstractArray{<:Integer, 1}
 
-This function makes sure that the values in the `clu_num_points` array, i.e. the
-number of points in each cluster, add up to `num_points`. If this is not the
-case, the `clu_num_points` array is modified in-place, incrementing the value
-corresponding to the currently smallest cluster while
-`sum(clu_num_points) < num_points`, or decrementing the value corresponding to
-the currently largest cluster while `sum(clu_num_points) > num_points`.
+Certifies that the values in the `clu_num_points` array, i.e. the number of
+points in each cluster, add up to `num_points`. If this is not the case, the
+`clu_num_points` array is modified in-place, incrementing the value corresponding
+to the smallest cluster while `sum(clu_num_points) < num_points`, or decrementing
+the value corresponding to the largest cluster while
+`sum(clu_num_points) > num_points`.
 
-!!! note "Internal package function"
-    This function is used internally by the [`CluGen.clusizes()`](@ref) function,
-    thus it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.fix_num_points!(...)`. Nonetheless, this function might be
-    useful for custom cluster sizing implementations given as the `clusizes_fn`
-    parameter of the main [`clugen()`](@ref) function.
+This function is used internally by [`CluGen.clusizes()`](@ref) and might be
+useful for custom cluster sizing implementations given as the `clusizes_fn`
+parameter of the main [`clugen()`](@ref) function.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 """
 function fix_num_points!(
     clu_num_points::AbstractArray{<:Integer, 1},
@@ -67,18 +67,18 @@ end
         allow_empty::Bool = false
     ) -> AbstractArray{<:Integer, 1}
 
-This function makes sure that, given enough points, no clusters are left empty.
-This is done by removing a point from the currently largest cluster while there
-are empty clusters. If the total number of points is smaller than the number of
-clusters (or if the `allow_empty` parameter is set to `true`), this function does
-nothing.
+Certifies that, given enough points, no clusters are left empty. This is done by
+removing a point from the largest cluster and adding it to an empty cluster while
+there are empty clusters. If the total number of points is smaller than the number
+of clusters (or if the `allow_empty` parameter is set to `true`), this function
+does nothing.
 
-!!! note "Internal package function"
-    This function is used internally by the [`CluGen.clusizes()`](@ref) function,
-    thus it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.fix_empty!(...)`. Nonetheless, this function might be useful
-    for custom cluster sizing implementations given as the `clusizes_fn`
-    parameter of the main [`clugen()`](@ref) function.
+This function is used internally by [`CluGen.clusizes()`](@ref) and might be
+useful for custom cluster sizing implementations given as the `clusizes_fn`
+parameter of the main [`clugen()`](@ref) function.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 """
 function fix_empty!(
     clu_num_points::AbstractArray{<:Integer, 1},
@@ -123,6 +123,9 @@ Determine cluster sizes, i.e., the number of points in each cluster, using the
 normal distribution (μ=`num_points`/`num_clusters`, σ=μ/3), and then assuring
 that the final cluster sizes add up to `num_points` via the
 [`CluGen.fix_num_points!()`](@ref) function.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(90))
@@ -216,6 +219,9 @@ where ``\\mathbf{C}`` is the ``c \\times n`` matrix of cluster centers,
 uniform distribution between -0.5 and 0.5, and ``\\mathbf{1}`` is an ``c \\times
 1`` vector with all entries equal to 1.
 
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
+
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
 julia> CluGen.clucenters(4, [10, 50], [0, 0]) # 2D
@@ -265,6 +271,9 @@ end
 Determine length of cluster-supporting lines using the folded normal distribution
 (μ=`llength`, σ=`llength_disp`).
 
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
+
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
 julia> CluGen.llengths(5, 10, 3)
@@ -309,6 +318,9 @@ wrapped normal distribution, the support of which is given by the interval
 
 The `angle_disp` parameter must be specified in radians and results are given in
 radians in the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
@@ -557,19 +569,19 @@ line, placing each point on a hyperplane orthogonal to that line and centered at
 the point's projection. The function specified in `dist_fn` is used to perform
 the actual placement.
 
-!!! note "Internal package function"
-    This function is internally used by the [`CluGen.clupoints_n_1()`](@ref) function.
-    Thus, it's not exported by the package and must be prefixed by the package
-    name, e.g. `CluGen.clupoints_n_1_template(...)`. This function may be useful
-    for constructing user-defined offsets for the `point_dist_fn` parameter of the
-    main [`clugen()`](@ref) function.
+This function is used internally by [`CluGen.clupoints_n_1()`](@ref) and may be
+useful for constructing user-defined final point placement strategies for the
+`point_dist_fn` parameter of the main [`clugen()`](@ref) function.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 
 # Arguments
-- `projs`: point projections on the cluster-supporting line.
-- `lat_std`: dispersion of points from their projection.
-- `clu_dir`: direction of the cluster-supporting line (unit vector).
-- `dist_fn`: function to place points on a second line, orthogonal to the first.
-- `rng`: an optional pseudo-random number generator for reproducible executions.
+- `projs`: Point projections on the cluster-supporting line.
+- `lat_std`: Dispersion of points from their projection.
+- `clu_dir`: Direction of the cluster-supporting line (unit vector).
+- `dist_fn`: Function to place points on a second line, orthogonal to the first.
+- `rng`: An optional pseudo-random number generator for reproducible executions.
 """
 function clupoints_n_1_template(
     projs::AbstractArray{<:Real, 2},
@@ -615,24 +627,24 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
-Generate points from their ``d``-dimensional projections on a cluster-supporting
-line, placing each point `i` on a second line, orthogonal to the first and
-centered at the point's projection, using the normal distribution (μ=0, σ=`lat_std`).
+Generate points from their ``n``-dimensional projections on a cluster-supporting
+line, placing each point on a hyperplane orthogonal to that line and centered at
+the point's projection, using the normal distribution (μ=0, σ=`lat_std`).
 
-!!! note "Internal package function"
-    This function's main intended use is by the [`clugen()`](@ref) function,
-    generating points when its `point_dist_fn` parameter is set to `"n-1"`. Thus,
-    it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.clupoints_n_1(...)`.
+This function's main intended use is by the [`clugen()`](@ref) function,
+generating the final points when the `point_dist_fn` parameter is set to `"n-1"`.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 
 # Arguments
-- `projs`: point projections on the cluster-supporting line.
-- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+- `projs`: Point projections on the cluster-supporting line.
+- `lat_std`: Standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
-- `line_len`: length of cluster-supporting line (ignored).
-- `clu_dir`: direction of the cluster-supporting line (unit vector).
-- `clu_ctr`: center position of the cluster-supporting line center position (ignored).
-- `rng`: an optional pseudo-random number generator for reproducible executions.
+- `line_len`: Length of cluster-supporting line (ignored).
+- `clu_dir`: Direction of the cluster-supporting line (unit vector).
+- `clu_ctr`: Center position of the cluster-supporting line (ignored).
+- `rng`: An optional pseudo-random number generator for reproducible executions.
 
 # Examples
 ```jldoctest
@@ -680,24 +692,24 @@ end
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
-Generate points from their ``d``-dimensional projections on a cluster-supporting
-line, placing each point `i` around its projection using the normal distribution
-(μ=`projs[i]`, σ=`lat_std`).
+Generate points from their ``n``-dimensional projections on a cluster-supporting
+line, placing each point around its projection using the normal distribution
+(μ=0, σ=`lat_std`).
 
-!!! note "Internal package function"
-    This function's main intended use is by the [`clugen()`](@ref) function,
-    generating points when its `point_dist_fn` parameter is set to `"n"`. Thus,
-    it's not exported by the package and must be prefixed by the package name,
-    e.g. `CluGen.clupoints_n(...)`.
+This function's main intended use is by the [`clugen()`](@ref) function,
+generating the final points when the `point_dist_fn` parameter is set to `"n"`.
+
+This function is not exported by the package and must be prefixed with `CluGen`
+if invoked by user code.
 
 # Arguments
-- `projs`: point projections on the cluster-supporting line.
-- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+- `projs`: Point projections on the cluster-supporting line.
+- `lat_std`: Standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
-- `line_len`: length of cluster-supporting line (ignored).
-- `clu_dir`: direction of the cluster-supporting line.
-- `clu_ctr`: center position of the cluster-supporting line center position (ignored).
-- `rng`: an optional pseudo-random number generator for reproducible executions.
+- `line_len`: Length of cluster-supporting line (ignored).
+- `clu_dir`: Direction of the cluster-supporting line.
+- `clu_ctr`: Center position of the cluster-supporting line (ignored).
+- `rng`: An optional pseudo-random number generator for reproducible executions.
 
 # Examples
 ```jldoctest
@@ -758,10 +770,10 @@ end
         cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
         proj_dist_fn::Union{String, <:Function} = "norm",
         point_dist_fn::Union{String, <:Function} = "n-1",
-        clusizes_fn::Function = clusizes,
-        clucenters_fn::Function = clucenters,
-        llengths_fn::Function = llengths,
-        angle_deltas_fn::Function = angle_deltas,
+        clusizes_fn::Function = GluGen.clusizes,
+        clucenters_fn::Function = GluGen.clucenters,
+        llengths_fn::Function = GluGen.llengths,
+        angle_deltas_fn::Function = GluGen.angle_deltas,
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,              # Array{<:Real,2}
@@ -776,7 +788,7 @@ end
 Generate multidimensional clusters.
 
 This is the main function of the CluGen package, and possibly the only function
-users will need to use.
+most users will need.
 
 # Arguments (mandatory)
 - `num_dims`: Number of dimensions.
@@ -820,14 +832,15 @@ arguments, described next.
     by passing a function with the same signature as [`CluGen.clupoints_n_1()`](@ref)
     and [`CluGen.clupoints_n()`](@ref).
 - `clusizes_fn`: Distribution of cluster sizes. By default, cluster sizes are
-  determined by the [`CluGen.clusizes()`](@ref) function, which uses the normal distribution
-  (μ=`num_points`/`num_clusters`, σ=μ/3), and assures that the final cluster sizes
-  add up to `num_points`. This parameter allows the user to specify a custom function
-  for this purpose, which must follow [`CluGen.clusizes()`](@ref)'s signature. Note that
-  custom functions are not required to strictly obey the `num_points` parameter.
+  determined by the [`CluGen.clusizes()`](@ref) function, which uses the normal
+  distribution (μ=`num_points`/`num_clusters`, σ=μ/3), and assures that the final
+  cluster sizes add up to `num_points`. This parameter allows the user to specify a
+  custom function for this purpose, which must follow [`CluGen.clusizes()`](@ref)'s
+  signature. Note that custom functions are not required to strictly obey the
+  `num_points` parameter.
 - `clucenters_fn`: Distribution of cluster centers. By default, cluster centers
-  are determined by the [`CluGen.clucenters()`](@ref) function, which uses the uniform
-  distribution, and takes into account the `num_clusters` and `cluster_sep`
+  are determined by the [`CluGen.clucenters()`](@ref) function, which uses the
+  uniform distribution, and takes into account the `num_clusters` and `cluster_sep`
   parameters for generating well-distributed cluster centers. This parameter allows
   the user to specify a custom function for this purpose, which must follow
   [`CluGen.clucenters()`](@ref)'s signature.
@@ -836,10 +849,10 @@ arguments, described next.
   which uses the folded normal distribution (μ=`llength`, σ=`llength_disp`). This
   parameter allows the user to specify a custom function for this purpose, which
   must follow [`CluGen.llengths()`](@ref)'s signature.
-- `angle_deltas_fn`: Distribution of line angle deltas with respect to `direction`.
+- `angle_deltas_fn`: Distribution of line angle differences with respect to `direction`.
   By default, the angles between `direction` and the direction of cluster-supporting
-  lines are determined by the [`CluGen.angle_deltas()`](@ref) function, which uses the
-  wrapped normal distribution (μ=0, σ=`angle_disp`) with support in the interval
+  lines are determined by the [`CluGen.angle_deltas()`](@ref) function, which uses
+  the wrapped normal distribution (μ=0, σ=`angle_disp`) with support in the interval
   ``\\left[-\\pi/2,\\pi/2\\right]``. This parameter allows the user to specify a
   custom function for this purpose, which must follow [`CluGen.angle_deltas()`](@ref)'s
   signature.
@@ -869,6 +882,10 @@ The function returns a `NamedTuple` with the following fields:
 - `cluster_lengths`: A `num_clusters` x 1 vector with the lengths of the
   cluster-supporting lines.
 
+Note that if a custom function was given in the `clusizes_fn` parameter, it is
+possible that `num_points` may have a different value than what was specified in
+`clugen`'s `num_points` parameter.
+
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
 julia> # Create 5 clusters in 3D space with a total of 10000 points...
@@ -890,8 +907,9 @@ The following instruction displays a scatter plot of the clusters in 3D space:
 julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.point_clusters)
 ```
 
-Check the [Guide](@ref) section for more information on how to use the `clugen()`
-function, and the [Gallery](@ref) section for a number of illustrative examples.
+Check the [Gallery](@ref) section for a number of illustrative examples on how to
+use the `clugen()` function. The [Guide](@ref) section provides more information
+on how the function works and the impact each parameter has on the final result.
 """
 function clugen(
     num_dims::Integer,
