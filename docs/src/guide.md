@@ -7,36 +7,30 @@ Pages = ["guide.md"]
 ## What is CluGen?
 
 CluGen is an algorithm for generating multidimensional clusters. Each cluster is
-supported by a line, the position, orientation and length of which determine
-where the respective points are placed.
+supported by a line, the position, orientation and length of which guide where
+the respective points are placed.
 
 ## Overview
 
-Given the main `direction` ``$n$``-dimensional vector, the number of clusters
-(`num_clusters`), the total number of points (`num_points`), and a number of
-additional parameters which will be discussed shortly, the _clugen_ algorithm
+Given an ``n``-dimensional direction vector ``\mathbf{d}`` (and a number of
+additional parameters, which will be discussed shortly), the _clugen_ algorithm
 works as follows (``^*`` means the algorithm step is stochastic):
 
-1. Normalize `direction`
-2. ``^*``Determine cluster sizes
-3. ``^*``Determine cluster centers
-4. ``^*``Determine lengths of cluster-supporting lines
-5. ``^*``Determine angles between `direction` and cluster-supporting lines
-6. Determine direction of cluster-supporting lines
+1. Normalize ``\mathbf{d}``.
+2. ``^*``Determine cluster sizes.
+3. ``^*``Determine cluster centers.
+4. ``^*``Determine lengths of cluster-supporting lines.
+5. ``^*``Determine angles between ``\mathbf{d}`` and cluster-supporting lines.
+6. Determine direction of cluster-supporting lines.
 7. For each cluster:
-   1. Determine distance of point projections from the center of the
-      cluster-supporting line
-   3. Determine coordinates of point projections on the line
-   4. ``^*``Determine points from their projections on the line
+   1. ``^*``Determine distance of point projections from the center of the
+      cluster-supporting line.
+   2. Determine coordinates of point projections on the cluster-supporting line.
+   3. ``^*``Determine points from their projections on the cluster-supporting
+      line.
 
-The following image provides a stylized overview of the algorithm steps when the
-main `direction` is set to ``\mathbf{v}=\begin{bmatrix}1 & 1\end{bmatrix}^T`` (thus
-in 2D space), 4 clusters, and a total of 200 points. Additional parameters include
-a mean cluster separation (`cluster_sep`) of 10 in both dimensions, an angle
-standard deviation of ``\pi/32`` radians (``\approx{}5.6^{\circ}``)—the angle of
-the main `direction` is considered the mean, line length mean (`llength`) of
-10, line length standard deviation (`llength_disp`) of 1.5, and lateral
-dispersion (`lateral_disp`) of 1.
+The following figures provide a stylized overview of the algorithm steps
+(background tiles are 10 units wide squares):
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -57,14 +51,34 @@ nothing
 
 ![](algorithm.png)
 
-Additional parameters
-include a mean cluster separation (`cluster_sep`) of 10 in both dimensions, an
-angle standard deviation of ``\pi/32`` radians (``\approx{}5.6^{\circ}``)—the
-angle of the main `direction` is considered the mean, line length mean of 10,
-line length standard deviation of 1.5, and lateral dispersion of 1.
+This example was generated with the following parameters, the exact meaning of
+each is discussed in the following sections:
 
-Other parameters not specified used defaults which
-will be discussed next, although each image hints on how these control the output.
+| Parameter values  | Description                 |
+|:----------------- | :-------------------------- |
+| ``n=2``           | Number of dimensions.       |
+| ``c=4``           | Number of clusters.         |
+| ``p=200``         | Total number of points.     |
+| ``\mathbf{d}=\begin{bmatrix}1 & 1\end{bmatrix}^T``   | Average direction.          |
+| ``\theta_\sigma=\pi/16\approx{}11.25^{\circ}``       | Angle dispersion.           |
+| ``\mathbf{s}=\begin{bmatrix}10 & 10\end{bmatrix}^T`` | Average cluster separation. |
+| ``l=10``          | Average line length.        |
+| ``l_\sigma=1.5``  | Line length dispersion.     |
+| ``f_\sigma=1``    | Cluster lateral dispersion. |
+
+Additionally, all optional parameters (not listed above) where left to their
+default values. These will also be discussed next. This example can be reproduced
+and plotted with the following instructions:
+
+```julia-repl
+julia> using CluGen, Plots, Random
+
+julia> Random.seed!(111);
+
+julia> r = clugen(2, 4, 200, [1, 1], pi/16, [10, 10], 10, 1.5, 1);
+
+julia> plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
+```
 
 ## Detailed description
 
