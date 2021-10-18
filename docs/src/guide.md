@@ -66,7 +66,7 @@ each is discussed in the following sections:
 | ``l_\sigma=1.5``  | Line length dispersion.     |
 | ``f_\sigma=1``    | Cluster lateral dispersion. |
 
-Additionally, all optional parameters (not listed above) where left to their
+Additionally, all optional parameters (not listed above) were left to their
 default values. These will also be discussed next. This example can be reproduced
 and plotted with the following instructions:
 
@@ -82,11 +82,19 @@ julia> plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_c
 
 ## Detailed description
 
-Here we provide a detailed description of the algorithm and its parameters. We
-start by looking at the mandatory parameters, then the optional ones, and then
-see how it all fits together.
+In this section we provide a detailed description of the algorithm and its parameters.
+We start by listing and describing all parameters (mandatory and optional), and then
+analyze the algorithm in detail, highlighting how each parameter influences the end
+result.
 
-### Mandatory parameters
+### Algorithm parameters
+
+The _clugen_ algorithm has mandatory and optional parameters, listed and described
+in the tables below. The optional parameters are set to sensible defaults, and in
+many situations may well be left unchanged. Nonetheless, these allow all of the
+algorithm's steps to be fully customized by the user.
+
+#### Mandatory parameters
 
 | Symbol           | Parameter         | Description                                                      |
 |:---------------- |:----------------- |:---------------------------------------------------------------- |
@@ -100,7 +108,7 @@ see how it all fits together.
 | ``l_\sigma``     | `llength_disp`    | Length dispersion of cluster-supporting lines.                   |
 | ``f_\sigma``     | `lateral_disp`    | Cluster lateral dispersion, i.e., dispersion of points from their projection on the cluster-supporting line. |
 
-### Optional parameters
+#### Optional parameters
 
 | Symbol              | Parameter         | Default value            | Description                                                       |
 |:------------------- |:----------------- | :----------------------- | :---------------------------------------------------------------- |
@@ -115,7 +123,46 @@ see how it all fits together.
 
 ### The algorithm in detail
 
-TODO Describe steps
+The _clugen_ algorithm is presented in [Overview](@ref). In this section we will
+analyze each of the algorithms steps in detail.
+
+**1. Normalize ``\mathbf{d}``**
+
+TODO WIP
+
+**2. Determine cluster sizes**
+
+TODO WIP
+
+**3. Determine cluster centers**
+
+TODO WIP
+
+**4. Determine lengths of cluster-supporting lines**
+
+TODO WIP
+
+**5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines**
+
+TODO WIP
+
+**6. Determine direction of cluster-supporting lines**
+
+TODO WIP
+
+**7. For each cluster:**
+
+     **7.1. Determine distance of point projections from the center of the cluster-supporting line**
+
+TODO WIP
+
+     **7.2. Determine coordinates of point projections on the cluster-supporting line**
+
+TODO WIP
+
+     **7.3. Determine points from their projections on the cluster-supporting line**
+
+TODO WIP
 
 ## Algorithm parameters in depth
 
