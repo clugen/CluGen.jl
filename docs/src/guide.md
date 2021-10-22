@@ -126,31 +126,53 @@ algorithm's steps to be fully customized by the user.
 The _clugen_ algorithm is presented in [Overview](@ref). In this section we will
 analyze each of the algorithms steps in detail.
 
-**1. Normalize ``\mathbf{d}``**
+#### 1. Normalize ``\mathbf{d}``
+
+This is a basic step, which consists of converting ``\mathbf{d}`` to a unit
+vector:
+
+``\mathbf{d_1} = \cfrac{\mathbf{d}}{\left\lVert\mathbf{d}\right\rVert}``
+
+#### 2. Determine cluster sizes
+
+Cluster sizes are given by the ``c_s()`` function according to:
+
+``\mathbf{c_s} = c_s(c, \mathbf{s}, \phi)``
+
+where ``\mathbf{c_s}`` is an ``n \times 1`` integer vector containing the final
+cluster sizes, ``c`` is the number of clusters, ``\mathbf{s}`` is the average
+cluster separation (``n \times 1``), and ``\phi`` is a boolean which determines
+whether empty clusters are acceptable.
+
+The ``c_s()`` function is an optional parameter, allowing users to customize its
+behavior. By default ``c_s()`` is implemented by the [`CluGen.clusizes()`](@ref)
+function, which behaves according to the following algorithm:
+
+1. Determine the size ``c_i`` of each cluster ``i`` according to:
+   ``c_i=\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2)``
+   where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with
+   mean ``\mu`` and variance ``\sigma^2``, and ``p`` is the total number of points.
+2. Assure that the final cluster sizes add up to ``p`` by incrementing the smallest
+   cluster size while ``\sum_{i=1}^c c_i<p`` or decrementing the largest cluster
+   size while ``\sum_{i=1}^c c_i>p``.
+
+#### 3. Determine cluster centers
 
 TODO WIP
 
-**2. Determine cluster sizes**
+#### 4. Determine lengths of cluster-supporting lines
 
 TODO WIP
 
-**3. Determine cluster centers**
+#### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
 TODO WIP
 
-**4. Determine lengths of cluster-supporting lines**
+#### 6. Determine direction of cluster-supporting lines
 
 TODO WIP
 
-**5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines**
-
-TODO WIP
-
-**6. Determine direction of cluster-supporting lines**
-
-TODO WIP
-
-**7. For each cluster:**
+#### 7. For each cluster:
 
      **7.1. Determine distance of point projections from the center of the cluster-supporting line**
 
