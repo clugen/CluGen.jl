@@ -131,13 +131,17 @@ analyze each of the algorithms steps in detail.
 This is a basic step, which consists of converting ``\mathbf{d}`` to a unit
 vector:
 
-``\mathbf{d_1} = \cfrac{\mathbf{d}}{\left\lVert\mathbf{d}\right\rVert}``
+```math
+\mathbf{d_1} = \cfrac{\mathbf{d}}{\left\lVert\mathbf{d}\right\rVert}
+```
 
 #### 2. Determine cluster sizes
 
 Cluster sizes are given by the ``c_s()`` function according to:
 
-``\mathbf{c_s} = c_s(c, \mathbf{s}, \phi)``
+```math
+\mathbf{c_s} = c_s(c, \mathbf{s}, \phi)
+```
 
 where ``\mathbf{c_s}`` is an ``n \times 1`` integer vector containing the final
 cluster sizes, ``c`` is the number of clusters, ``\mathbf{s}`` is the average
@@ -149,7 +153,7 @@ behavior. By default ``c_s()`` is implemented by the [`CluGen.clusizes()`](@ref)
 function, which behaves according to the following algorithm:
 
 1. Determine the size ``c_i`` of each cluster ``i`` according to:
-   ``c_i=\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2)``
+   ``c_i\sim\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2)``
    where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with
    mean ``\mu`` and variance ``\sigma^2``, and ``p`` is the total number of points.
 2. Assure that the final cluster sizes add up to ``p`` by incrementing the smallest
@@ -160,7 +164,9 @@ function, which behaves according to the following algorithm:
 
 Cluster sizes are given by the ``c_c()`` function according to:
 
-``\mathbf{C} = c_c(c, \mathbf{s}, \mathbf{o})``
+```math
+\mathbf{C} = c_c(c, \mathbf{s}, \mathbf{o})
+```
 
 where ``\mathbf{C}`` is an ``c \times n`` matrix containing the final cluster
 centers, ``c`` is the number of clusters, ``\mathbf{s}`` is the average cluster
@@ -181,7 +187,28 @@ vector with all entries equal to 1.
 
 #### 4. Determine lengths of cluster-supporting lines
 
-TODO WIP
+The lengths of the cluster-supporting lines are given by the ``l()`` function
+according to:
+
+```math
+\mathbf{l} = l(c, l, l_\sigma)
+```
+
+where ``\mathbf{l}`` is an ``n \times 1`` vector containing the final lengths of
+the cluster-supporting lines, ``l`` is the average length, and ``l_\sigma`` is the
+length dispersion.
+
+The ``l()`` function is an optional parameter, allowing users to customize its
+behavior. By default ``l()`` is implemented by the [`CluGen.llengths()`](@ref)
+function, which determines the ``l_i`` length of each cluster-supporting line
+``i`` according to:
+
+```math
+l_i\sim\mathcal{FN}(l,l_\sigma^2)
+```
+
+where ``\mathcal{FN}(\mu,\sigma^2)`` represents the folded normal distribution
+with mean ``\mu`` and variance ``\sigma^2``.
 
 #### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
