@@ -195,8 +195,8 @@ according to:
 ```
 
 where ``\mathbf{l}`` is an ``n \times 1`` vector containing the final lengths of
-the cluster-supporting lines, ``l`` is the average length, and ``l_\sigma`` is the
-length dispersion.
+the cluster-supporting lines, ``c`` is the number of clusters, ``l`` is the average
+length, and ``l_\sigma`` is the length dispersion.
 
 The ``l()`` function is an optional parameter, allowing users to customize its
 behavior. By default ``l()`` is implemented by the [`CluGen.llengths()`](@ref)
@@ -212,7 +212,31 @@ with mean ``\mu`` and variance ``\sigma^2``.
 
 #### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
-TODO WIP
+The angles between ``\mathbf{d}`` and the cluster-supporting lines are given by
+the ``\theta_\Delta()`` function according to:
+
+```math
+\mathbf{\Theta_\Delta} = \theta_\Delta(c, \theta_\sigma)
+```
+
+where ``\mathbf{\Theta_\Delta}`` is an ``n \times 1`` vector containing the final
+angle differences between ``\mathbf{d}`` and the cluster-supporting lines,  ``c``
+is the number of clusters, and ``\theta_\sigma`` is the angle dispersion.
+
+The ``\theta_\Delta()`` function is an optional parameter, allowing users to
+customize its behavior. By default ``\theta_\Delta()`` is implemented by the
+[`CluGen.angle_deltas()`](@ref) function, which determines the ``\theta_{\Delta i}``
+angle difference between ``\mathbf{d}`` and the ``i``-th  cluster-supporting line
+according to:
+
+```math
+\theta_{\Delta i}\sim\mathcal{WN}_{-\pi/2}^{\pi/2}(0,\theta_\sigma^2)
+```
+
+where ``\mathcal{WN}_{-\pi/2}^{\pi/2}(\mu,\sigma^2)`` represents the wrapped normal
+distribution with mean ``\mu``, variance ``\sigma^2``, and support in the
+``\left[-\pi/2,\pi/2\right]`` interval, and ``\theta_\sigma`` is the angle
+dispersion of the cluster-supporting lines.
 
 #### 6. Determine direction of cluster-supporting lines
 
