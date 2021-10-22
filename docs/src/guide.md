@@ -141,8 +141,8 @@ Cluster sizes are given by the ``c_s()`` function according to:
 
 where ``\mathbf{c_s}`` is an ``n \times 1`` integer vector containing the final
 cluster sizes, ``c`` is the number of clusters, ``\mathbf{s}`` is the average
-cluster separation (``n \times 1``), and ``\phi`` is a boolean which determines
-whether empty clusters are acceptable.
+cluster separation (``n \times 1`` vector), and ``\phi`` is a boolean which
+determines whether empty clusters are acceptable.
 
 The ``c_s()`` function is an optional parameter, allowing users to customize its
 behavior. By default ``c_s()`` is implemented by the [`CluGen.clusizes()`](@ref)
@@ -158,7 +158,26 @@ function, which behaves according to the following algorithm:
 
 #### 3. Determine cluster centers
 
-TODO WIP
+Cluster sizes are given by the ``c_c()`` function according to:
+
+``\mathbf{C} = c_c(c, \mathbf{s}, \mathbf{o})``
+
+where ``\mathbf{C}`` is an ``c \times n`` matrix containing the final cluster
+centers, ``c`` is the number of clusters, ``\mathbf{s}`` is the average cluster
+separation (``n \times 1`` vector), and ``\mathbf{o}`` is an ``n \times 1`` vector
+of cluster offsets.
+
+The ``c_c()`` function is an optional parameter, allowing users to customize its
+behavior. By default ``c_c()`` is implemented by the [`CluGen.clucenters()`](@ref)
+function, which determines the cluster centers according to:
+
+```math
+\mathbf{C}=c\mathbf{U} \cdot \operatorname{diag}(\mathbf{s}) + \mathbf{1}\,\mathbf{o}^T
+```
+
+where ``\mathbf{U}`` is an ``c \times n`` matrix of random values drawn from the
+uniform distribution between -0.5 and 0.5, and ``\mathbf{1}`` is an ``c \times 1``
+vector with all entries equal to 1.
 
 #### 4. Determine lengths of cluster-supporting lines
 
