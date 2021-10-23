@@ -21,7 +21,7 @@ works as follows (``^*`` means the algorithm step is stochastic):
 3. ``^*``Determine cluster centers.
 4. ``^*``Determine lengths of cluster-supporting lines.
 5. ``^*``Determine angles between ``\mathbf{d}`` and cluster-supporting lines.
-6. Determine direction of cluster-supporting lines.
+6. ``^*``Determine direction of cluster-supporting lines.
 7. For each cluster:
    1. ``^*``Determine distance of point projections from the center of the
       cluster-supporting line.
@@ -132,7 +132,7 @@ This is a basic step, which consists of converting ``\mathbf{d}`` to a unit
 vector:
 
 ```math
-\mathbf{d_1} = \cfrac{\mathbf{d}}{\left\lVert\mathbf{d}\right\rVert}
+\hat{\mathbf{d}} = \cfrac{\mathbf{d}}{\left\lVert\mathbf{d}\right\rVert}
 ```
 
 #### 2. Determine cluster sizes
@@ -240,7 +240,36 @@ dispersion of the cluster-supporting lines.
 
 #### 6. Determine direction of cluster-supporting lines
 
-TODO WIP
+In order to obtain the ``\hat{\mathbf{d}}_i`` cluster-supporting line final
+directions for each cluster ``i``, the following algorithm is used:
+
+* **6.1.** Find random vector ``\mathbf{r}`` with each component taken from the
+  uniform distribution between -0.5 and 0.5.
+* **6.2.** Normalize ``\mathbf{r}``:
+  ```math
+  \hat{\mathbf{r}}=\cfrac{\mathbf{r}}{\left\lVert\mathbf{r}\right\rVert}
+  ```
+* **6.3.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1`` return ``\hat{\mathbf{r}}``
+  and terminate the algorithm.
+* **6.4.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **6.1**.
+* **6.5.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
+  using the first iteration of the Gram--Schmidt process:
+  ```math
+  \mathbf{d}_\perp=\hat{\mathbf{r}}-\cfrac{\hat{\mathbf{d}}\cdot\hat{\mathbf{r}}}{\hat{\mathbf{d}}\cdot\hat{\mathbf{d}}}\:\hat{\mathbf{d}}
+  ```
+* **6.6.** Normalize ``\mathbf{d}_\perp``:
+  ```math
+  \hat{\mathbf{d}}_\perp=\cfrac{\mathbf{d}_\perp}{\left\lVert\mathbf{d}_\perp\right\rVert}
+  ```
+* **6.7.** Determine vector ``\mathbf{d}_i`` at angle ``\theta_{\Delta i}`` with
+  ``\hat{\mathbf{d}}``:
+  ```math
+  \mathbf{d}_i=\hat{\mathbf{d}}+\tan(\theta_{\Delta i})\hat{\mathbf{d}}_\perp
+  ```
+* **6.8.** Normalize ``\mathbf{d}_i``:
+  ```math
+  \hat{\mathbf{d}}_i=\cfrac{\mathbf{d}_i}{\left\lVert\mathbf{d}_i\right\rVert}
+  ```
 
 #### 7. For each cluster:
 

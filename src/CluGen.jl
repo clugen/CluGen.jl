@@ -571,6 +571,7 @@ function rand_vector_at_angle(
     elseif -pi/2 < angle < pi/2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
     else
+        # For |θ| > π/2 or the 1D case, simply return a random vector
         return rand_unit_vector(length(u); rng=rng)
     end
 
