@@ -271,19 +271,47 @@ directions for each cluster ``i``, the following algorithm is used:
   \hat{\mathbf{d}}_i=\cfrac{\mathbf{d}_i}{\left\lVert\mathbf{d}_i\right\rVert}
   ```
 
-#### 7. For each cluster:
+#### 7. For each cluster *i*:
 
-     **7.1. Determine distance of point projections from the center of the cluster-supporting line**
+* **7.1.** Determine distance of point projections from the center of the cluster-supporting line
 
-TODO WIP
+The distance of point projections from the center of the cluster-supporting line
+is given by the ``p_\text{proj}()`` function according to:
 
-     **7.2. Determine coordinates of point projections on the cluster-supporting line**
+```math
+\mathbf{p}_\text{proj}^\text{line} = p_\text{proj}(l_i, p_i)
+```
 
-TODO WIP
+where ``\mathbf{p}_\text{proj}^\text{line}`` is an ``p_i \times 1`` vector
+containing the distance of each point projection to the center of the line, while
+``l_i`` and ``p_i`` are the line length and number of points in cluster ``i``,
+respectively.
 
-     **7.3. Determine points from their projections on the cluster-supporting line**
+The ``p_\text{proj}()`` function is an optional parameter, allowing users to
+customize its behavior. `CluGen.jl` provides two concrete implementations out of
+the box, namely ``p_\text{proj}^\text{norm}()`` (the default) and
+``p_\text{proj}^\text{unif}()`` (specified in Julia by passing the strings
+`"norm"` and `"unif"`, respectively), defined according to:
 
-TODO WIP
+```math
+\mathbf{p}_\text{proj}^\text{line}=\begin{bmatrix}\mathcal{N}(0, (\frac{l_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{l_i}{6})^2)\end{bmatrix}^T
+```
+
+```math
+\mathbf{p}_\text{proj}^\text{line}=\begin{bmatrix}\mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2}) & \ldots & \mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2})\end{bmatrix}^T
+```
+
+where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with mean
+``\mu`` and variance ``\sigma^2``, and ``\mathcal{U}(a,b)`` represents the
+uniform distribution in the interval ``\left[a, b\right[``.
+
+* **7.2.** Determine coordinates of point projections on the cluster-supporting line
+
+Done with `points_on_line()` (deterministic)
+
+* **7.3.** Determine points from their projections on the cluster-supporting line
+
+Done with `point_dist_fn()`, which can be "n-1", "n", or...
 
 ## Algorithm parameters in depth
 
