@@ -249,8 +249,8 @@ directions for each cluster ``i``, the following algorithm is used:
   ```math
   \hat{\mathbf{r}}=\cfrac{\mathbf{r}}{\left\lVert\mathbf{r}\right\rVert}
   ```
-* **6.3.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1`` return ``\hat{\mathbf{r}}``
-  and terminate the algorithm.
+* **6.3.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1``, set
+  ``\hat{\mathbf{d}}_i=\hat{\mathbf{r}}`` and terminate the algorithm.
 * **6.4.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **6.1**.
 * **6.5.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
   using the first iteration of the Gram--Schmidt process:

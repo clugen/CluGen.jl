@@ -90,8 +90,8 @@ arguments, described next.
   - `"unif"`: Distribute points uniformly along the line.
   - User-defined function, which accepts two parameters, line length (float) and
     number of points (integer), and returns an array containing the distance of
-    each point to the center of the line. For example, the `"norm"` option
-    roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
+    each point projection to the center of the line. For example, the `"norm"`
+    option roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
 - `point_dist_fn`: Controls how the final points are created from their projections
   on the cluster-supporting lines, with three possible values:
   - `"n-1"` (default): Final points are placed on a hyperplane orthogonal to
@@ -263,7 +263,7 @@ function clugen(
     # user-defined function
     if typeof(proj_dist_fn) <: Function
         # Use user-defined distribution; assume function accepts length of line
-        # and number of points, and returns a num_dims x 1 vector
+        # and number of points, and returns a number_of_points x 1 vector
         pointproj_fn = proj_dist_fn
     elseif proj_dist_fn == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
@@ -341,7 +341,7 @@ function clugen(
     points_proj = zeros(num_points, num_dims) # Point projections on cluster-supporting lines
     points = zeros(num_points, num_dims)      # Final points to be generated
 
-    # Loop through cluster and create points for each one
+    # Loop through clusters and create points for each one
     for i in 1:num_clusters
 
         # Start and end indexes for points in current cluster
