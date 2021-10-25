@@ -271,18 +271,18 @@ directions for each cluster ``i``, the following algorithm is used:
   \hat{\mathbf{d}}_i=\cfrac{\mathbf{d}_i}{\left\lVert\mathbf{d}_i\right\rVert}
   ```
 
-#### 7. For each cluster *i*:
+#### 7. For each cluster ``i``:
 
-* **7.1.** Determine distance of point projections from the center of the cluster-supporting line
+* **7.1.** Determine distance of point projections from the center of the cluster-supporting line.
 
 The distance of point projections from the center of the cluster-supporting line
 is given by the ``p_\text{proj}()`` function according to:
 
 ```math
-\mathbf{p}_\text{proj}^\text{line} = p_\text{proj}(l_i, p_i)
+\mathbf{w} = p_\text{proj}(l_i, p_i)
 ```
 
-where ``\mathbf{p}_\text{proj}^\text{line}`` is an ``p_i \times 1`` vector
+where ``\mathbf{w}`` is an ``p_i \times 1`` vector
 containing the distance of each point projection to the center of the line, while
 ``l_i`` and ``p_i`` are the line length and number of points in cluster ``i``,
 respectively.
@@ -294,22 +294,34 @@ the box, namely ``p_\text{proj}^\text{norm}()`` (the default) and
 `"norm"` and `"unif"`, respectively), defined according to:
 
 ```math
-\mathbf{p}_\text{proj}^\text{line}=\begin{bmatrix}\mathcal{N}(0, (\frac{l_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{l_i}{6})^2)\end{bmatrix}^T
+\mathbf{w}=\begin{bmatrix}\mathcal{N}(0, (\frac{l_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{l_i}{6})^2)\end{bmatrix}^T
 ```
 
 ```math
-\mathbf{p}_\text{proj}^\text{line}=\begin{bmatrix}\mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2}) & \ldots & \mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2})\end{bmatrix}^T
+\mathbf{w}=\begin{bmatrix}\mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2}) & \ldots & \mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2})\end{bmatrix}^T
 ```
 
 where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with mean
 ``\mu`` and variance ``\sigma^2``, and ``\mathcal{U}(a,b)`` represents the
 uniform distribution in the interval ``\left[a, b\right[``.
 
-* **7.2.** Determine coordinates of point projections on the cluster-supporting line
+* **7.2.** Determine coordinates of point projections on the cluster-supporting line.
 
-Done with `points_on_line()` (deterministic)
+This is a deterministic step performed by the [`points_on_line()`](@ref) function
+using the vector formulation of the line equation as follows:
 
-* **7.3.** Determine points from their projections on the cluster-supporting line
+```math
+\mathbf{P}=\mathbf{1}\,\mathbf{c}^T + \mathbf{w}\mathbf{d}^T
+```
+
+where ``\mathbf{P}`` is the ``p_i \times n`` matrix of point coordinates on the
+line, ``\mathbf{1}`` is an ``n \times 1`` vector with all entries equal to 1,
+``\mathbf{c}`` are the coordinates of the line center (``n \times 1`` vector),
+``\mathbf{w}`` is the distance of each point projection to the center of the line
+(``p_i \times 1`` vector obtained in the previous step), and ``\mathbf{d}`` is
+the average direction of the cluster-supporting lines.
+
+* **7.3.** Determine points from their projections on the cluster-supporting line.
 
 Done with `point_dist_fn()`, which can be "n-1", "n", or...
 
