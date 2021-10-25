@@ -283,10 +283,10 @@ function clugen(
     # (default), 'd' or a user-defined function
     if num_dims == 1
         # If 1D was specified, point projections are the points themselves
-        pt_from_proj_fn = (projs, lat_std, len, clu_dir, clu_ctr; rng=rng) -> projs
+        pt_from_proj_fn = (projs, lat_disp, len, clu_dir, clu_ctr; rng=rng) -> projs
     elseif typeof(point_dist_fn) <: Function
         # Use user-defined distribution; assume function accepts point projections
-        # on the line, lateral std., cluster direction and cluster center, and
+        # on the line, lateral disp., cluster direction and cluster center, and
         # returns a num_points x num_dims matrix containing the final points
         # for the current cluster
         pt_from_proj_fn = point_dist_fn
@@ -712,7 +712,7 @@ end
 """
     CluGen.clupoints_n_1(
         projs::AbstractArray{<:Real, 2},
-        lat_std::Real,
+        lat_disp::Real,
         line_len::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1};
@@ -721,7 +721,7 @@ end
 
 Generate points from their ``n``-dimensional projections on a cluster-supporting
 line, placing each point on a hyperplane orthogonal to that line and centered at
-the point's projection, using the normal distribution (μ=0, σ=`lat_std`).
+the point's projection, using the normal distribution (μ=0, σ=`lat_disp`).
 
 This function's main intended use is by the [`clugen()`](@ref) function,
 generating the final points when the `point_dist_fn` parameter is set to `"n-1"`.
@@ -731,7 +731,7 @@ if invoked by user code.
 
 # Arguments
 - `projs`: Point projections on the cluster-supporting line.
-- `lat_std`: Standard deviation for the normal distribution, i.e., cluster lateral
+- `lat_disp`: Standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
 - `line_len`: Length of cluster-supporting line (ignored).
 - `clu_dir`: Direction of the cluster-supporting line (unit vector).
@@ -759,25 +759,26 @@ julia> CluGen.clupoints_n_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(1
 """
 function clupoints_n_1(
     projs::AbstractArray{<:Real, 2},
-    lat_std::Real,
+    lat_disp::Real,
     line_len::Real,
     clu_dir::AbstractArray{<:Real, 1},
     clu_ctr::AbstractArray{<:Real, 1};
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::AbstractArray{<:Real}
 
-    # Get distances from points to their projections on the line
+    # Define function to get distances from points to their projections on the
+    # line (i.e., using the normal distribution)
     dist_fn = (clu_num_points, lstd) -> lstd .* randn(rng, clu_num_points, 1)
 
     # Use clupoints_n_1_template() to do the heavy lifting
-    return clupoints_n_1_template(projs, lat_std, clu_dir, dist_fn; rng=rng)
+    return clupoints_n_1_template(projs, lat_disp, clu_dir, dist_fn; rng=rng)
 
 end
 
 """
     GluGen.clupoints_n(
         projs::AbstractArray{<:Real, 2},
-        lat_std::Real,
+        lat_disp::Real,
         line_len::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1};
@@ -786,7 +787,7 @@ end
 
 Generate points from their ``n``-dimensional projections on a cluster-supporting
 line, placing each point around its projection using the normal distribution
-(μ=0, σ=`lat_std`).
+(μ=0, σ=`lat_disp`).
 
 This function's main intended use is by the [`clugen()`](@ref) function,
 generating the final points when the `point_dist_fn` parameter is set to `"n"`.
@@ -796,7 +797,7 @@ if invoked by user code.
 
 # Arguments
 - `projs`: Point projections on the cluster-supporting line.
-- `lat_std`: Standard deviation for the normal distribution, i.e., cluster lateral
+- `lat_disp`: Standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
 - `line_len`: Length of cluster-supporting line (ignored).
 - `clu_dir`: Direction of the cluster-supporting line.
@@ -824,7 +825,7 @@ julia> CluGen.clupoints_n(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123
 """
 function clupoints_n(
     projs::AbstractArray{<:Real, 2},
-    lat_std::Real,
+    lat_disp::Real,
     line_len::Real,
     clu_dir::AbstractArray{<:Real, 1},
     clu_ctr::AbstractArray{<:Real, 1};
@@ -838,7 +839,7 @@ function clupoints_n(
     clu_num_points = size(projs, 1)
 
     # Get random displacement vectors for each point projection
-    displ = lat_std .* randn(rng, clu_num_points, num_dims)
+    displ = lat_disp .* randn(rng, clu_num_points, num_dims)
 
     # Add displacement vectors to each point projection
     points = projs + displ
@@ -979,7 +980,7 @@ end
 """
     CluGen.clupoints_n_1_template(
         projs::AbstractArray{<:Real, 2},
-        lat_std::Real,
+        lat_disp::Real,
         clu_dir::AbstractArray{<:Real, 1},
         dist_fn::Function;
         rng::AbstractRNG = Random.GLOBAL_RNG
@@ -999,14 +1000,14 @@ if invoked by user code.
 
 # Arguments
 - `projs`: Point projections on the cluster-supporting line.
-- `lat_std`: Dispersion of points from their projection.
+- `lat_disp`: Dispersion of points from their projection.
 - `clu_dir`: Direction of the cluster-supporting line (unit vector).
 - `dist_fn`: Function to place points on a second line, orthogonal to the first.
 - `rng`: An optional pseudo-random number generator for reproducible executions.
 """
 function clupoints_n_1_template(
     projs::AbstractArray{<:Real, 2},
-    lat_std::Real,
+    lat_disp::Real,
     clu_dir::AbstractArray{<:Real, 1},
     dist_fn::Function;
     rng::AbstractRNG = Random.GLOBAL_RNG
@@ -1019,7 +1020,7 @@ function clupoints_n_1_template(
     clu_num_points = size(projs, 1)
 
     # Get distances from points to their projections on the line
-    points_dist = dist_fn(clu_num_points, lat_std)
+    points_dist = dist_fn(clu_num_points, lat_disp)
 
     # Get normalized vectors, orthogonal to the current line, for each point
     orth_vecs = zeros(clu_num_points, num_dims)

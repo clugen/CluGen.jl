@@ -331,7 +331,7 @@ end
 """
     clupoints_n_hollow(
         projs::AbstractArray{<:Real, 2},
-        lat_std::Real,
+        lat_disp::Real,
         line_len::Real,
         clu_dir::AbstractArray{<:Real, 1},
         clu_ctr::AbstractArray{<:Real, 1};
@@ -343,7 +343,7 @@ for creating hollow clusters.
 
 # Arguments
 - `projs`: point projections on the cluster-supporting line.
-- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+- `lat_disp`: standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
 - `line_len`: length of cluster-supporting line.
 - `clu_dir`: direction of the cluster-supporting line (unit vector).
@@ -352,7 +352,7 @@ for creating hollow clusters.
 """
 function clupoints_n_hollow(
     projs::AbstractArray{<:Real, 2},
-    lat_std::Real,
+    lat_disp::Real,
     line_len::Real,
     clu_dir::AbstractArray{<:Real, 1},
     clu_ctr::AbstractArray{<:Real, 1};
@@ -392,7 +392,7 @@ function clupoints_n_hollow(
         v = rand_vector_at_angle(clu_dir, a; rng=rng)
 
         # Point dispersion along vector at angle
-        f = (lat_std / 6) * randn(rng) + lat_std
+        f = (lat_disp / 6) * randn(rng) + lat_disp
 
         # Determine two possible points at the edges of vector (line) at angle
         pt1 = prj + f .* v
@@ -423,7 +423,7 @@ end
         line_len::Integer,
         clu_ctr::AbstractArray{<:Real, 1},
         clu_dir::AbstractArray{<:Real, 1},
-        lat_std::Real,
+        lat_disp::Real,
         clupoints_fn::Function
     ) -> Plots.Plot
 
@@ -439,7 +439,7 @@ projections on the cluster-supporting line to the respective final cluster point
 - `line_len`: length of cluster-supporting line.
 - `clu_ctr`: center position of the cluster-supporting line center position.
 - `clu_dir`: direction of the cluster-supporting line (unit vector).
-- `lat_std`: standard deviation for the normal distribution, i.e., cluster lateral
+- `lat_disp`: standard deviation for the normal distribution, i.e., cluster lateral
   dispersion.
 - `clupoints_fn`: function to place the final points given their projections on
   the cluster-supporting line.
@@ -459,7 +459,7 @@ function plot2d_point_placement(
     line_len::Integer,
     clu_ctr::AbstractArray{<:Real, 1},
     clu_dir::AbstractArray{<:Real, 1},
-    lat_std::Real,
+    lat_disp::Real,
     clupoints_fn::Function;
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::Plots.Plot
@@ -472,7 +472,7 @@ function plot2d_point_placement(
     edge2 = clu_ctr - (line_len / 2) .* clu_dir
 
     # Obtain final points from their projections on the line
-    pts = clupoints_fn(projs, lat_std, line_len, clu_dir, clu_ctr; rng=rng)
+    pts = clupoints_fn(projs, lat_disp, line_len, clu_dir, clu_ctr; rng=rng)
 
     # Create plot
     plt = plot(legend=false, size=(900, 900))
