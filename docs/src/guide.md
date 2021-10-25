@@ -273,16 +273,16 @@ directions for each cluster ``i``, the following algorithm is used:
 
 #### 7. For each cluster ``i``:
 
-* **7.1.** Determine distance of point projections from the center of the cluster-supporting line.
+##### 7.1. Determine distance of point projections from the center of the cluster-supporting line
 
 The distance of point projections from the center of the cluster-supporting line
 is given by the ``p_\text{proj}()`` function according to:
 
 ```math
-\mathbf{w} = p_\text{proj}(l_i, p_i)
+\mathbf{w}_i = p_\text{proj}(l_i, p_i)
 ```
 
-where ``\mathbf{w}`` is an ``p_i \times 1`` vector
+where ``\mathbf{w}_i`` is an ``p_i \times 1`` vector
 containing the distance of each point projection to the center of the line, while
 ``l_i`` and ``p_i`` are the line length and number of points in cluster ``i``,
 respectively.
@@ -294,36 +294,79 @@ the box, namely ``p_\text{proj}^\text{norm}()`` (the default) and
 `"norm"` and `"unif"`, respectively), defined according to:
 
 ```math
-\mathbf{w}=\begin{bmatrix}\mathcal{N}(0, (\frac{l_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{l_i}{6})^2)\end{bmatrix}^T
+\mathbf{w}_i=\begin{bmatrix}\mathcal{N}(0, (\frac{l_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{l_i}{6})^2)\end{bmatrix}^T
 ```
 
 ```math
-\mathbf{w}=\begin{bmatrix}\mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2}) & \ldots & \mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2})\end{bmatrix}^T
+\mathbf{w}_i=\begin{bmatrix}\mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2}) & \ldots & \mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2})\end{bmatrix}^T
 ```
 
 where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with mean
 ``\mu`` and variance ``\sigma^2``, and ``\mathcal{U}(a,b)`` represents the
 uniform distribution in the interval ``\left[a, b\right[``.
 
-* **7.2.** Determine coordinates of point projections on the cluster-supporting line.
+##### 7.2. Determine coordinates of point projections on the cluster-supporting line
 
 This is a deterministic step performed by the [`points_on_line()`](@ref) function
 using the vector formulation of the line equation as follows:
 
 ```math
-\mathbf{P}=\mathbf{1}\,\mathbf{c}^T + \mathbf{w}\mathbf{d}^T
+\mathbf{P}_i^\text{proj}=\mathbf{1}\,\mathbf{c}_i^T + \mathbf{w}_i\mathbf{d}_i^T
 ```
 
-where ``\mathbf{P}`` is the ``p_i \times n`` matrix of point coordinates on the
-line, ``\mathbf{1}`` is an ``n \times 1`` vector with all entries equal to 1,
-``\mathbf{c}`` are the coordinates of the line center (``n \times 1`` vector),
-``\mathbf{w}`` is the distance of each point projection to the center of the line
-(``p_i \times 1`` vector obtained in the previous step), and ``\mathbf{d}`` is
-the average direction of the cluster-supporting lines.
+where ``\mathbf{P}_i^\text{proj}`` is the ``p_i \times n`` matrix of point projection
+coordinates on the line, ``\mathbf{1}`` is an ``n \times 1`` vector with all entries
+equal to 1, ``\mathbf{c}_i`` are the coordinates of the line center (``n \times 1``
+vector), ``\mathbf{w}_i`` is the distance of each point projection to the center of
+the line (``p_i \times 1`` vector obtained in the previous step), and ``\mathbf{d}_i``
+is the direction of the cluster-supporting lines for cluster ``i``.
 
-* **7.3.** Determine points from their projections on the cluster-supporting line.
+##### 7.3. Determine points from their projections on the cluster-supporting line
 
-Done with `point_dist_fn()`, which can be "n-1", "n", or...
+The final cluster points, obtained from their projections on the cluster-supporting
+line, are given by the ``p_\text{final}()`` function according to:
+
+```math
+\mathbf{P}_i^\text{final} = p_\text{final}(\mathbf{P}_i^\text{proj}, f_\sigma, l_i, \mathbf{d}_i, \mathbf{c}_i)
+```
+
+where ``\mathbf{w}_i`` is an ``p_i \times 1`` vector containing the distance of
+each point projection to the center of the line, ...
+
+The ``p_\text{final}()`` function is an optional parameter, allowing users to
+customize its behavior. `CluGen.jl` provides two concrete implementations out of
+the box, namely ``p_\text{final}^{n-1}()`` (the default) and ``p_\text{final}^{n}()``
+(specified in Julia by passing the strings `"n-1"` and `"n"`, respectively).
+
+The [`CluGen.clupoints_n_1()`](@ref) function implements ``p_\text{final}^{n-1}()``,
+and generates points from their cluster-supporting line projections by placing
+each point on a hyperplane orthogonal to that line and centered at the point's
+projection, using the normal distribution, ``\mathcal{N}(0, f_\sigma^2)``.
+
+The [`CluGen.clupoints_n()`](@ref) function implements ``p_\text{final}^{n}()``,
+and generates points from their cluster-supporting line projections by placing
+each point around its projection using the normal distribution,
+``\mathcal{N}(0, f_\sigma^2)``.
+
+The following figure highlights the differences between these two functions in 2D:
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+p1 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n_1)
+plot!(p1, title="n-1")
+p2 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n)
+plot!(p2, title="n")
+
+plt = plot(p1, p2, layout = (1, 2), size=(800,400))
+
+savefig(plt, "point_dist_ex.png")
+
+nothing
+```
+
+![](point_dist_ex.png)
 
 ## Algorithm parameters in depth
 

@@ -85,7 +85,7 @@ function plot2d(d, r)
         title="3. Cluster centers", formatter=x->"",
         titlefontsize=8, titlelocation=:left,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
+        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
 
     # ###### #
     # Plot 4 #
@@ -464,6 +464,9 @@ function plot2d_point_placement(
     rng::AbstractRNG = Random.GLOBAL_RNG
 )::Plots.Plot
 
+    # Plot background
+    pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
     # Determine point projections on the line
     projs = points_on_line(clu_ctr, clu_dir, pre_projs)
 
@@ -475,7 +478,9 @@ function plot2d_point_placement(
     pts = clupoints_fn(projs, lat_disp, line_len, clu_dir, clu_ctr; rng=rng)
 
     # Create plot
-    plt = plot(legend=false, size=(900, 900))
+    plt = plot(legend=false, formatter=x->"", framestyle=:grid,
+        foreground_color_grid=:white, gridalpha=1,
+        background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     # Draw line
     plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange, linewidth=4)
