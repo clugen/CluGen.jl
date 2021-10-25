@@ -243,30 +243,30 @@ dispersion of the cluster-supporting lines.
 In order to obtain the ``\hat{\mathbf{d}}_i`` cluster-supporting line final
 directions for each cluster ``i``, the following algorithm is used:
 
-* **6.1.** Find random vector ``\mathbf{r}`` with each component taken from the
+* **i.** Find random vector ``\mathbf{r}`` with each component taken from the
   uniform distribution between -0.5 and 0.5.
-* **6.2.** Normalize ``\mathbf{r}``:
+* **ii.** Normalize ``\mathbf{r}``:
   ```math
   \hat{\mathbf{r}}=\cfrac{\mathbf{r}}{\left\lVert\mathbf{r}\right\rVert}
   ```
-* **6.3.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1``, set
+* **iii.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1``, set
   ``\hat{\mathbf{d}}_i=\hat{\mathbf{r}}`` and terminate the algorithm.
-* **6.4.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **6.1**.
-* **6.5.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
+* **iv.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **i**.
+* **v.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
   using the first iteration of the Gram--Schmidt process:
   ```math
   \mathbf{d}_\perp=\hat{\mathbf{r}}-\cfrac{\hat{\mathbf{d}}\cdot\hat{\mathbf{r}}}{\hat{\mathbf{d}}\cdot\hat{\mathbf{d}}}\:\hat{\mathbf{d}}
   ```
-* **6.6.** Normalize ``\mathbf{d}_\perp``:
+* **vi.** Normalize ``\mathbf{d}_\perp``:
   ```math
   \hat{\mathbf{d}}_\perp=\cfrac{\mathbf{d}_\perp}{\left\lVert\mathbf{d}_\perp\right\rVert}
   ```
-* **6.7.** Determine vector ``\mathbf{d}_i`` at angle ``\theta_{\Delta i}`` with
+* **vii.** Determine vector ``\mathbf{d}_i`` at angle ``\theta_{\Delta i}`` with
   ``\hat{\mathbf{d}}``:
   ```math
   \mathbf{d}_i=\hat{\mathbf{d}}+\tan(\theta_{\Delta i})\hat{\mathbf{d}}_\perp
   ```
-* **6.8.** Normalize ``\mathbf{d}_i``:
+* **viii.** Normalize ``\mathbf{d}_i``:
   ```math
   \hat{\mathbf{d}}_i=\cfrac{\mathbf{d}_i}{\left\lVert\mathbf{d}_i\right\rVert}
   ```
@@ -354,6 +354,7 @@ The following figure highlights the differences between these two functions in 2
 ENV["GKSwstype"] = "100"
 using CluGen, Distributions, Plots, Random
 
+Random.seed!(123)
 p1 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n_1)
 plot!(p1, title="n-1")
 p2 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n)
