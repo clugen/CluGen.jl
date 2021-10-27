@@ -1,7 +1,7 @@
-# Guide
+# Theory
 
 ```@contents
-Pages = ["guide.md"]
+Pages = ["theory.md"]
 ```
 
 ## What is CluGen?

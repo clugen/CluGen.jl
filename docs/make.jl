@@ -9,8 +9,8 @@ makedocs(
     sitename="CluGen.jl",
     pages = [
         "Home" => "index.md",
-        "Guide" => "guide.md",
-        "Gallery" => "gallery.md",
+        "Practice" => "practice.md",
+        "Theory" => "theory.md",
         "API" => "api.md"
         ]
 )
