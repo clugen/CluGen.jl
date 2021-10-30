@@ -51,27 +51,30 @@ function plot2d(d, r)
     p1format = (x) -> x - trunc(x) ≈ 0 ? "$(round(Int,x))" : @sprintf("%.3f", x)
 
     # Setup plot
-    p1 = plot(legend=false, title="1. Normalize direction vector", ticks=[], grid=false,
-        framestyle=:zerolines, xlim=(-1.1,1.1), ylim=(-1.1,1.1))
+    p1 = plot(legend=false, title="1. Normalize direction vector", ticks=[],
+        grid=false, framestyle=:zerolines, background_color_inside=pltbg,
+        xlim=(-1.1,1.1), ylim=(-1.1,1.1))
 
     # Draw vector
-    plot!(p1, [0, d1[1]],[0, d1[2]], label="", color=theme_colors[2], arrow=true,
+    plot!(p1, [0, d1[1]],[0, d1[2]], label="", color=theme_colors[1], arrow=true,
         titlefontsize=8, titlelocation=:left,
         linewidth=2)
+    plot!(p1, annotations = (0.5, 0.4, text("\$\\mathbf{d}\$", pointsize=11,
+        color=theme_colors[1])))
 
     # Draw unit circle
-    plot!(p1, x->sin(x), x->cos(x), 0, 2π, linewidth = 1, color="grey82")
+    plot!(p1, x->sin(x), x->cos(x), 0, 2π, linewidth = 1, color=color=theme_colors[2])
 
     # Add 1's to clarify it's the unit circle
-    plot!(p1, annotations = (0.05, 1.05, text("1", pointsize=8, color="grey62")))
-    plot!(p1, annotations = (1.05, 0.05, text("1", pointsize=8, color="grey62")))
+    plot!(p1, annotations = (0.05, 1.05, text("1", pointsize=8, color=theme_colors[2])))
+    plot!(p1, annotations = (1.05, 0.05, text("1", pointsize=8, color=theme_colors[2])))
 
     # ###### #
     # Plot 2 #
     # ###### #
 
     p2 = plot(title="2. Cluster sizes", legend=false, showaxis=false,
-        titlefontsize=8, titlelocation=:left,
+        titlefontsize=8, titlelocation=:left, background_color_inside=pltbg,
         foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
 
     # Use auxiliary function to perform plotting
