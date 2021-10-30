@@ -30,7 +30,7 @@ works as follows (``^*`` means the algorithm step is stochastic):
       line.
 
 The following figures provide a stylized overview of the algorithm steps
-(background tiles are 10 units wide squares):
+(background tiles are 10 units wide and tall):
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -52,7 +52,7 @@ nothing
 ![](algorithm.png)
 
 This example was generated with the following parameters, the exact meaning of
-each is discussed in the following sections:
+each will be discussed shortly:
 
 | Parameter values  | Description                 |
 |:----------------- | :-------------------------- |
@@ -89,10 +89,11 @@ result.
 
 ### Algorithm parameters
 
-The _clugen_ algorithm has mandatory and optional parameters, listed and described
-in the tables below. The optional parameters are set to sensible defaults, and in
-many situations may well be left unchanged. Nonetheless, these allow all of the
-algorithm's steps to be fully customized by the user.
+The _clugen_ algorithm (and consequently, the [`clugen()`](@ref) function) has
+mandatory and optional parameters, listed and described in the tables below. The
+optional parameters are set to sensible defaults, and in many situations may be
+left unchanged. Nonetheless, these allow all of the algorithm's steps to be fully
+customized by the user.
 
 #### Mandatory parameters
 
@@ -140,25 +141,111 @@ vector:
 Cluster sizes are given by the ``c_s()`` function according to:
 
 ```math
-\mathbf{c_s} = c_s(c, \mathbf{s}, \phi)
+\mathbf{c_s} = c_s(c, p, \phi)
 ```
 
-where ``\mathbf{c_s}`` is an ``n \times 1`` integer vector containing the final
-cluster sizes, ``c`` is the number of clusters, ``\mathbf{s}`` is the average
-cluster separation (``n \times 1`` vector), and ``\phi`` is a boolean which
-determines whether empty clusters are acceptable.
+where ``\mathbf{c_s}`` is an ``c \times 1`` integer vector containing the final
+cluster sizes, ``c`` is the number of clusters, ``p`` is the total number of
+points, and ``\phi`` is a boolean which determines whether empty clusters are
+acceptable.
 
 The ``c_s()`` function is an optional parameter, allowing users to customize its
 behavior. By default ``c_s()`` is implemented by the [`CluGen.clusizes()`](@ref)
 function, which behaves according to the following algorithm:
 
-1. Determine the size ``c_i`` of each cluster ``i`` according to:
-   ``c_i\sim\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2)``
-   where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with
-   mean ``\mu`` and variance ``\sigma^2``, and ``p`` is the total number of points.
+1. Determine the size ``p_i`` of each cluster ``i`` according to
+   ``p_i\sim\left\lfloor\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2)\right\rceil``,
+   where ``\lfloor\rceil`` denotes the round to nearest integer function, and
+    ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with
+   mean ``\mu`` and variance ``\sigma^2``.
 2. Assure that the final cluster sizes add up to ``p`` by incrementing the smallest
-   cluster size while ``\sum_{i=1}^c c_i<p`` or decrementing the largest cluster
-   size while ``\sum_{i=1}^c c_i>p``.
+   cluster size while ``\sum_{i=1}^c p_i<p`` or decrementing the largest cluster
+   size while ``\sum_{i=1}^c p_i>p``. This step is delegated to the
+   [`CluGen.fix_num_points!()`](@ref) helper function.
+3. If ``\neg\phi\wedge p\ge c`` then, for each empty cluster ``i`` (i.e.,
+   ``p_i=0``), increment ``p_i`` and decrement ``p_j``, where ``j`` denotes the
+   largest cluster. This step is delegated to the [`CluGen.fix_empty!()`](@ref)
+   helper function.
+
+Figure 1 demonstrates possible cluster sizes with various definitions of ``c_s()``
+for ``c=4`` and ``p=5000``. The default behavior, implemented in the
+[`CluGen.clusizes()`](@ref) function, is shown in Figure 1a, while Figures 1b-c
+present results obtained with custom user functions. Figure 1b displays cluster
+sizes obtained with the discrete uniform distribution over
+``\left\{1, \ldots, \frac{2p}{c}\right\}``, corrected with
+[`CluGen.fix_num_points!()`](@ref). In turn, Figure 1c highlights cluster sizes
+obtained with the Poisson distribution with ``\lambda=\frac{p}{c}``, also corrected
+with [`CluGen.fix_num_points!()`](@ref). The cluster sizes shown in Figure 1d were
+determined with the same distribution (Poisson, ``\lambda=\frac{p}{c}``), but were
+not corrected. Thus, cluster sizes do not add up to ``p``, highlighting the fact
+that this is not a requirement of the *clugen* algorithm, i.e., user-defined
+ ``c_s()`` implementations can consider ``p`` a hint rather than an obligation.
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different clusizes_fn's to use
+clusz_names = ("a) Normal (default).", "b) Uniform.", "c) Poisson.", "d) Poisson (no total points correction).")
+
+clusz = Dict(
+   clusz_names[1] => CluGen.clusizes,
+   clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_num_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
+   clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_num_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
+   clusz_names[4] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
+)
+
+# Plots
+p_all = []
+cluszs_all = Dict()
+maxclu = 0
+
+for csz_name in clusz_names
+
+   Random.seed!(111)
+
+   cluszs_all[csz_name] = clusz[csz_name](nclu, npts, false)
+
+   if maximum(cluszs_all[csz_name]) > maxclu
+      global maxclu = maximum(cluszs_all[csz_name])
+   end
+
+end
+
+for csz_name in clusz_names
+
+   p = plot(title=csz_name, titlefontsize=9, titlelocation=:left, legend=false,
+      showaxis=false, foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[],
+      aspectratio=1, background_color_inside=pltbg, titlefontvalign=:bottom)
+
+   Main.CluGenExtras.plot_clusizes!(p, cluszs_all[csz_name];
+      maxsize = round(Integer, maxclu * 1.1))
+
+   push!(p_all, p)
+end
+
+plt = plot(p_all..., layout = (1, 4), size=(1200,300))
+
+savefig(plt, "clusizes.png")
+
+nothing
+```
+
+![](clusizes.png)
+**Figure 1** - Possible cluster sizes with various definitions of ``c_s()`` for
+``c=4`` and ``p=5000``.
 
 #### 3. Determine cluster centers
 
@@ -481,70 +568,6 @@ nothing
 ```
 
 ![](point_dist_fn.png)
-
-### `clusizes_fn`
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
-
-pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
-
-# General cluster definitions
-d = [1, 1]
-nclu = 4
-npts = 5000
-astd = pi/16
-clusep = [10, 10]
-linelen = 10
-linelen_std = 1.5
-latstd = 1
-
-# Different clusizes_fn's to use
-clusz_names = ("Normal (default)", "Uniform", "Poisson", "Poisson (no fix_num_points!)")
-
-clusz = Dict(
-   clusz_names[1] => CluGen.clusizes,
-   clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_num_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
-   clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_num_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
-   clusz_names[4] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
-)
-
-# Plots
-p_all = []
-cluszs_all = Dict()
-maxclu = 0
-
-for csz_name in clusz_names
-
-   Random.seed!(111)
-
-   cluszs_all[csz_name] = clusz[csz_name](nclu, npts, false)
-
-   if maximum(cluszs_all[csz_name]) > maxclu
-      global maxclu = maximum(cluszs_all[csz_name])
-   end
-
-end
-
-for csz_name in clusz_names
-
-   p = plot(title=csz_name, legend=false, showaxis=false,
-      foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
-
-   Main.CluGenExtras.plot_clusizes!(p, cluszs_all[csz_name]; maxsize = maxclu)
-
-   push!(p_all, p)
-end
-
-plt = plot(p_all..., layout = (2, 2), size=(800,800))
-
-savefig(plt, "clusizes.png")
-
-nothing
-```
-
-![](clusizes.png)
 
 ### `clucenters_fn`
 
