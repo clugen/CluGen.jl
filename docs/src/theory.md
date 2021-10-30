@@ -29,8 +29,7 @@ works as follows (``^*`` means the algorithm step is stochastic):
    3. ``^*``Determine points from their projections on the cluster-supporting
       line.
 
-The following figures provide a stylized overview of the algorithm steps
-(background tiles are 10 units wide and tall):
+Figure 1 provides a stylized overview of the algorithm's steps.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -50,9 +49,11 @@ nothing
 ```
 
 ![](algorithm.png)
+**Figure 1** - Stylized overview of the *clugen* algorithm. Background tiles
+are 10 units wide and tall, when applicable.
 
-This example was generated with the following parameters, the exact meaning of
-each will be discussed shortly:
+The example in Figure 1 was generated with the following parameters, the exact
+meaning of each will be discussed shortly:
 
 | Parameter values  | Description                 |
 |:----------------- | :-------------------------- |
@@ -167,15 +168,15 @@ function, which behaves according to the following algorithm:
    largest cluster. This step is delegated to the [`CluGen.fix_empty!()`](@ref)
    helper function.
 
-Figure 1 demonstrates possible cluster sizes with various definitions of ``c_s()``
+Figure 2 demonstrates possible cluster sizes with various definitions of ``c_s()``
 for ``c=4`` and ``p=5000``. The default behavior, implemented in the
-[`CluGen.clusizes()`](@ref) function, is shown in Figure 1a, while Figures 1b-c
-present results obtained with custom user functions. Figure 1b displays cluster
+[`CluGen.clusizes()`](@ref) function, is shown in Figure 2a, while Figures 2b-d
+present results obtained with custom user functions. Figure 2b displays cluster
 sizes obtained with the discrete uniform distribution over
 ``\left\{1, \ldots, \frac{2p}{c}\right\}``, corrected with
-[`CluGen.fix_num_points!()`](@ref). In turn, Figure 1c highlights cluster sizes
+[`CluGen.fix_num_points!()`](@ref). In turn, Figure 2c highlights cluster sizes
 obtained with the Poisson distribution with ``\lambda=\frac{p}{c}``, also corrected
-with [`CluGen.fix_num_points!()`](@ref). The cluster sizes shown in Figure 1d were
+with [`CluGen.fix_num_points!()`](@ref). The cluster sizes shown in Figure 2d were
 determined with the same distribution (Poisson, ``\lambda=\frac{p}{c}``), but were
 not corrected. Thus, cluster sizes do not add up to ``p``, highlighting the fact
 that this is not a requirement of the *clugen* algorithm, i.e., user-defined
@@ -244,7 +245,7 @@ nothing
 ```
 
 ![](clusizes.png)
-**Figure 1** - Possible cluster sizes with various definitions of ``c_s()`` for
+**Figure 2** - Possible cluster sizes with various definitions of ``c_s()`` for
 ``c=4`` and ``p=5000``.
 
 #### 3. Determine cluster centers
@@ -271,6 +272,61 @@ function, which determines the cluster centers according to:
 where ``\mathbf{U}`` is an ``c \times n`` matrix of random values drawn from the
 uniform distribution between -0.5 and 0.5, and ``\mathbf{1}`` is an ``c \times 1``
 vector with all entries equal to 1.
+
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different clucenter_fn's to use
+cluctr_names = ("a) Uniform (default).", "b) Hand-picked.")
+
+cluctr = Dict(
+   cluctr_names[1] => CluGen.clucenters,
+   cluctr_names[2] => (nclu, clusep, cluoff; rng = Random.GLOBAL_RNG) -> rand(rng, nclu, length(clusep)) .* 0 + [-20 -20; -20 20; 20 20; 20 -20]
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for cluc_name in cluctr_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; clucenters_fn = cluctr[cluc_name])
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=cluc_name, titlefontsize=9,
+      titlelocation=:left)
+   push!(p_all, p)
+end
+
+push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
+push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
+
+plt = plot(p_all..., layout = (1, 4), size=(1200,300))
+
+savefig(plt, "clucenters.png")
+
+nothing
+```
+
+![](clucenters.png)
+**Figure 3** - TODO lalala.
 
 #### 4. Determine lengths of cluster-supporting lines
 
@@ -568,59 +624,6 @@ nothing
 ```
 
 ![](point_dist_fn.png)
-
-### `clucenters_fn`
-
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
-
-pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
-
-# General cluster definitions
-d = [1, 1]
-nclu = 4
-npts = 5000
-astd = pi/16
-clusep = [10, 10]
-linelen = 10
-linelen_std = 1.5
-latstd = 1
-
-# Different clucenter_fn's to use
-cluctr_names = ("Uniform (default)", "Hand-picked")
-
-cluctr = Dict(
-   cluctr_names[1] => CluGen.clucenters,
-   cluctr_names[2] => (nclu, clusep, cluoff; rng = Random.GLOBAL_RNG) -> rand(rng, nclu, length(clusep)) .* 0 + [-20 -20; -20 20; 20 20; 20 -20]
-)
-
-# Results and plots
-r_all = []
-p_all = []
-
-for cluc_name in cluctr_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; clucenters_fn = cluctr[cluc_name])
-   push!(r_all, r)
-   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
-      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
-      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
-      gridlinewidth=2, aspectratio=1, title=cluc_name)
-   push!(p_all, p)
-end
-
-plt = plot(p_all..., layout = (1, 2), size=(800,400))
-
-savefig(plt, "clucenters.png")
-
-nothing
-```
-
-![](clucenters.png)
-
 
 ### `llengths_fn`
 
