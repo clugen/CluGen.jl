@@ -227,17 +227,21 @@ end
 
 for csz_name in clusz_names
 
-   p = plot(title=csz_name, titlefontsize=9, titlelocation=:left, legend=false,
+   p = plot(title=csz_name, titlefontsize=10, titlelocation=:left, legend=false,
       showaxis=false, foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[],
-      aspectratio=1, background_color_inside=pltbg, titlefontvalign=:bottom)
+      aspectratio=1, background_color_inside=pltbg)
 
    Main.CluGenExtras.plot_clusizes!(p, cluszs_all[csz_name];
       maxsize = round(Integer, maxclu * 1.1))
 
    push!(p_all, p)
+
+   while length(p_all) in (2, 5)
+      push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
+   end
 end
 
-plt = plot(p_all..., layout = (1, 4), size=(1200,300))
+plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
 savefig(plt, "clusizes.png")
 
@@ -310,15 +314,14 @@ for cluc_name in cluctr_names
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
-      gridlinewidth=2, aspectratio=1, title=cluc_name, titlefontsize=9,
+      gridlinewidth=2, aspectratio=1, title=cluc_name, titlefontsize=10,
       titlelocation=:left)
    push!(p_all, p)
 end
 
 push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
-push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
 
-plt = plot(p_all..., layout = (1, 4), size=(1200,300))
+plt = plot(p_all..., layout = (1, 3), size=(1200,400))
 
 savefig(plt, "clucenters.png")
 
