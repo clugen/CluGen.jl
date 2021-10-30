@@ -356,6 +356,65 @@ l_i\sim\mathcal{FN}(l,l_\sigma^2)
 where ``\mathcal{FN}(\mu,\sigma^2)`` represents the folded normal distribution
 with mean ``\mu`` and variance ``\sigma^2``.
 
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = 0 # To better see line lengths
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 0 # To better see line lengths
+
+# Different llengths_fn's to use
+ll_names = ("a) Normal (default).", "b) Poisson.", "c) Uniform.", "d) Hand-picked.")
+
+ll = Dict(
+   ll_names[1] => CluGen.llengths,
+   ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
+   ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, DiscreteUniform(0, ll * 2), nclu),
+   ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for ll_name in ll_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; llengths_fn = ll[ll_name], proj_dist_fn="unif")
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=ll_name, titlefontsize=10,
+      titlelocation=:left)
+   push!(p_all, p)
+
+   while length(p_all) in (2, 5)
+      push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
+   end
+
+end
+
+plt = plot(p_all..., layout = (2, 3), size=(1200,800))
+
+savefig(plt, "llengths.png")
+
+nothing
+```
+
+![](llengths.png)
+**Figure 4** - TODO lalala.
+
 #### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
 The angles between ``\mathbf{d}`` and the cluster-supporting lines are given by
@@ -383,6 +442,61 @@ where ``\mathcal{WN}_{-\pi/2}^{\pi/2}(\mu,\sigma^2)`` represents the wrapped nor
 distribution with mean ``\mu``, variance ``\sigma^2``, and support in the
 ``\left[-\pi/2,\pi/2\right]`` interval, and ``\theta_\sigma`` is the angle
 dispersion of the cluster-supporting lines.
+
+
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 0 # To better see line angles
+latstd = 0 # To better see line angles
+
+# Different angle_deltas_fn's to use
+la_names = ("a) Wrapped Normal (default).", "b) Hand-picked.")
+
+la = Dict(
+   la_names[1] => CluGen.angle_deltas,
+   la_names[2] => (nclu, astd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [0, pi/2, 0, pi/2]
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for la_name in la_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; angle_deltas_fn = la[la_name], proj_dist_fn="unif")
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=la_name, titlefontsize=10,
+      titlelocation=:left)
+   push!(p_all, p)
+end
+
+push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
+
+plt = plot(p_all..., layout = (1, 3), size=(1200,400))
+
+savefig(plt, "angle_deltas.png")
+
+nothing
+```
+
+![](angle_deltas.png)
+**Figure 5** - TODO lalala.
 
 #### 6. Determine direction of cluster-supporting lines
 
@@ -451,6 +565,64 @@ where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with mean
 ``\mu`` and variance ``\sigma^2``, and ``\mathcal{U}(a,b)`` represents the
 uniform distribution in the interval ``\left[a, b\right[``.
 
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Distributions, Plots, Random
+
+pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
+
+# General cluster definitions
+d = [1, 1]
+nclu = 4
+npts = 5000
+astd = pi/16
+clusep = [10, 10]
+linelen = 10
+linelen_std = 1.5
+latstd = 1
+
+# Different proj_dist_fn's to use
+pdist_names = ("a) Normal (default).", "b) Uniform.", "c) Laplace.", "d) Rayleigh.")
+
+pdists = Dict(
+   pdist_names[1] => "norm",
+   pdist_names[2] => "unif",
+   pdist_names[3] => (len, n) -> rand(Laplace(0, len / 6), n),
+   pdist_names[4] => (len, n) -> rand(Rayleigh(len / 3), n) .- len / 2
+)
+
+# Results and plots
+r_all = []
+p_all = []
+
+for pd_name in pdist_names
+   Random.seed!(111)
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; proj_dist_fn=pdists[pd_name])
+   push!(r_all, r)
+   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
+      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
+      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
+      gridlinewidth=2, aspectratio=1, title=pd_name, titlefontsize=10,
+      titlelocation=:left)
+   push!(p_all, p)
+
+   while length(p_all) in (2, 5)
+      push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
+   end
+
+end
+
+plt = plot(p_all..., layout = (2, 3), size=(1200,800))
+
+savefig(plt, "proj_dist_fn.png")
+
+nothing
+```
+
+![](proj_dist_fn.png)
+**Figure 6** - TODO lalala.
+
 ##### 7.2. Determine coordinates of point projections on the cluster-supporting line
 
 This is a deterministic step performed by the [`points_on_line()`](@ref) function
@@ -502,11 +674,13 @@ using CluGen, Distributions, Plots, Random
 
 Random.seed!(123)
 p1 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n_1)
-plot!(p1, title="n-1")
+plot!(p1, title="a) n-1.", titlefontsize=10, titlelocation=:left)
 p2 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n)
-plot!(p2, title="n")
+plot!(p2, title="b) n.", titlefontsize=10, titlelocation=:left)
 
-plt = plot(p1, p2, layout = (1, 2), size=(800,400))
+p3 = plot(showaxis=false,grid=false,ticks=[],aspectratio=1)
+
+plt = plot(p1, p2, p3, layout=(1,3), size=(1200,400))
 
 savefig(plt, "point_dist_ex.png")
 
@@ -514,10 +688,7 @@ nothing
 ```
 
 ![](point_dist_ex.png)
-
-## Algorithm parameters in depth
-
-### `proj_dist_fn`
+**Figure 7** - TODO lalala.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -535,61 +706,8 @@ linelen = 10
 linelen_std = 1.5
 latstd = 1
 
-# Different proj_dist_fn's to use
-pdist_names = ("Normal", "Uniform", "Laplace", "Rayleigh")
-
-pdists = Dict(
-   pdist_names[1] => "norm",
-   pdist_names[2] => "unif",
-   pdist_names[3] => (len, n) -> rand(Laplace(0, len / 6), n),
-   pdist_names[4] => (len, n) -> rand(Rayleigh(len / 3), n) .- len / 2
-)
-
-# Results and plots
-r_all = []
-p_all = []
-
-for pd_name in pdist_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; proj_dist_fn=pdists[pd_name])
-   push!(r_all, r)
-   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
-      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
-      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
-      gridlinewidth=2, aspectratio=1, title=pd_name)
-   push!(p_all, p)
-end
-
-plt = plot(p_all..., layout = (2, 2), size=(800,800))
-
-savefig(plt, "proj_dist_fn.png")
-
-nothing
-```
-
-![](proj_dist_fn.png)
-
-### `point_dist_fn`
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
-
-pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
-
-# General cluster definitions
-d = [1, 1]
-nclu = 4
-npts = 5000
-astd = pi/16
-clusep = [10, 10]
-linelen = 10
-linelen_std = 1.5
-latstd = 1
-
-# Different proj_dist_fn's to use
-poffs_names = ("n-1", "d-1 Exponential", "d-1 Bimodal", "n", "d Hollow", "d Hollow + unif")
+# Different point_dist_fn's to use
+poffs_names = ("a) n-1 (default).", "b) n-1 Exponential.", "c) n-1 Bimodal.", "d) n.", "e) n Hollow.", "f) d Hollow + unif.")
 
 dist_exp = (npts, lstd) -> lstd .* rand(Exponential(2/lstd), npts, 1)
 dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts, 1)
@@ -615,7 +733,8 @@ for po_name in poffs_names
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
-      gridlinewidth=2, aspectratio=1, title=po_name)
+      gridlinewidth=2, aspectratio=1, title=po_name, titlefontsize=10,
+      titlelocation=:left)
    push!(p_all, p)
 end
 
@@ -627,109 +746,4 @@ nothing
 ```
 
 ![](point_dist_fn.png)
-
-### `llengths_fn`
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
-
-pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
-
-# General cluster definitions
-d = [1, 1]
-nclu = 4
-npts = 5000
-astd = 0 # To better see line lengths
-clusep = [10, 10]
-linelen = 10
-linelen_std = 1.5
-latstd = 0 # To better see line lengths
-
-# Different llengths_fn's to use
-ll_names = ("Normal (default)", "Poisson", "Uniform", "Hand-picked")
-
-ll = Dict(
-   ll_names[1] => CluGen.llengths,
-   ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
-   ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, DiscreteUniform(0, ll * 2), nclu),
-   ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
-)
-
-# Results and plots
-r_all = []
-p_all = []
-
-for ll_name in ll_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; llengths_fn = ll[ll_name], proj_dist_fn="unif")
-   push!(r_all, r)
-   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
-      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
-      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
-      gridlinewidth=2, aspectratio=1, title=ll_name)
-   push!(p_all, p)
-end
-
-plt = plot(p_all..., layout = (2, 2), size=(800,800))
-
-savefig(plt, "llengths.png")
-
-nothing
-```
-
-![](llengths.png)
-
-### `angle_deltas_fn`
-
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
-
-pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
-
-# General cluster definitions
-d = [1, 1]
-nclu = 4
-npts = 5000
-astd = pi/16
-clusep = [10, 10]
-linelen = 10
-linelen_std = 0 # To better see line angles
-latstd = 0 # To better see line angles
-
-# Different angle_deltas_fn's to use
-la_names = ("Wrapped Normal (default)", "Hand-picked")
-
-la = Dict(
-   la_names[1] => CluGen.angle_deltas,
-   la_names[2] => (nclu, astd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [0, pi/2, 0, pi/2]
-)
-
-# Results and plots
-r_all = []
-p_all = []
-
-for la_name in la_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; angle_deltas_fn = la[la_name], proj_dist_fn="unif")
-   push!(r_all, r)
-   p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
-      markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
-      foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
-      gridlinewidth=2, aspectratio=1, title=la_name)
-   push!(p_all, p)
-end
-
-plt = plot(p_all..., layout = (1, 2), size=(800,400))
-
-savefig(plt, "angle_deltas.png")
-
-nothing
-```
-
-![](angle_deltas.png)
-
+**Figure 8** - TODO lalala.
