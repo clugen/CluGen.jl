@@ -344,23 +344,23 @@ The lengths of the cluster-supporting lines are given by the ``l()`` function
 according to:
 
 ```math
-\mathbf{l} = l(c, l, l_\sigma)
+\mathbf{\ell} = l(c, l, l_\sigma)
 ```
 
-where ``\mathbf{l}`` is an ``n \times 1`` vector containing the final lengths of
+where ``\mathbf{\ell}`` is an ``c \times 1`` vector containing the final lengths of
 the cluster-supporting lines, ``c`` is the number of clusters, ``l`` is the average
 length, and ``l_\sigma`` is the length dispersion.
 
 The ``l()`` function is an optional parameter, allowing users to customize its
 behavior. By default, ``l()`` is implemented by the [`CluGen.llengths()`](@ref)
-function, which determines the ``l_i`` length of each cluster-supporting line
+function, which determines the ``\ell_i`` length of each cluster-supporting line
 ``i`` according to:
 
 ```math
-l_i\sim\mathcal{FN}(l,l_\sigma^2)
+\ell_i\sim\left|\mathcal{N}(l,l_\sigma^2)\right|
 ```
 
-where ``\mathcal{FN}(\mu,\sigma^2)`` represents the folded normal distribution
+where ``\left|\mathcal{N}(\mu,\sigma^2)\right|`` represents the folded normal distribution
 with mean ``\mu`` and variance ``\sigma^2``.
 
 
