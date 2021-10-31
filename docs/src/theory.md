@@ -427,7 +427,7 @@ default, using the folded normal distribution; b) using the Poisson distribution
 with ``\lambda=l``; c) using the uniform distribution in the interval
 ``\left[0, 2l\right[``; and, d) hand-picked lengths, more specifically
 ``\mathbf{\ell}=(2, 8, 16, 32)``. Cluster centers, as well as parameters ``l``
-and ``l_\sigma``, are the same as the example shown in Figure 1.
+and ``l_\sigma``, are the same as for the example shown in Figure 1.
 
 #### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
@@ -438,8 +438,8 @@ the ``\theta_\Delta()`` function according to:
 \mathbf{\Theta_\Delta} = \theta_\Delta(c, \theta_\sigma)
 ```
 
-where ``\mathbf{\Theta_\Delta}`` is an ``n \times 1`` vector containing the final
-angle differences between ``\mathbf{d}`` and the cluster-supporting lines,  ``c``
+where ``\mathbf{\Theta_\Delta}`` is an ``c \times 1`` vector containing the final
+angle differences between ``\mathbf{d}`` and the cluster-supporting lines, ``c``
 is the number of clusters, and ``\theta_\sigma`` is the angle dispersion.
 
 The ``\theta_\Delta()`` function is an optional parameter, allowing users to
@@ -457,7 +457,8 @@ distribution with mean ``\mu``, variance ``\sigma^2``, and support in the
 ``\left[-\pi/2,\pi/2\right]`` interval, and ``\theta_\sigma`` is the angle
 dispersion of the cluster-supporting lines.
 
-
+Figure 5 shows the final direction of the cluster-supporting lines for two
+different implementations of ``\theta_\Delta()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -510,7 +511,13 @@ nothing
 ```
 
 ![](angle_deltas.png)
-**Figure 5** - TODO lalala.
+**Figure 5** - Final directions of the cluster supporting-lines for different
+implementations of ``\theta_\Delta()``: a) the default, where angle differences
+were obtained using the wrapped normal distribution; and, d) hand-picked angle
+differences, more specifically
+``\mathbf{\Theta_\Delta}=(0, \frac{\pi}{2}, 0, \frac{\pi}{2})``. Cluster centers,
+as well the angle dispersion ``\theta_\sigma``, are the same as for the example
+shown in Figure 1.
 
 #### 6. Determine direction of cluster-supporting lines
 
