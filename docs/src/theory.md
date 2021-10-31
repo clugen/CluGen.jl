@@ -360,9 +360,11 @@ function, which determines the ``\ell_i`` length of each cluster-supporting line
 \ell_i\sim\left|\mathcal{N}(l,l_\sigma^2)\right|
 ```
 
-where ``\left|\mathcal{N}(\mu,\sigma^2)\right|`` represents the folded normal distribution
-with mean ``\mu`` and variance ``\sigma^2``.
+where ``\left|\mathcal{N}(\mu,\sigma^2)\right|`` represents the folded normal
+distribution with mean ``\mu`` and variance ``\sigma^2``.
 
+Figure 4 shows cluster-supporting line lengths obtained with different implementations
+of ``l()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -381,12 +383,12 @@ linelen_std = 1.5
 latstd = 0 # To better see line lengths
 
 # Different llengths_fn's to use
-ll_names = ("a) Normal (default).", "b) Poisson.", "c) Uniform.", "d) Hand-picked.")
+ll_names = ("a) Folded normal (default).", "b) Poisson.", "c) Uniform.", "d) Hand-picked.")
 
 ll = Dict(
    ll_names[1] => CluGen.llengths,
    ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
-   ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, DiscreteUniform(0, ll * 2), nclu),
+   ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Uniform(0, ll * 2), nclu),
    ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
 )
 
@@ -420,7 +422,12 @@ nothing
 ```
 
 ![](llengths.png)
-**Figure 4** - TODO lalala.
+**Figure 4** - Line lengths for different implementations of ``l()``: a) the
+default, using the folded normal distribution; b) using the Poisson distribution,
+with ``\lambda=l``; c) using the uniform distribution in the interval
+``\left[0, 2l\right[``; and, d) hand-picked lengths, more specifically
+``\mathbf{\ell}=(2, 8, 16, 32)``. Cluster centers, as well as parameters ``l``
+and ``l_\sigma``, are the same as the example shown in Figure 1.
 
 #### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
