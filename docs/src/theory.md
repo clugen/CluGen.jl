@@ -524,30 +524,30 @@ shown in Figure 1.
 In order to obtain the ``\hat{\mathbf{d}}_i`` cluster-supporting line final
 directions for each cluster ``i``, the following algorithm is used:
 
-* **i.** Find random vector ``\mathbf{r}`` with each component taken from the
+* **1.** Find random vector ``\mathbf{r}`` with each component taken from the
   uniform distribution between -0.5 and 0.5.
-* **ii.** Normalize ``\mathbf{r}``:
+* **2.** Normalize ``\mathbf{r}``:
   ```math
   \hat{\mathbf{r}}=\cfrac{\mathbf{r}}{\left\lVert\mathbf{r}\right\rVert}
   ```
-* **iii.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1``, set
+* **3.** If ``|\theta_{\Delta i}| > \pi/2`` or ``n=1``, set
   ``\hat{\mathbf{d}}_i=\hat{\mathbf{r}}`` and terminate the algorithm.
-* **iv.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **i**.
-* **v.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
+* **4.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **1**.
+* **5.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
   using the first iteration of the Gram--Schmidt process:
   ```math
   \mathbf{d}_\perp=\hat{\mathbf{r}}-\cfrac{\hat{\mathbf{d}}\cdot\hat{\mathbf{r}}}{\hat{\mathbf{d}}\cdot\hat{\mathbf{d}}}\:\hat{\mathbf{d}}
   ```
-* **vi.** Normalize ``\mathbf{d}_\perp``:
+* **6.** Normalize ``\mathbf{d}_\perp``:
   ```math
   \hat{\mathbf{d}}_\perp=\cfrac{\mathbf{d}_\perp}{\left\lVert\mathbf{d}_\perp\right\rVert}
   ```
-* **vii.** Determine vector ``\mathbf{d}_i`` at angle ``\theta_{\Delta i}`` with
+* **7.** Determine vector ``\mathbf{d}_i`` at angle ``\theta_{\Delta i}`` with
   ``\hat{\mathbf{d}}``:
   ```math
   \mathbf{d}_i=\hat{\mathbf{d}}+\tan(\theta_{\Delta i})\hat{\mathbf{d}}_\perp
   ```
-* **viii.** Normalize ``\mathbf{d}_i``:
+* **8.** Normalize ``\mathbf{d}_i``:
   ```math
   \hat{\mathbf{d}}_i=\cfrac{\mathbf{d}_i}{\left\lVert\mathbf{d}_i\right\rVert}
   ```
@@ -560,13 +560,12 @@ The distance of point projections from the center of the cluster-supporting line
 is given by the ``p_\text{proj}()`` function according to:
 
 ```math
-\mathbf{w}_i = p_\text{proj}(l_i, p_i)
+\mathbf{w}_i = p_\text{proj}(\ell_i, p_i)
 ```
 
-where ``\mathbf{w}_i`` is an ``p_i \times 1`` vector
-containing the distance of each point projection to the center of the line, while
-``l_i`` and ``p_i`` are the line length and number of points in cluster ``i``,
-respectively.
+where ``\mathbf{w}_i`` is an ``p_i \times 1`` vector containing the distance of
+each point projection to the center of the line, while ``\ell_i`` and ``p_i`` are
+the line length and number of points in cluster ``i``, respectively.
 
 The ``p_\text{proj}()`` function is an optional parameter, allowing users to
 customize its behavior. `CluGen.jl` provides two concrete implementations out of
@@ -575,11 +574,11 @@ the box, namely ``p_\text{proj}^\text{norm}()`` (the default) and
 `"norm"` and `"unif"`, respectively), defined according to:
 
 ```math
-\mathbf{w}_i=\begin{bmatrix}\mathcal{N}(0, (\frac{l_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{l_i}{6})^2)\end{bmatrix}^T
+\mathbf{w}_i=\begin{bmatrix}\mathcal{N}(0, (\frac{\ell_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{\ell_i}{6})^2)\end{bmatrix}^T
 ```
 
 ```math
-\mathbf{w}_i=\begin{bmatrix}\mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2}) & \ldots & \mathcal{U}(-\frac{l_i}{2}, \frac{l_i}{2})\end{bmatrix}^T
+\mathbf{w}_i=\begin{bmatrix}\mathcal{U}(-\frac{\ell_i}{2}, \frac{\ell_i}{2}) & \ldots & \mathcal{U}(-\frac{\ell_i}{2}, \frac{\ell_i}{2})\end{bmatrix}^T
 ```
 
 where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with mean
