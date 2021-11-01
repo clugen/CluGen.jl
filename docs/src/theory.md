@@ -659,18 +659,19 @@ is set to 5000.
 ##### 6.3. Determine coordinates of point projections on the cluster-supporting line
 
 This is a deterministic step performed by the [`points_on_line()`](@ref) function
-using the vector formulation of the line equation as follows:
+using the vector formulation of the line equation, as follows:
 
 ```math
-\mathbf{P}_i^\text{proj}=\mathbf{1}\,\mathbf{c}_i^T + \mathbf{w}_i\mathbf{d}_i^T
+\mathbf{P}_i^\text{proj}=\mathbf{1}\,\mathbf{c}_i^T + \mathbf{w}_i\hat{\mathbf{d}}_i^T
 ```
 
 where ``\mathbf{P}_i^\text{proj}`` is the ``p_i \times n`` matrix of point projection
-coordinates on the line, ``\mathbf{1}`` is an ``n \times 1`` vector with all entries
+coordinates on the line, ``\mathbf{1}`` is an ``p_i \times 1`` vector with all entries
 equal to 1, ``\mathbf{c}_i`` are the coordinates of the line center (``n \times 1``
 vector), ``\mathbf{w}_i`` is the distance of each point projection to the center of
-the line (``p_i \times 1`` vector obtained in the previous step), and ``\mathbf{d}_i``
-is the direction of the cluster-supporting lines for cluster ``i``.
+the line (``p_i \times 1`` vector obtained in the previous step), and
+``\hat{\mathbf{d}}_i`` is the direction of the cluster-supporting line for cluster
+``i``.
 
 ##### 6.4. Determine points from their projections on the cluster-supporting line
 

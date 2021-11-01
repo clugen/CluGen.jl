@@ -406,9 +406,8 @@ coordinates of points on the line are given by:
 \\mathbf{P}=\\mathbf{1}\\,\\mathbf{c}^T + \\mathbf{w}\\mathbf{d}^T
 ```
 
-where ``\\mathbf{P}`` is the ``p \\times n`` matrix of point
-coordinates on the line, and ``\\mathbf{1}`` is an ``n \\times 1`` vector with
-all entries equal to 1.
+where ``\\mathbf{P}`` is the ``p \\times n`` matrix of point coordinates on the
+line, and ``\\mathbf{1}`` is a ``p \\times 1`` vector with all entries equal to 1.
 
 # Examples
 ```jldoctest
