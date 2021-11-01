@@ -4,13 +4,12 @@
 Pages = ["theory.md"]
 ```
 
-## What is CluGen?
+## Overview
 
 CluGen is an algorithm for generating multidimensional clusters. Each cluster is
-supported by a line, the position, orientation and length of which guide where
-the respective points are placed.
-
-## Overview
+supported by a line segment, the position, orientation and length of which guide
+where the respective points are placed. For brevity, *line segments* will be
+referred to as *lines*.
 
 Given an ``n``-dimensional direction vector ``\mathbf{d}`` (and a number of
 additional parameters, which will be discussed shortly), the _clugen_ algorithm
@@ -570,21 +569,26 @@ the line length and number of points in cluster ``i``, respectively.
 
 The ``p_\text{proj}()`` function is an optional parameter, allowing users to
 customize its behavior. `CluGen.jl` provides two concrete implementations out of
-the box, namely ``p_\text{proj}^\text{norm}()`` (the default) and
-``p_\text{proj}^\text{unif}()`` (specified in Julia by passing the strings
-`"norm"` and `"unif"`, respectively), defined according to:
+the box, specified in Julia by passing the strings `"norm"` or `"unif"`, which
+work as follows:
 
-```math
-\mathbf{w}_i=\begin{bmatrix}\mathcal{N}(0, (\frac{\ell_i}{6})^2) & \ldots & \mathcal{N}(0, (\frac{\ell_i}{6})^2)\end{bmatrix}^T
-```
+* `"norm"` (default) - Each element of ``\mathbf{w}_i`` is derived from
+  ``\mathcal{N}(0, (\frac{\ell_i}{6})^2)``, i.e., from the normal distribution,
+  centered on the cluster-supporting line center (``\mu=0``) and with a standard
+  deviation of ``\sigma=\frac{\ell_i}{6}``, such that the length of the line
+  segment encompasses ``\approx`` 99.73% of the generated projections. Consequently,
+  some projections may be placed outside the line's end points.
+* `"unif"` - Each element of ``\mathbf{w}_i`` is derived from
+  ``\mathcal{U}(-\frac{\ell_i}{2}, \frac{\ell_i}{2})``, i.e., from the continuous
+  uniform distribution in the interval ``\left[-\frac{\ell_i}{2}, \frac{\ell_i}{2}\right[``.
+  Thus, projections will be uniformly dispersed along the cluster-supporting line.
 
-```math
-\mathbf{w}_i=\begin{bmatrix}\mathcal{U}(-\frac{\ell_i}{2}, \frac{\ell_i}{2}) & \ldots & \mathcal{U}(-\frac{\ell_i}{2}, \frac{\ell_i}{2})\end{bmatrix}^T
-```
-
-where ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with mean
-``\mu`` and variance ``\sigma^2``, and ``\mathcal{U}(a,b)`` represents the
-uniform distribution in the interval ``\left[a, b\right[``.
+The impact of various implementations of ``p_\text{proj}()`` is demonstrated in
+Figure 6. Figures 6a and 6b show the clusters generated with the `"norm"` and
+`"unif"` options, respectively, while Figures 6c and 6d highlight custom user
+functions implementing the Laplace and Rayleigh distributions, respectively.
+All parameters are set as in Figure 1, except for ``p_\text{proj}()`` in the case
+of Figures 6b-6d, and ``p``, which is set to 5000.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -603,7 +607,7 @@ linelen_std = 1.5
 latstd = 1
 
 # Different proj_dist_fn's to use
-pdist_names = ("a) Normal (default).", "b) Uniform.", "c) Laplace.", "d) Rayleigh.")
+pdist_names = ("a) Normal (\"norm\" option, the default).", "b) Uniform (\"unif\" option).", "c) Laplace (user-defined function).", "d) Rayleigh (user-defined function).")
 
 pdists = Dict(
    pdist_names[1] => "norm",
@@ -642,7 +646,15 @@ nothing
 ```
 
 ![](proj_dist_fn.png)
-**Figure 6** - TODO lalala.
+**Figure 6** - Clusters generated for various implementations of ``p_\text{proj}()``:
+a) the default, where line center distances are drawn for the normal distribution,
+specified using the in-built `"norm"` option; b) in which center distances are
+derived from the uniform distribution, via the in-built `"unif"` option; c) where
+line center distances are obtained from a custom user function implementing the
+Laplace distribution; and, d) in which a custom user function returns center
+distances drawn from the Rayleigh distribution. All parameters are set as in Figure
+1, except for ``p_\text{proj}()`` in the case of Figures 6b-6d, and ``p``, which
+is set to 5000.
 
 ##### 6.3. Determine coordinates of point projections on the cluster-supporting line
 
