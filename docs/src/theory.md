@@ -155,7 +155,7 @@ behavior. By default, ``c_s()`` is implemented by the [`CluGen.clusizes()`](@ref
 function, which behaves according to the following algorithm:
 
 1. Determine the size ``p_i`` of each cluster ``i`` according to
-   ``p_i\sim\left\lfloor\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2)\right\rceil``,
+   ``p_i\sim\left\lfloor\max\left(\mathcal{N}(\frac{p}{c}, (\frac{p}{3c})^2),0\right)\right\rceil``,
    where ``\lfloor\rceil`` denotes the round to nearest integer function, and
     ``\mathcal{N}(\mu,\sigma^2)`` represents the normal distribution with
    mean ``\mu`` and variance ``\sigma^2``.
@@ -173,7 +173,7 @@ for ``c=4`` and ``p=5000``. The default behavior, implemented in the
 [`CluGen.clusizes()`](@ref) function, is shown in Figure 2a, while Figures 2b-d
 present results obtained with custom user functions. Figure 2b displays cluster
 sizes obtained with the discrete uniform distribution over
-``\left\{1, \ldots, \frac{2p}{c}\right\}``, corrected with
+``\left\{1, 2, \ldots, \frac{2p}{c}\right\}``, corrected with
 [`CluGen.fix_num_points!()`](@ref). In turn, Figure 2c highlights cluster sizes
 obtained with the Poisson distribution with ``\lambda=\frac{p}{c}``, also corrected
 with [`CluGen.fix_num_points!()`](@ref). The cluster sizes shown in Figure 2d were
@@ -426,8 +426,9 @@ nothing
 default, using the folded normal distribution; b) using the Poisson distribution,
 with ``\lambda=l``; c) using the uniform distribution in the interval
 ``\left[0, 2l\right[``; and, d) hand-picked lengths, more specifically
-``\mathbf{\ell}=(2, 8, 16, 32)``. Cluster centers, as well as parameters ``l``
-and ``l_\sigma``, are the same as for the example shown in Figure 1.
+``\mathbf{\ell}=\begin{bmatrix}2 & 8 & 16 & 32\end{bmatrix}^T``. Cluster centers,
+as well as parameters ``l`` and ``l_\sigma``, are the same as for the example
+shown in Figure 1.
 
 #### 5. Determine angles between ``\mathbf{d}`` and cluster-supporting lines
 
@@ -515,9 +516,9 @@ nothing
 implementations of ``\theta_\Delta()``: a) the default, where angle differences
 were obtained using the wrapped normal distribution; and, d) hand-picked angle
 differences, more specifically
-``\mathbf{\Theta_\Delta}=(0, \frac{\pi}{2}, 0, \frac{\pi}{2})``. Cluster centers,
-as well the angle dispersion ``\theta_\sigma``, are the same as for the example
-shown in Figure 1.
+``\mathbf{\Theta_\Delta}=\begin{bmatrix}0 & \frac{\pi}{2} & 0 & \frac{\pi}{2}\end{bmatrix}^T``.
+Cluster centers, as well the angle dispersion ``\theta_\sigma``, are the same as
+for the example shown in Figure 1.
 
 #### 6. For each cluster ``i``:
 
