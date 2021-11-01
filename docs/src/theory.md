@@ -751,16 +751,16 @@ linelen_std = 1.5
 latstd = 1
 
 # Different point_dist_fn's to use
-poffs_names = ("a) n-1 (default).", "b) n-1 Exponential.", "c) n-1 Bimodal.", "d) n.", "e) n Hollow.", "f) d Hollow + unif.")
+poffs_names = ("a) Normal \"n-1\" (built-in, default).", "b) Normal \"n\" (built-in).", "c) Exponential \"n-1\".", "d) Bimodal \"n-1\".", "e) Hollow \"n\".", "f) Hollow \"n\" combined with \"unif\" projections.")
 
 dist_exp = (npts, lstd) -> lstd .* rand(Exponential(2/lstd), npts, 1)
 dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts, 1)
 
 poffs = Dict(
    poffs_names[1] => ("n-1", "norm"),
-   poffs_names[2] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
-   poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
-   poffs_names[4] => ("n", "norm"),
+   poffs_names[2] => ("n", "norm"),
+   poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
+   poffs_names[4] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
    poffs_names[5] => (Main.CluGenExtras.clupoints_n_hollow, "norm"),
    poffs_names[6] => (Main.CluGenExtras.clupoints_n_hollow, "unif")
 )
@@ -789,5 +789,20 @@ savefig(plt, "point_dist_fn.png")
 nothing
 ```
 
+In general, points can be placed using a `"n-1"` or `"n"` strategy using any
+distribution. Figure 8 displays several examples for various implementations of
+``p_\text{final}()``, either based on `"n-1"` or `"n"` strategy, using
+different distributions. Figures 8a and 8b show the built-in `"n-1"` and `"n"`
+strategies making use of the normal distribution. Figures 8c-8f highlight some
+possibilities with custom user functions. Figure 8c shows the effect of using
+the exponential distribution in a `"n-1"` strategy, while Figure 8d displays
+the result of using a bimodal distribution with the same strategy. A more complex
+distribution, producing "hollow" clusters with a `"n"` strategy, is employed in
+Figures 8e and 8f, with the latter also having the ``p_\text{proj}()`` function
+set to `"unif"`. The remaining parameters (for all subfigures) are set as in
+Figure 1, except for ``p``, which is set to 5000.
+
 ![](point_dist_fn.png)
-**Figure 8** - TODO lalala.
+**Figure 8** - Examples of various implementations of ``p_\text{final}()``.
+Figures a and b shown the effect of the built-in implementations, while Figures
+c-f display results obtained using custom user functions.
