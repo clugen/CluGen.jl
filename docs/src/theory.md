@@ -569,8 +569,8 @@ the line length and number of points in cluster ``i``, respectively.
 
 The ``p_\text{proj}()`` function is an optional parameter, allowing users to
 customize its behavior. `CluGen.jl` provides two concrete implementations out of
-the box, specified in Julia by passing the strings `"norm"` or `"unif"`, which
-work as follows:
+the box, specified in Julia by passing `"norm"` or `"unif"` to  [`clugen()`](@ref)'s
+`proj_dist_fn` parameter. These work as follows:
 
 * `"norm"` (default) - Each element of ``\mathbf{w}_i`` is derived from
   ``\mathcal{N}(0, (\frac{\ell_i}{6})^2)``, i.e., from the normal distribution,
@@ -679,28 +679,37 @@ The final cluster points, obtained from their projections on the cluster-support
 line, are given by the ``p_\text{final}()`` function according to:
 
 ```math
-\mathbf{P}_i^\text{final} = p_\text{final}(\mathbf{P}_i^\text{proj}, f_\sigma, l_i, \mathbf{d}_i, \mathbf{c}_i)
+\mathbf{P}_i^\text{final} = p_\text{final}(\mathbf{P}_i^\text{proj}, f_\sigma, \ell_i, \hat{\mathbf{d}}_i, \mathbf{c}_i)
 ```
 
-where ``\mathbf{w}_i`` is an ``p_i \times 1`` vector containing the distance of
-each point projection to the center of the line, ...
+where ``\mathbf{P}_i^\text{final}`` is a ``p_i \times n`` matrix containing the
+coordinates of the generated points, ``\mathbf{P}_i^\text{proj}`` is the
+``p_i \times n`` matrix of projection coordinates (determined in the previous step),
+and ``f_\sigma`` is the lateral dispersion parameter. In turn, ``\ell_i``,
+``\hat{\mathbf{d}}_i`` and ``\mathbf{c}_i`` are the length, direction and center
+of the cluster-supporting line.
 
 The ``p_\text{final}()`` function is an optional parameter, allowing users to
 customize its behavior. `CluGen.jl` provides two concrete implementations out of
-the box, namely ``p_\text{final}^{n-1}()`` (the default) and ``p_\text{final}^{n}()``
-(specified in Julia by passing the strings `"n-1"` and `"n"`, respectively).
+the box, specified in Julia by passing `"n-1"` or `"n"` to [`clugen()`](@ref)'s
+`point_dist_fn` parameter. These work as follows:
 
-The [`CluGen.clupoints_n_1()`](@ref) function implements ``p_\text{final}^{n-1}()``,
-and generates points from their cluster-supporting line projections by placing
-each point on a hyperplane orthogonal to that line and centered at the point's
-projection, using the normal distribution, ``\mathcal{N}(0, f_\sigma^2)``.
+* `"n-1"` (default) - Points are placed on a hyperplane orthogonal to the
+  cluster-supporting line and intersecting the point's projection. This is done
+  by obtaining ``p_i`` random unit vectors orthogonal to ``\hat{\mathbf{d}}_i``,
+  and determining their magnitude using the normal distribution
+  (``\mu=0``, ``\sigma=f_\sigma``). These vectors are then added to the respective
+  projections on the cluster-supporting line, yielding the final cluster points.
+  This behavior is implemented in the [`CluGen.clupoints_n_1()`](@ref) function.
+* `"n"` - Points are placed around their respective projections. This is done by
+  obtaining ``p_i`` random unit vectors, and determining their magnitude using
+  the normal distribution (``\mu=0``, ``\sigma=f_\sigma``). These vectors are
+  then added to the respective projections on the cluster-supporting line,
+  yielding the final cluster points. This behavior is implemented in the
+  [`CluGen.clupoints_n()`](@ref) function.
 
-The [`CluGen.clupoints_n()`](@ref) function implements ``p_\text{final}^{n}()``,
-and generates points from their cluster-supporting line projections by placing
-each point around its projection using the normal distribution,
-``\mathcal{N}(0, f_\sigma^2)``.
-
-The following figure highlights the differences between these two functions in 2D:
+Figure 7 highlights the differences between these two approaches in 2D, where a
+hyperplane is simply a line.
 
 ```@eval
 ENV["GKSwstype"] = "100"
@@ -708,9 +717,9 @@ using CluGen, Distributions, Plots, Random
 
 Random.seed!(123)
 p1 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n_1)
-plot!(p1, title="a) n-1.", titlefontsize=10, titlelocation=:left)
+plot!(p1, title="a) Using the \"n-1\" option (the default).", titlefontsize=10, titlelocation=:left)
 p2 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n)
-plot!(p2, title="b) n.", titlefontsize=10, titlelocation=:left)
+plot!(p2, title="b) Using the \"n\" option.", titlefontsize=10, titlelocation=:left)
 
 p3 = plot(showaxis=false,grid=false,ticks=[],aspectratio=1)
 
@@ -722,7 +731,8 @@ nothing
 ```
 
 ![](point_dist_ex.png)
-**Figure 7** - TODO lalala.
+**Figure 7** - Example of how the final cluster points are obtained in 2D when
+using the built-in implementations for ``p_\text{final}()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
