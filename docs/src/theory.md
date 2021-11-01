@@ -524,8 +524,8 @@ for the example shown in Figure 1.
 
 ##### 6.1. Determine direction of the cluster-supporting line
 
-In order to obtain the ``\hat{\mathbf{d}}_i`` cluster-supporting line final
-directions for each cluster ``i``, the following algorithm is used:
+In order to obtain the ``\hat{\mathbf{d}}_i`` final direction of cluster ``i``
+supporting line, the following algorithm is used:
 
 * **1.** Find random vector ``\mathbf{r}`` with each component taken from the
   uniform distribution between -0.5 and 0.5.
