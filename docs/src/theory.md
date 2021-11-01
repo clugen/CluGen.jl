@@ -21,12 +21,12 @@ works as follows (``^*`` means the algorithm step is stochastic):
 3. ``^*``Determine cluster centers.
 4. ``^*``Determine lengths of cluster-supporting lines.
 5. ``^*``Determine angles between ``\mathbf{d}`` and cluster-supporting lines.
-6. ``^*``Determine direction of cluster-supporting lines.
-7. For each cluster:
-   1. ``^*``Determine distance of point projections from the center of the
+6. For each cluster:
+   1. ``^*``Determine direction of the cluster-supporting line.
+   2. ``^*``Determine distance of point projections from the center of the
       cluster-supporting line.
-   2. Determine coordinates of point projections on the cluster-supporting line.
-   3. ``^*``Determine points from their projections on the cluster-supporting
+   3. Determine coordinates of point projections on the cluster-supporting line.
+   4. ``^*``Determine points from their projections on the cluster-supporting
       line.
 
 Figure 1 provides a stylized overview of the algorithm's steps.
@@ -519,7 +519,9 @@ differences, more specifically
 as well the angle dispersion ``\theta_\sigma``, are the same as for the example
 shown in Figure 1.
 
-#### 6. Determine direction of cluster-supporting lines
+#### 6. For each cluster ``i``:
+
+##### 6.1. Determine direction of the cluster-supporting line
 
 In order to obtain the ``\hat{\mathbf{d}}_i`` cluster-supporting line final
 directions for each cluster ``i``, the following algorithm is used:
@@ -552,9 +554,7 @@ directions for each cluster ``i``, the following algorithm is used:
   \hat{\mathbf{d}}_i=\cfrac{\mathbf{d}_i}{\left\lVert\mathbf{d}_i\right\rVert}
   ```
 
-#### 7. For each cluster ``i``:
-
-##### 7.1. Determine distance of point projections from the center of the cluster-supporting line
+##### 6.2. Determine distance of point projections from the center of the cluster-supporting line
 
 The distance of point projections from the center of the cluster-supporting line
 is given by the ``p_\text{proj}()`` function according to:
@@ -643,7 +643,7 @@ nothing
 ![](proj_dist_fn.png)
 **Figure 6** - TODO lalala.
 
-##### 7.2. Determine coordinates of point projections on the cluster-supporting line
+##### 6.3. Determine coordinates of point projections on the cluster-supporting line
 
 This is a deterministic step performed by the [`points_on_line()`](@ref) function
 using the vector formulation of the line equation as follows:
@@ -659,7 +659,7 @@ vector), ``\mathbf{w}_i`` is the distance of each point projection to the center
 the line (``p_i \times 1`` vector obtained in the previous step), and ``\mathbf{d}_i``
 is the direction of the cluster-supporting lines for cluster ``i``.
 
-##### 7.3. Determine points from their projections on the cluster-supporting line
+##### 6.4. Determine points from their projections on the cluster-supporting line
 
 The final cluster points, obtained from their projections on the cluster-supporting
 line, are given by the ``p_\text{final}()`` function according to:

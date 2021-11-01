@@ -140,7 +140,7 @@ function plot2d(d, r)
     # ###### #
     # Plot 6 #
     # ###### #
-    p6 = plot(title="6. Direction of cluster-supporting lines",
+    p6 = plot(title="6.1. Direction of cluster-supporting lines",
         formatter=x->"", legend=false,
         titlefontsize=8, titlelocation=:left,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
@@ -173,7 +173,7 @@ function plot2d(d, r)
     # Plot 7 #
     # ###### #
     p7 = plot(titlefontsize=8, titlelocation=:left,
-        title="7.1-7.2. Point projections on cluster-supporting lines",
+        title="6.2-6.3. Point projections on cluster-supporting lines",
         formatter=x->"", legend=false,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
@@ -212,7 +212,7 @@ function plot2d(d, r)
     # Plot 8 #
     # ###### #
 
-    p8 = plot(title="7.3. Final points from their projections",
+    p8 = plot(title="6.4. Final points from their projections",
         formatter=x->"", legend=false,
         titlefontsize=8, titlelocation=:left,
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
