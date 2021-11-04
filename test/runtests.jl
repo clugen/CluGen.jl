@@ -32,7 +32,7 @@ get_clu_seps = get_clu_offsets
 
 get_vecs = (rng, n, nd) -> [v for v in eachcol(rand(rng, nd, n))]
 get_unitvecs = (rng, n, nd) -> [normalize(v) for v in eachcol(rand(rng, nd, n))]
-get_angles = (rng, n) -> [a for a in 2 * pi .* rand(rng, n) .- pi]
+get_angles = (rng, n) -> 2 * pi .* rand(rng, n) .- pi
 
 ptdist_fns = Dict(
     "norm" => "norm",
