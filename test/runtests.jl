@@ -101,17 +101,27 @@ end
 # Perform test for each function in the package #
 # ############################################# #
 
-include("clusizes.jl")
-include("clucenters.jl")
-include("llengths.jl")
-include("angle_deltas.jl")
+# Main function
+include("clugen.jl")
+
+# Core functions
 include("points_on_line.jl")
-include("rand_unit_vector.jl")
 include("rand_ortho_vector.jl")
+include("rand_unit_vector.jl")
 include("rand_vector_at_angle.jl")
+
+# Algorithm module functions
+include("angle_deltas.jl")
+include("clucenters.jl")
 include("clupoints_n_1.jl")
 include("clupoints_n.jl")
-include("clugen.jl")
+include("clusizes.jl")
+include("llengths.jl")
+
+# Algorithm module helper functions
+#include("clupoints_n_1_template.jl")
+include("fix_empty.jl")
+#include("fix_num_points.jl")
 
 # Run doctests
 DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, LinearAlgebra, Random); recursive=true)
