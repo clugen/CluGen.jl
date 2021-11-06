@@ -767,7 +767,7 @@ function clupoints_n_1(
 
     # Define function to get distances from points to their projections on the
     # line (i.e., using the normal distribution)
-    dist_fn = (clu_num_points, lstd) -> lstd .* randn(rng, clu_num_points, 1)
+    dist_fn = (clu_num_points, ldisp) -> ldisp .* randn(rng, clu_num_points, 1)
 
     # Use clupoints_n_1_template() to do the heavy lifting
     return clupoints_n_1_template(projs, lat_disp, clu_dir, dist_fn; rng=rng)
