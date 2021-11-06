@@ -119,7 +119,7 @@ include("clusizes.jl")
 include("llengths.jl")
 
 # Algorithm module helper functions
-#include("clupoints_n_1_template.jl")
+include("clupoints_n_1_template.jl")
 include("fix_empty.jl")
 include("fix_num_points.jl")
 
