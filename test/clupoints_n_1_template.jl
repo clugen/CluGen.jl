@@ -29,7 +29,7 @@
         ctr in get_vecs(rng, ncts, nd)
 
         # Create some point projections
-        proj_dist_fn2ctr = length .* rand(rng, tpts) .- length / 2;
+        proj_dist_fn2ctr = length .* rand(rng, tpts) .- length / 2
         proj = points_on_line(ctr, dir, proj_dist_fn2ctr)
 
         # Very simple dist_fn, always puts points at a distance of dist_pt
