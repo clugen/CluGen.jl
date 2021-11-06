@@ -121,7 +121,7 @@ include("llengths.jl")
 # Algorithm module helper functions
 #include("clupoints_n_1_template.jl")
 include("fix_empty.jl")
-#include("fix_num_points.jl")
+include("fix_num_points.jl")
 
 # Run doctests
 DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, LinearAlgebra, Random); recursive=true)
