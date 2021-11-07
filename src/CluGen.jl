@@ -259,11 +259,11 @@ function clugen(
     end
 
     # Check that proj_dist_fn specifies a valid way for projecting points along
-    # cluster-supporting lines i.e., either 'norm' (default), 'unif' or a
+    # cluster-supporting lines i.e., either "norm" (default), "unif" or a
     # user-defined function
     if typeof(proj_dist_fn) <: Function
         # Use user-defined distribution; assume function accepts length of line
-        # and number of points, and returns a number_of_points x 1 vector
+        # and number of points, and returns a number of points x 1 vector
         pointproj_fn = proj_dist_fn
     elseif proj_dist_fn == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
@@ -279,8 +279,8 @@ function clugen(
     end
 
     # Check that point_dist_fn specifies a valid way for generating points given
-    # their projections along cluster-supporting lines, i.e., either 'd-1'
-    # (default), 'd' or a user-defined function
+    # their projections along cluster-supporting lines, i.e., either "n-1"
+    # (default), "n" or a user-defined function
     if num_dims == 1
         # If 1D was specified, point projections are the points themselves
         pt_from_proj_fn = (projs, lat_disp, len, clu_dir, clu_ctr; rng=rng) -> projs
@@ -291,7 +291,7 @@ function clugen(
         # for the current cluster
         pt_from_proj_fn = point_dist_fn
     elseif point_dist_fn == "n-1"
-        # Points will be placed on a second line perpendicular to the cluster
+        # Points will be placed on a hyperplane orthogonal to the cluster-supporting
         # line using a normal distribution centered at their intersection
         pt_from_proj_fn = clupoints_n_1
     elseif point_dist_fn == "n"
@@ -300,7 +300,7 @@ function clugen(
         pt_from_proj_fn = clupoints_n
     else
         throw(ArgumentError(
-            "point_dist_fn has to be either \"d-1\", \"d\" or a user-defined function"))
+            "point_dist_fn has to be either \"n-1\", \"n\" or a user-defined function"))
     end
 
     # ############################ #
@@ -311,35 +311,35 @@ function clugen(
     direction = normalize(direction)
 
     # Determine cluster sizes
-    clu_num_points = clusizes_fn(num_clusters, num_points, allow_empty; rng=rng)
+    cluster_sizes = clusizes_fn(num_clusters, num_points, allow_empty; rng=rng)
 
     # Custom clusizes_fn's are not required to obey num_points, so we update
     # it here just in case it's different from what the user specified
-    num_points = sum(clu_num_points)
+    num_points = sum(cluster_sizes)
 
     # Determine cluster centers
-    clu_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
+    cluster_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
 
     # Determine length of lines supporting clusters
-    lengths = llengths_fn(num_clusters, llength, llength_disp; rng=rng)
+    cluster_lengths = llengths_fn(num_clusters, llength, llength_disp; rng=rng)
 
     # Obtain angles between main direction and cluster-supporting lines
-    angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
+    cluster_angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
 
     # Determine normalized cluster directions
-    clu_dirs = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in angles]...)'
+    cluster_directions = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in cluster_angles]...)'
 
     # ################################# #
     # Determine points for each cluster #
     # ################################# #
 
     # Aux. vector with cumulative sum of number of points in each cluster
-    cumsum_points = [0; cumsum(clu_num_points)]
+    cumsum_points = [0; cumsum(cluster_sizes)]
 
     # Pre-allocate data structures for holding cluster info and points
-    clu_pts_idx = zeros(Int, num_points)      # Cluster indices of each point
-    points_proj = zeros(num_points, num_dims) # Point projections on cluster-supporting lines
-    points = zeros(num_points, num_dims)      # Final points to be generated
+    point_clusters = zeros(Int, num_points)         # Cluster indices of each point
+    point_projections = zeros(num_points, num_dims) # Point projections on cluster-supporting lines
+    points = zeros(num_points, num_dims)            # Final points to be generated
 
     # Loop through clusters and create points for each one
     for i in 1:num_clusters
@@ -349,36 +349,36 @@ function clugen(
         idx_end = cumsum_points[i + 1]
 
         # Update cluster indices of each point
-        clu_pts_idx[idx_start:idx_end] .= i;
+        point_clusters[idx_start:idx_end] .= i;
 
         # Determine distance of point projections from the center of the line
-        ptproj_dist_fn_center = pointproj_fn(lengths[i], clu_num_points[i])
+        ptproj_dist_fn_center = pointproj_fn(cluster_lengths[i], cluster_sizes[i])
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
-        points_proj[idx_start:idx_end, :] = points_on_line(
-            clu_centers[i, :], clu_dirs[i, :], ptproj_dist_fn_center)
+        point_projections[idx_start:idx_end, :] = points_on_line(
+            cluster_centers[i, :], cluster_directions[i, :], ptproj_dist_fn_center)
 
         # Determine points from their projections on the line
         points[idx_start:idx_end, :] = pt_from_proj_fn(
-            points_proj[idx_start:idx_end, :],
+            point_projections[idx_start:idx_end, :],
             lateral_disp,
-            lengths[i],
-            clu_dirs[i, :],
-            clu_centers[i, :];
+            cluster_lengths[i],
+            cluster_directions[i, :],
+            cluster_centers[i, :];
             rng=rng)
 
     end
 
     return (
         points = points,
-        point_clusters = clu_pts_idx,
-        point_projections = points_proj,
-        cluster_sizes = clu_num_points,
-        cluster_centers = clu_centers,
-        cluster_directions = clu_dirs,
-        cluster_angles = angles,
-        cluster_lengths = lengths)
+        point_clusters = point_clusters,
+        point_projections = point_projections,
+        cluster_sizes = cluster_sizes,
+        cluster_centers = cluster_centers,
+        cluster_directions = cluster_directions,
+        cluster_angles = cluster_angles,
+        cluster_lengths = cluster_lengths)
 
 end
 
