@@ -26,7 +26,7 @@
         # By default, allow_empty is false, so clugen() must be given more points
         # than clusters...
         if tpts >= nclu
-            # ...in which case it runs with out problem
+            # ...in which case it runs without problem
             result = @test_nowarn clugen(
                 nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std; rng=rng)
         else
