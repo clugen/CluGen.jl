@@ -89,11 +89,40 @@
         lat_std = 2
 
         # Test passes with valid arguments
-        @test_nowarn clugen(
+        result = @test_nowarn clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=ptdist_fn,
             point_dist_fn=ptoff_fn, clusizes_fn=csz_fn, clucenters_fn=cctr_fn,
             llengths_fn=llen_fn, angle_deltas_fn=lang_fn, rng=rng)
+
+        # Check dimensions of result variables
+        @test size(result.points) == (tpts, nd)
+        @test size(result.point_clusters) == (tpts, )
+        @test size(result.point_projections) == (tpts, nd)
+        @test size(result.cluster_sizes) == (nclu, )
+        @test size(result.cluster_centers) == (nclu, nd)
+        @test size(result.cluster_directions) == (nclu, nd)
+        @test size(result.cluster_angles) == (nclu, )
+        @test size(result.cluster_lengths) == (nclu, )
+
+        # Check point cluster indexes
+        if !ae
+            @test unique(result.point_clusters) == 1:nclu
+        else
+            @test all(map((x) -> x <= nclu, result.point_clusters))
+        end
+
+        # Check total points
+        @test sum(result.cluster_sizes) == tpts
+        # This might not be the case if the specified clusize_fn does not obey
+        # the total number of points
+
+        # Check that cluster directions have the correct angles with the main direction
+        if nd > 1
+            for i in 1:nclu
+                @test angle(dir, result.cluster_directions[i, :]) ≈ abs(result.cluster_angles[i]) atol=1e-11
+            end
+        end
 
     end
 
