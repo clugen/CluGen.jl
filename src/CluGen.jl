@@ -914,8 +914,7 @@ function clusizes(
     end
 
     # Round the real values to integers since a cluster sizes is represented by an integer
-    # For consistency with other clugen implementations, rounding ties move away from zero
-    clu_num_points = round.(Integer, clu_num_points, RoundNearestTiesAway)
+    clu_num_points = round.(Integer, clu_num_points)
 
     # Make sure total points is respected, which may not be the case at this time due
     # to rounding
