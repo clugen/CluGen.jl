@@ -5,11 +5,10 @@
 # Test llengths
 @testset "llengths" begin
     @testset """
-        nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, llength_mu=$llength_mu,
+        seed=$(Int(rng.seed[1])), nclu=$nclu, llength_mu=$llength_mu,
         llength_sigma=$llength_sigma
         """ for
         rng in rngs,
-        nd in num_dims,
         nclu in num_clusters,
         llength_mu in llengths_mus,
         llength_sigma = llengths_sigmas
