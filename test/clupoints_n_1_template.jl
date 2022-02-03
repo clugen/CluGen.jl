@@ -18,8 +18,7 @@
         nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std,
         length=$length, dir=$dir, ctr=$ctr"
         """ for
-        # Only for num_dims > 1
-        nd in filter((x) ->  x > 1, num_dims),
+        nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
@@ -43,13 +42,15 @@
         # Check that number of points is the same as the number of projections
         @test size(pts) == size(proj)
 
-        # For each vector from projection to point...
-        for u in eachrow(pts - proj)
-            # Vector should be approximately orthogonal to the cluster line
-            @test isapprox(dot(dir, u), 0, atol=1e-7)
-            # Vector should of a magnitude of approximately dist_pt
-            @test norm(u) ≈ dist_pt
+        # The following checks are only for dimensionality above 1
+        if nd > 1
+            # For each vector from projection to point...
+            for u in eachrow(pts - proj)
+                # Vector should be approximately orthogonal to the cluster line
+                @test isapprox(dot(dir, u), 0, atol=1e-7)
+                # Vector should have a magnitude of approximately dist_pt
+                @test norm(u) ≈ dist_pt
+            end
         end
-
     end
 end
