@@ -349,7 +349,7 @@ function clugen(
         idx_end = cumsum_points[i + 1]
 
         # Update cluster indices of each point
-        point_clusters[idx_start:idx_end] .= i;
+        point_clusters[idx_start:idx_end] .= i
 
         # Determine distance of point projections from the center of the line
         ptproj_dist_fn_center = pointproj_fn(cluster_lengths[i], cluster_sizes[i])
