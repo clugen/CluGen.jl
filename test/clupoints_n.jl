@@ -15,8 +15,7 @@
         nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std,
         length=$length, dir=$dir, ctr=$ctr
         """ for
-        # Only for num_dims > 1
-        nd in filter((x) ->  x > 1, num_dims),
+        nd in num_dims,
         tpts in num_points,
         rng in rngs,
         lat_std in lat_stds,
