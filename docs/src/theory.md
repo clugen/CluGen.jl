@@ -516,8 +516,8 @@ implementations of ``\theta_\Delta()``: a) the default, where angle differences
 were obtained using the wrapped normal distribution; and, d) hand-picked angle
 differences, more specifically
 ``\mathbf{\Theta_\Delta}=\begin{bmatrix}0 & \frac{\pi}{2} & 0 & \frac{\pi}{2}\end{bmatrix}^T``.
-Cluster centers, as well the angle dispersion ``\theta_\sigma``, are the same as
-for the example shown in Figure 1.
+Cluster centers, as well as the angle dispersion ``\theta_\sigma``, are the same
+as for the example shown in Figure 1.
 
 #### 6. For each cluster ``i``:
 
