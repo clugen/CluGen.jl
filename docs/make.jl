@@ -11,6 +11,7 @@ makedocs(
         "Home" => "index.md",
         "Practice" => "practice.md",
         "Theory" => "theory.md",
-        "API" => "api.md"
+        "API" => "api.md",
+        "Development" => "dev.md"
         ]
 )
