@@ -155,21 +155,38 @@ nothing # hide
 
 ![](ex2d_07.png)
 
+### Controlling final point positions from their projections on the cluster-supporting line
+
+TODO
+
+### Manipulating cluster sizes
+
+TODO
+
 ## 3D examples
 
-TODO
+### Manipulating the direction of cluster-supporting lines
 
-### Basic parameters
+```@example examples
+r1 = clugen(3, 4, 500, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
+r2 = clugen(3, 4, 500, [1, 1, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
+r3 = clugen(3, 4, 500, [0, 0, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
 
-TODO
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], r1.points[:, 3], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: direction = [1, 0, 0]", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-20,20), ylim=(-20,20), zlim=(-23,13))
+plt2 = plot(r2.points[:,1], r2.points[:,2], r2.points[:, 3], seriestype = :scatter, group=r2.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: direction = [1, 1, 1]", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-20,20), ylim=(-20,20), zlim=(-23,13))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], r3.points[:, 3], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: direction = [0, 1, 0]", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-20,20), ylim=(-20,20), zlim=(-23,13))
 
-### Advanced parameters
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_01.png") # hide
+nothing # hide
+```
 
-TODO
+![](ex3d_01.png)
+
+
+TODO Continue following the 2D rationale
 
 ## Examples in other dimensions
-
-TODO
 
 ### 1D
 
