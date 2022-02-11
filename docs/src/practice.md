@@ -3,161 +3,117 @@
 A number of examples on how to use CluGen.jl. All these examples must be
 preceded with:
 
-```julia-repl
-julia> using CluGen, Plots, StableRNGs
+```@example examples
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Plots, StableRNGs
 ```
 
 ## 2D examples
 
-### Example 1: basic parameters
+### Manipulating the direction of cluster-supporting lines
 
-Let's start with a basic 2D example:
+```@example examples
+r1 = clugen(2, 4, 200, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
+r2 = clugen(2, 4, 200, [1, 1], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
+r3 = clugen(2, 4, 200, [0, 1], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
 
-```julia-repl
-julia> r = clugen(2, 4, 200, [1, 1], pi / 16, [10, 10], 10, 1.5, 1) # Invoke clugen()
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: direction = [1, 0]", titlefontsize=9, xlim=(-20, 20), ylim=(-25, 25))
+plt2 = plot(r2.points[:,1], r2.points[:,2], seriestype = :scatter, group=r2.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: direction = [1, 1]", titlefontsize=9, xlim=(-20, 20), ylim=(-25, 25))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: direction = [0, 1]", titlefontsize=9, xlim=(-20, 20), ylim=(-25, 25))
 
-julia> plt = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
-```
-
-Which results in the following cluster configuration:
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Plots, StableRNGs
-
-# Create clusters
-r = clugen(2, 4, 200, [1,1], pi/16, [10,10], 10, 1.5, 1; rng = StableRNG(1))
-plt = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
-plot!(plt,aspectratio=1,size=(500,300), xlims=(-33, 33), ylims=(-22, 22))
-
-savefig(plt, "ex2d_01.png")
-
-nothing
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_01.png") # hide
+nothing # hide
 ```
 
 ![](ex2d_01.png)
 
-In this example [`clugen()`](@ref) was invoked with the following parameters:
+```@example examples
+r1 = clugen(2, 6, 500, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
+r2 = clugen(2, 6, 500, [1, 0], pi / 12, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
+r3 = clugen(2, 6, 500, [1, 0], pi / 4, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
 
-* `2` - Dimensions, 2D in this case.
-* `4` - Number of clusters.
-* `200` - Total number of points.
-* `[1, 1]` - Main direction (notice the general direction of the clusters).
-* `pi / 16` - Angle dispersion. By default and broadly speaking, cluster
-  directions are obtain from the normal distribution, and this value represents
-  the standard deviation.
-* `[10, 10]` - The average cluster separation in each dimension. See
-  [`CluGen.clucenters()`](@ref) to understand how these values affect how
-  cluster centers are determined by default.
-* `10` - The mean length of the cluster-supporting lines, considering these
-  lengths are drawn from the normal distribution by default.
-* `1.5` - Consider this value the respective standard deviation of the line
-  lengths.
-* `1` - Lateral dispersion, or how much points can spread from the respective
-  cluster-supporting line.
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: angle_disp = 0", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
+plt2 = plot(r2.points[:, 1], r2.points[:, 2], seriestype = :scatter, group=r2.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: angle_disp = π/12", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
+plt3 = plot(r3.points[:,1], r3.points[:,2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: angle_disp = π/4", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
 
-
-### Example 2: reproducibility
-
-Cluster generation can be made reproducible by previously [setting a
-seed](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!), or by
-specifying a random-number generator (RNG) as an optional parameter. Julia
-provides several RNGs, but these do not guarantee the same stream of random
-numbers between Julia versions. For this purpose we can use the RNG from the
-[StableRNGs](https://github.com/JuliaRandom/StableRNGs.jl). The following
-instructions uses the same parameters as in the previous example, but also
-specifies a PRNG:
-
-```julia-repl
-julia> r = clugen(2, 4, 200, [1, 1], pi / 16, [10, 10], 10, 1.5, 1; rng = StableRNG(123))
-```
-
-This yields the following cluster configuration:
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Plots, StableRNGs
-
-# Create clusters
-r = clugen(2, 4, 200, [1,1], pi/16, [10,10], 10, 1.5, 1; rng = StableRNG(123))
-plt = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
-plot!(plt,aspectratio=1,size=(500,300),xlims=(-33, 33), ylims=(-22, 22))
-
-savefig(plt, "ex2d_02.png")
-
-nothing
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_02.png") # hide
+nothing # hide
 ```
 
 ![](ex2d_02.png)
 
-### Example 3: changing a few basic parameters
+### Manipulating the length of cluster-supporting lines
 
-Let's change a number of basic parameters:
+```@example examples
+r1 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 0, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
+r2 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 10, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
+r3 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 30, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 
-```julia-repl
-julia> r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 1; rng = StableRNG(11))
-```
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: llength = 0", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
+plt2 = plot(r2.points[:,1], r2.points[:,2], seriestype = :scatter, group=r2.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: llength = 10", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: llength = 30", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
 
-We now have one more cluster (`5` instead of `4`), many more points (`1000`
-instead of `200`), up direction (`[0, 1]`) with greater angle dispersion
-(`pi / 8`), different cluster separation in each dimension (`[10, 30]`), and
-longer cluster-supporting lines (with mean set to `50` and standard deviation to
-`15`). This yields the following cluster distribution:
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Plots, StableRNGs
-
-# Create clusters
-r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 1; rng = StableRNG(11))
-plt = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2.5)
-plot!(plt,aspectratio=1,size=(500,300))
-
-savefig(plt, "ex2d_03.png")
-
-nothing
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_03.png") # hide
+nothing # hide
 ```
 
 ![](ex2d_03.png)
 
-Clusters follow mostly a vertical direction, with some variation as defined by
-the angle dispersion, and are supported by longer lines. This line following
-effect is quite noticeable since the lateral dispersion parameter is now much
-smaller than average line length. Notice also that cluster centers have a
-greater mean vertical separation (`30`) than horizontal one (`10`).
+```@example examples
+r1 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15,  0.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
+r2 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15,  5.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
+r3 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15, 12.5, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 
-### Example 4: changing lateral dispersion
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: llength_disp = 0.0", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
+plt2 = plot(r2.points[:,1], r2.points[:,2], seriestype = :scatter, group=r2.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: llength_disp = 5.0", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: llength_disp = 12.5", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
 
-In the previous example, lateral dispersion was set to `1`. The following plots
-show the cluster distribution when setting this parameter to `0` and `5`,
-respectively, while maintaining the remaining parameters:
-
-```@eval
-ENV["GKSwstype"] = "100"
-using CluGen, Plots, StableRNGs
-
-# Create clusters
-r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 0; rng = StableRNG(11))
-plt1 = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2.5)
-plot!(plt1,aspectratio=1,title="lateral_disp = 0")
-
-# Create clusters
-r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 5; rng = StableRNG(11))
-plt2 = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2.5)
-plot!(plt2,aspectratio=1,title="lateral_disp = 5")
-
-plt = plot(plt1,plt2,layout=(1,2),size=(1000,300))
-
-savefig(plt, "ex2d_04.png")
-
-nothing
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_04.png") # hide
+nothing # hide
 ```
 
 ![](ex2d_04.png)
 
-### Advanced parameters
+### Manipulating relative cluster positions
 
-TODO
+```@example examples
+r1 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = StableRNG(321))
+r2 = clugen(2, 8, 1000, [1, 1], pi / 4, [30, 10], 10, 2, 2.5; rng = StableRNG(321))
+r3 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 30], 10, 2, 2.5; rng = StableRNG(321))
+
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: cluster_sep = [10, 10]", titlefontsize=9, xlim=(-120, 80), ylim=(-125, 100))
+plt2 = plot(r2.points[:,1], r2.points[:,2], seriestype = :scatter, group=r2.point_clusters,  markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: cluster_sep = [30, 10]", titlefontsize=9, xlim=(-120, 80), ylim=(-125, 100))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: cluster_sep = [10, 30]", titlefontsize=9, xlim=(-120, 80), ylim=(-125, 100))
+
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_05.png") # hide
+nothing # hide
+```
+
+![](ex2d_05.png)
+
+```@example examples
+# Custom clucenters function, places clusters in a diagonal
+centers_diag_fn = (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
+
+r1 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = StableRNG(321))
+r2 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; cluster_offset = [20, -20], rng = StableRNG(321))
+r3 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; cluster_offset = [-50, -50], clucenters_fn = centers_diag_fn, rng = StableRNG(321))
+
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: default", titlefontsize=9, xlim=(-70, 70), ylim=(-70, 70))
+plt2 = plot(r2.points[:,1], r2.points[:,2], seriestype = :scatter, group=r2.point_clusters,  markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: cluster_offset = [20, -20]", titlefontsize=9, xlim=(-70, 70), ylim=(-70, 70))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: custom clucenters function", titlefontsize=9, xlim=(-70, 70), ylim=(-70, 70))
+
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_06.png") # hide
+nothing # hide
+```
+
+![](ex2d_06.png)
 
 ## 3D examples
 

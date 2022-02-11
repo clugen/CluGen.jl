@@ -6,6 +6,7 @@ DocMeta.setdocmeta!(
 )
 
 makedocs(
+    modules = [ CluGen ],
     sitename="CluGen.jl",
     pages = [
         "Home" => "index.md",
