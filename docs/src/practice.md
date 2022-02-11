@@ -110,7 +110,7 @@ using CluGen, Plots, StableRNGs
 
 # Create clusters
 r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 1; rng = StableRNG(11))
-plt = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2)
+plt = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2.5)
 plot!(plt,aspectratio=1,size=(500,300))
 
 savefig(plt, "ex2d_03.png")
@@ -120,8 +120,40 @@ nothing
 
 ![](ex2d_03.png)
 
+Clusters follow mostly a vertical direction, with some variation as defined by
+the angle dispersion, and are supported by longer lines. This line following
+effect is quite noticeable since the lateral dispersion parameter is now much
+smaller than average line length. Notice also that cluster centers have a
+greater mean vertical separation (`30`) than horizontal one (`10`).
+
 ### Example 4: changing lateral dispersion
 
+In the previous example, lateral dispersion was set to `1`. The following plots
+show the cluster distribution when setting this parameter to `0` and `5`,
+respectively, while maintaining the remaining parameters:
+
+```@eval
+ENV["GKSwstype"] = "100"
+using CluGen, Plots, StableRNGs
+
+# Create clusters
+r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 0; rng = StableRNG(11))
+plt1 = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2.5)
+plot!(plt1,aspectratio=1,title="lateral_disp = 0")
+
+# Create clusters
+r = clugen(2, 5, 1000, [0,1], pi/8, [10,30], 50, 15, 5; rng = StableRNG(11))
+plt2 = plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters, markersize = 2.5)
+plot!(plt2,aspectratio=1,title="lateral_disp = 5")
+
+plt = plot(plt1,plt2,layout=(1,2),size=(1000,300))
+
+savefig(plt, "ex2d_04.png")
+
+nothing
+```
+
+![](ex2d_04.png)
 
 ### Advanced parameters
 
