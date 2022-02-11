@@ -88,10 +88,11 @@ arguments, described next.
   - `"norm"` (default): Distribute point projections along lines using a normal
     distribution (μ=_line center_, σ=`llength/6`).
   - `"unif"`: Distribute points uniformly along the line.
-  - User-defined function, which accepts two parameters, line length (float) and
-    number of points (integer), and returns an array containing the distance of
-    each point projection to the center of the line. For example, the `"norm"`
-    option roughly corresponds to `(len, n) -> (1.0 / 6.0) * len .* randn(n)`.
+  - User-defined function, which accepts two parameters, line length (float),
+    number of points (integer) and a random number generator, and returns an array
+    containing the distance of each point projection to the center of the line. For
+    example, the `"norm"` option roughly corresponds to
+    `(len, n, rng) -> (1.0 / 6.0) * len .* randn(rng, n)`.
 - `point_dist_fn`: Controls how the final points are created from their projections
   on the cluster-supporting lines, with three possible values:
   - `"n-1"` (default): Final points are placed on a hyperplane orthogonal to
@@ -262,17 +263,17 @@ function clugen(
     # cluster-supporting lines i.e., either "norm" (default), "unif" or a
     # user-defined function
     if typeof(proj_dist_fn) <: Function
-        # Use user-defined distribution; assume function accepts length of line
-        # and number of points, and returns a number of points x 1 vector
+        # Use user-defined distribution; assume function accepts length of line,
+        # number of points and RNG, and returns a number of points x 1 vector
         pointproj_fn = proj_dist_fn
     elseif proj_dist_fn == "unif"
         # Point projections will be uniformly placed along cluster-supporting lines
-        pointproj_fn = (len, n) -> len .* rand(rng, n) .- len / 2
+        pointproj_fn = (len, n, rng) -> len .* rand(rng, n) .- len / 2
     elseif proj_dist_fn == "norm"
         # Use normal distribution for placing point projections along cluster-supporting
         # lines, mean equal to line center, standard deviation equal to 1/6 of line length
         # such that the line length contains ≈99.73% of the points
-        pointproj_fn = (len, n) -> (1.0 / 6.0) * len .* randn(rng, n)
+        pointproj_fn = (len, n, rng) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
         throw(ArgumentError(
             "`proj_dist_fn` has to be either \"norm\", \"unif\" or user-defined function"))
@@ -352,7 +353,7 @@ function clugen(
         point_clusters[idx_start:idx_end] .= i
 
         # Determine distance of point projections from the center of the line
-        ptproj_dist_fn_center = pointproj_fn(cluster_lengths[i], cluster_sizes[i])
+        ptproj_dist_fn_center = pointproj_fn(cluster_lengths[i], cluster_sizes[i], rng)
 
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)

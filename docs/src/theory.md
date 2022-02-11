@@ -612,8 +612,8 @@ pdist_names = ("a) Normal (\"norm\" option, the default).", "b) Uniform (\"unif\
 pdists = Dict(
    pdist_names[1] => "norm",
    pdist_names[2] => "unif",
-   pdist_names[3] => (len, n) -> rand(Laplace(0, len / 6), n),
-   pdist_names[4] => (len, n) -> rand(Rayleigh(len / 3), n) .- len / 2
+   pdist_names[3] => (len, n, rg) -> rand(rg, Laplace(0, len / 6), n),
+   pdist_names[4] => (len, n, rg) -> rand(rg, Rayleigh(len / 3), n) .- len / 2
 )
 
 # Results and plots

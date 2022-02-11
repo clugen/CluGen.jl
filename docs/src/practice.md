@@ -126,7 +126,7 @@ nothing # hide
 
 ```@example examples
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
-proj_laplace = (len, n) -> rand(Laplace(0, len / 6), n)
+proj_laplace = (len, n, rng) -> rand(rng, Laplace(0, len / 6), n)
 
 r1 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; rng = StableRNG(456))
 r2 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; rng = StableRNG(456))

@@ -37,7 +37,7 @@ get_angles = (rng, n) -> 2 * pi .* rand(rng, n) .- pi
 ptdist_fns = Dict(
     "norm" => "norm",
     "unif" => "unif",
-    "equidistant" =>  (len, n) -> (-len/2:len/n:len/2)[1:n]
+    "equidistant" =>  (len, n, rng) -> (-len/2:len/n:len/2)[1:n]
 )
 ptoff_fns = Dict(
     "n-1" => "n-1",
