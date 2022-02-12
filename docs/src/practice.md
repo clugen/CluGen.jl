@@ -38,7 +38,7 @@ r3 = clugen(2, 6, 500, [1, 0], 0, [10, 10], 10, 1.5, 0.5; angle_deltas_fn = angd
 
 plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: angle_disp = 0", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
 plt2 = plot(r2.points[:, 1], r2.points[:, 2], seriestype = :scatter, group=r2.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: angle_disp = π/8", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
-plt3 = plot(r3.points[:,1], r3.points[:,2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: custom angle_deltas function", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: custom angle_deltas function", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
 
 plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex2d_02.png") # hide
@@ -55,7 +55,7 @@ r2 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 10, 0, 0.5; point_dist_fn = "n
 r3 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 30, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 
 plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: llength = 0", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
-plt2 = plot(r2.points[:,1], r2.points[:,2], seriestype = :scatter, group=r2.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: llength = 10", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
+plt2 = plot(r2.points[:, 1], r2.points[:, 2], seriestype = :scatter, group=r2.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: llength = 10", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
 plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: llength = 30", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
 
 plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
@@ -186,7 +186,30 @@ nothing # hide
 
 ### Manipulating cluster sizes
 
-TODO
+```@example examples
+# Custom clusizes_fn (r2): cluster sizes determined via the uniform distribution, no correction for total points
+clusizes_unif = (nclu, npts, ae; rng = nothing) -> rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
+
+# Custom clusizes_fn (r3): clusters all have the same size, no correction for total points
+clusizes_equal = (nclu, npts, ae; rng = nothing) -> (npts ÷ nclu) .* ones(Integer, nclu)
+
+# Custom clucenters_fn (all): yields fixed positions for the clusters
+centers_fixed = (nclu, csep, coff; rng=nothing) -> [-csep[1] -csep[2]; csep[1] -csep[2]; -csep[1] csep[2]; csep[1] csep[2]]
+
+r1 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5; clucenters_fn = centers_fixed, point_dist_fn = "n", rng = StableRNG(9))
+r2 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5; clucenters_fn = centers_fixed, clusizes_fn = clusizes_unif, point_dist_fn = "n", rng = StableRNG(9))
+r3 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5; clucenters_fn = centers_fixed, clusizes_fn = clusizes_equal, point_dist_fn = "n", rng = StableRNG(9))
+
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], seriestype = :scatter, group=r1.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r1: normal dist. (default)", titlefontsize=9, xlim=(-40, 40), ylim=(-40, 40))
+plt2 = plot(r2.points[:, 1], r2.points[:, 2], seriestype = :scatter, group=r2.point_clusters,  markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r2: unif. dist. (custom)", titlefontsize=9, xlim=(-40, 40), ylim=(-40, 40))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], seriestype = :scatter, group=r3.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="r3: equal size (custom)", titlefontsize=9, xlim=(-40, 40), ylim=(-40, 40))
+
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex2d_09.png") # hide
+nothing # hide
+```
+
+![](ex2d_09.png)
 
 ## 3D examples
 
