@@ -768,7 +768,7 @@ function clupoints_n_1(
 
     # Define function to get distances from points to their projections on the
     # line (i.e., using the normal distribution)
-    dist_fn = (clu_num_points, ldisp) -> ldisp .* randn(rng, clu_num_points, 1)
+    dist_fn = (clu_num_points, ldisp, rg) -> ldisp .* randn(rg, clu_num_points, 1)
 
     # Use clupoints_n_1_template() to do the heavy lifting
     return clupoints_n_1_template(projs, lat_disp, clu_dir, dist_fn; rng=rng)
@@ -1002,6 +1002,11 @@ if invoked by user code.
 - `lat_disp`: Dispersion of points from their projection.
 - `clu_dir`: Direction of the cluster-supporting line (unit vector).
 - `dist_fn`: Function to place points on a second line, orthogonal to the first.
+  The functions accepts as parameters the number of points in the current
+  cluster, the `lateral_disp` parameter (the same passed to the
+  [`clugen()`](@ref) function), and a random number generator, returning a
+  vector containing the distance of each point to its projection on the
+  cluster-supporting line.
 - `rng`: An optional pseudo-random number generator for reproducible executions.
 """
 function clupoints_n_1_template(
@@ -1019,7 +1024,7 @@ function clupoints_n_1_template(
     clu_num_points = size(projs, 1)
 
     # Get distances from points to their projections on the line
-    points_dist = dist_fn(clu_num_points, lat_disp)
+    points_dist = dist_fn(clu_num_points, lat_disp, rng)
 
     # Get normalized vectors, orthogonal to the current line, for each point
     orth_vecs = zeros(clu_num_points, num_dims)

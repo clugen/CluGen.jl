@@ -32,8 +32,8 @@
         proj = points_on_line(ctr, dir, proj_dist_fn2ctr)
 
         # Very simple dist_fn, always puts points at a distance of dist_pt
-        dist_fn = (clu_num_points, ldisp) ->
-            rand(rng, [-dist_pt, dist_pt], clu_num_points, 1)
+        dist_fn = (clu_num_points, ldisp, rg) ->
+            rand(rg, [-dist_pt, dist_pt], clu_num_points, 1)
 
         # Check that the clupoints_n_1_template function runs without warnings
         pts = @test_nowarn CluGen.clupoints_n_1_template(

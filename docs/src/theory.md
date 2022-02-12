@@ -753,8 +753,8 @@ latstd = 1
 # Different point_dist_fn's to use
 poffs_names = ("a) Normal \"n-1\" (built-in, default).", "b) Normal \"n\" (built-in).", "c) Exponential \"n-1\".", "d) Bimodal \"n-1\".", "e) Hollow \"n\".", "f) Hollow \"n\" combined with \"unif\" projections.")
 
-dist_exp = (npts, lstd) -> lstd .* rand(Exponential(2/lstd), npts, 1)
-dist_bimod = (npts, lstd) -> lstd .* rand((-1, 1), npts) + lstd/3 .* randn(npts, 1)
+dist_exp = (npts, lstd, rg) -> lstd .* rand(rg, Exponential(2 / lstd), npts, 1)
+dist_bimod = (npts, lstd, rg) -> lstd .* rand(rg, (-1, 1), npts) + lstd / 3 .* randn(rg, npts, 1)
 
 poffs = Dict(
    poffs_names[1] => ("n-1", "norm"),
