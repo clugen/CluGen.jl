@@ -383,13 +383,13 @@ function clupoints_n_hollow(
         pr = clamp(pa / (line_len / 2), 0, 1)
 
         # Determine angle associated with this projection
-        a = -pi/2*(pr-1) # linear
+        a = -pi / 2 * (pr - 1) # linear
 
         # Alternatives:
-        #a = acos(pr)                                   # arccos
-        #a = pi/2 * (pr-1)^2                            # quadratic
-        #a = pi/2 * (1 - 1/(1 + exp(-10 * (pr - 0.5)))) # logistic
-        #a = pi/2 * sqrt(1 - pr^2)                      # half-circle
+        #a = acos(pr)                                       # arccos
+        #a = pi / 2 * (pr - 1)^2                            # quadratic
+        #a = pi / 2 * (1 - 1 / (1 + exp(-10 * (pr - 0.5)))) # logistic
+        #a = pi / 2 * sqrt(1 - pr^2)                        # half-circle
 
         # Get a random vector at this angle
         v = rand_vector_at_angle(clu_dir, a; rng=rng)
