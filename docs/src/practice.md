@@ -550,13 +550,13 @@ using CluGen, Distributions, Plots, Random, StableRNGs # hide
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
-e67 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 18, 3, 2; rng = StableRNG(34))
-e68 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 18, 3, 2; proj_dist_fn = "unif", rng = StableRNG(34))
-e69 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 18, 3, 2; proj_dist_fn = proj_laplace, rng = StableRNG(34))
+e67 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; rng = StableRNG(34))
+e68 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; proj_dist_fn = "unif", rng = StableRNG(34))
+e69 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; proj_dist_fn = proj_laplace, rng = StableRNG(34))
 
-p67 = plot(e67.points[:, 1], e67.points[:, 2], e67.points[:, 3], seriestype = :scatter, group=e67.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e67: proj_dist_fn=\"norm\" (default)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 39), ylim=(-55, 38), zlim=(-50, 35))
-p68 = plot(e68.points[:, 1], e68.points[:, 2], e68.points[:, 3], seriestype = :scatter, group=e68.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e68: proj_dist_fn=\"unif\"", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 39), ylim=(-55, 38), zlim=(-50, 35))
-p69 = plot(e69.points[:, 1], e69.points[:, 2], e69.points[:, 3], seriestype = :scatter, group=e69.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e69: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 39), ylim=(-55, 38), zlim=(-50, 35))
+p67 = plot(e67.points[:, 1], e67.points[:, 2], e67.points[:, 3], seriestype = :scatter, group=e67.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e67: proj_dist_fn=\"norm\" (default)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+p68 = plot(e68.points[:, 1], e68.points[:, 2], e68.points[:, 3], seriestype = :scatter, group=e68.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e68: proj_dist_fn=\"unif\"", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+p69 = plot(e69.points[:, 1], e69.points[:, 2], e69.points[:, 3], seriestype = :scatter, group=e69.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e69: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
 
 plt = plot(p67, p68, p69, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex3d_10.png") # hide
@@ -565,8 +565,89 @@ nothing # hide
 
 ![](ex3d_10.png)
 
+#### Points around projection on cluster-supporting line: `point_dist_fn = "n"`
 
-TODO Continue following the 2D rationale
+```@example examples
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, Random, StableRNGs # hide
+
+# Custom proj_dist_fn: point projections placed using the Laplace distribution
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
+
+e70 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; point_dist_fn = "n", rng = StableRNG(34))
+e71 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; point_dist_fn = "n", proj_dist_fn = "unif", rng = StableRNG(34))
+e72 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; point_dist_fn = "n", proj_dist_fn = proj_laplace, rng = StableRNG(34))
+
+p70 = plot(e70.points[:, 1], e70.points[:, 2], e70.points[:, 3], seriestype = :scatter, group=e70.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e70: proj_dist_fn=\"norm\" (default)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+p71 = plot(e71.points[:, 1], e71.points[:, 2], e71.points[:, 3], seriestype = :scatter, group=e71.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e71: proj_dist_fn=\"unif\"", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+p72 = plot(e72.points[:, 1], e72.points[:, 2], e72.points[:, 3], seriestype = :scatter, group=e72.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e72: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+
+plt = plot(p70, p71, p72, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_11.png") # hide
+nothing # hide
+```
+
+![](ex3d_11.png)
+
+#### Custom point placement using the exponential distribution
+
+```@example examples
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, Random, StableRNGs # hide
+
+# Custom point_dist_fn: final points placed using the Exponential distribution
+function clupoints_n_1_exp(projs, lat_std, len, clu_dir, clu_ctr; rng=nothing)
+    dist_exp(npts, lstd, rg) = lstd .* rand(rg, Exponential(2 / lstd), npts, 1)
+    return CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng)
+end
+
+# Custom proj_dist_fn: point projections placed using the Laplace distribution
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
+
+e73 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; point_dist_fn = clupoints_n_1_exp, rng = StableRNG(34))
+e74 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; point_dist_fn = clupoints_n_1_exp, proj_dist_fn = "unif", rng = StableRNG(34))
+e75 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2; point_dist_fn = clupoints_n_1_exp, proj_dist_fn = proj_laplace, rng = StableRNG(34))
+
+p73 = plot(e73.points[:, 1], e73.points[:, 2], e73.points[:, 3], seriestype = :scatter, group=e73.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e73: proj_dist_fn=\"norm\" (default)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+p74 = plot(e74.points[:, 1], e74.points[:, 2], e74.points[:, 3], seriestype = :scatter, group=e74.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e74: proj_dist_fn=\"unif\"", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+p75 = plot(e75.points[:, 1], e75.points[:, 2], e75.points[:, 3], seriestype = :scatter, group=e75.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e75: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
+
+plt = plot(p73, p74, p75, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_12.png") # hide
+nothing # hide
+```
+
+![](ex3d_12.png)
+
+### Manipulating cluster sizes
+
+```@example
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, Random, StableRNGs # hide
+
+# Custom clusizes_fn (e77): cluster sizes determined via the uniform distribution, no correction for total points
+clusizes_unif(nclu, npts, ae; rng = nothing) = rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
+
+# Custom clusizes_fn (e78): clusters all have the same size, no correction for total points
+clusizes_equal(nclu, npts, ae; rng = nothing) = (npts ÷ nclu) .* ones(Integer, nclu)
+
+# Custom clucenters_fn (all): yields fixed positions for the clusters
+centers_fixed(nclu, csep, coff; rng=nothing) = [-csep[1] -csep[2] -csep[3]; csep[1] -csep[2] -csep[3]; -csep[1] csep[2] csep[3]; csep[1] csep[2] csep[3]]
+
+e76 = clugen(3, 4, 1500, [1, 1, 1], pi, [20, 20, 20], 0, 0, 5; clucenters_fn = centers_fixed, point_dist_fn = "n", rng = StableRNG(9))
+e77 = clugen(3, 4, 1500, [1, 1, 1], pi, [20, 20, 20], 0, 0, 5; clucenters_fn = centers_fixed, clusizes_fn = clusizes_unif, point_dist_fn = "n", rng = StableRNG(9))
+e78 = clugen(3, 4, 1500, [1, 1, 1], pi, [20, 20, 20], 0, 0, 5; clucenters_fn = centers_fixed, clusizes_fn = clusizes_equal, point_dist_fn = "n", rng = StableRNG(9))
+
+p76 = plot(e76.points[:, 1], e76.points[:, 2], e76.points[:, 3], seriestype = :scatter, group=e76.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e76: normal dist. (default)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-40, 40), ylim=(-45, 39), zlim=(-43, 41))
+p77 = plot(e77.points[:, 1], e77.points[:, 2], e77.points[:, 3], seriestype = :scatter, group=e77.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e77: unif. dist. (custom)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-40, 40), ylim=(-45, 39), zlim=(-43, 41))
+p78 = plot(e78.points[:, 1], e78.points[:, 2], e78.points[:, 3], seriestype = :scatter, group=e78.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e78: equal size (custom)", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-40, 40), ylim=(-45, 39), zlim=(-43, 41))
+
+plt = plot(p76, p77, p78, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_13.png") # hide
+nothing # hide
+```
+
+![](ex3d_13.png)
 
 ## Examples in other dimensions
 
