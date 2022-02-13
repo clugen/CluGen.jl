@@ -325,6 +325,65 @@ nothing # hide
 
 ![](ex3d_06.png)
 
+### Lateral dispersion and placement of point projections on the line
+
+#### Normal projection placement (default): `proj_dist_fn = "norm"`
+
+```@example examples
+r1 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; rng = StableRNG(456))
+r2 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; rng = StableRNG(456))
+r3 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; rng = StableRNG(456))
+
+plt1 = plot(r1.points[:, 1], r1.points[:, 2], r1.points[:, 3], seriestype = :scatter, group=r1.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="r1: lateral_disp=0", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+plt2 = plot(r2.points[:, 1], r2.points[:, 2], r2.points[:, 3], seriestype = :scatter, group=r2.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="r2: lateral_disp=1", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+plt3 = plot(r3.points[:, 1], r3.points[:, 2], r3.points[:, 3], seriestype = :scatter, group=r3.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="r3: lateral_disp=3", titlefontsize=9, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+
+plt = plot(plt1, plt2, plt3, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_07.png") # hide
+nothing # hide
+```
+
+![](ex3d_07.png)
+
+#### Uniform projection placement: `proj_dist_fn = "unif"`
+
+```@example examples
+r4 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; proj_dist_fn = "unif", rng = StableRNG(456))
+r5 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; proj_dist_fn = "unif", rng = StableRNG(456))
+r6 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; proj_dist_fn = "unif", rng = StableRNG(456))
+
+plt4 = plot(r4.points[:, 1], r4.points[:, 2], r4.points[:, 3], seriestype = :scatter, group=r4.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+plt5 = plot(r5.points[:, 1], r5.points[:, 2], r5.points[:, 3], seriestype = :scatter, group=r5.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+plt6 = plot(r6.points[:, 1], r6.points[:, 2], r6.points[:, 3], seriestype = :scatter, group=r6.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+
+plt = plot(plt4, plt5, plt6, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_08.png") # hide
+nothing # hide
+```
+
+![](ex3d_08.png)
+
+#### Custom projection placement using the Laplace distribution
+
+```@example examples
+# Custom proj_dist_fn: point projections placed using the Laplace distribution
+proj_laplace = (len, n, rng) -> rand(rng, Laplace(0, len / 6), n)
+
+r7 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
+r8 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
+r9 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
+
+plt7 = plot(r7.points[:, 1], r7.points[:, 2], r7.points[:, 3], seriestype = :scatter, group=r7.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+plt8 = plot(r8.points[:, 1], r8.points[:, 2], r8.points[:, 3], seriestype = :scatter, group=r8.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+plt9 = plot(r9.points[:, 1], r9.points[:, 2], r9.points[:, 3], seriestype = :scatter, group=r9.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, xlabel="x", ylabel="y", zlabel="z", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+
+plt = plot(plt7, plt8, plt9, size=(900, 300), layout=(1, 3)) # hide
+savefig(plt, "ex3d_09.png") # hide
+nothing # hide
+```
+
+![](ex3d_09.png)
+
 
 TODO Continue following the 2D rationale
 
