@@ -12,6 +12,8 @@ using CluGen, Distributions, Plots, Random, StableRNGs
 
 ### Manipulating the direction of cluster-supporting lines
 
+#### Using the `direction` parameter
+
 ```@example examples
 e01 = clugen(2, 4, 200, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
 e02 = clugen(2, 4, 200, [1, 1], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
@@ -28,9 +30,11 @@ nothing # hide
 
 ![](ex2d_01.png)
 
+#### Changing the `angle_disp` parameter and using a custom `angle_deltas_fn` function
+
 ```@example examples
 # Custom angle_deltas function: arbitrarily rotate some clusters by 90 degrees
-angdel_90_fn = (nclu, astd; rng=nothing) -> rand(rng, [0, pi / 2], nclu)
+angdel_90_fn(nclu, astd; rng=nothing) = rand(rng, [0, pi / 2], nclu)
 
 e04 = clugen(2, 6, 500, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
 e05 = clugen(2, 6, 500, [1, 0], pi / 8, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
@@ -49,6 +53,8 @@ nothing # hide
 
 ### Manipulating the length of cluster-supporting lines
 
+#### Using the `llength` parameter
+
 ```@example examples
 e07 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 0, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 e08 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 10, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -65,9 +71,11 @@ nothing # hide
 
 ![](ex2d_03.png)
 
+#### Changing the `llength_disp` parameter and using a custom `llengths_fn` function
+
 ```@example examples
 # Custom llengths function: line lengths grow for each new cluster
-llen_grow_fn = (nclu, llen, llenstd; rng = nothing) -> llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
+llen_grow_fn(nclu, llen, llenstd; rng = nothing) = llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
 
 e10 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15,  0.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 e11 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15, 10.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -86,6 +94,8 @@ nothing # hide
 
 ### Manipulating relative cluster positions
 
+#### Using the `cluster_sep` parameter
+
 ```@example examples
 e13 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = StableRNG(321))
 e14 = clugen(2, 8, 1000, [1, 1], pi / 4, [30, 10], 10, 2, 2.5; rng = StableRNG(321))
@@ -102,9 +112,11 @@ nothing # hide
 
 ![](ex2d_05.png)
 
+#### Changing the `cluster_offset` parameter and using a custom `clucenters_fn` function
+
 ```@example examples
 # Custom clucenters function: places clusters in a diagonal
-centers_diag_fn = (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
+centers_diag_fn(nclu, csep, coff; rng=nothing) = ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
 
 e16 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = StableRNG(321))
 e17 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; cluster_offset = [20, -20], rng = StableRNG(321))
@@ -163,7 +175,7 @@ nothing # hide
 
 ```@example examples
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
-proj_laplace = (len, n, rng) -> rand(rng, Laplace(0, len / 6), n)
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e25 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
 e26 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
@@ -207,9 +219,9 @@ e31 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0; point_dist_fn = "
 e32 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0; point_dist_fn = "n", proj_dist_fn = "unif", rng = StableRNG(345))
 e33 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0; point_dist_fn = "n", proj_dist_fn = proj_laplace, rng = StableRNG(345))
 
-p31 = plot(e31.points[:, 1], e31.points[:, 2], seriestype = :scatter, group=e04.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e31: proj_dist_fn=\"norm\" (default)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
-p32 = plot(e32.points[:, 1], e32.points[:, 2], seriestype = :scatter, group=e05.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e32: proj_dist_fn=\"unif\"", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
-p33 = plot(e33.points[:, 1], e33.points[:, 2], seriestype = :scatter, group=e06.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e33: custom proj_dist_fn (Laplace)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
+p31 = plot(e31.points[:, 1], e31.points[:, 2], seriestype = :scatter, group=e31.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e31: proj_dist_fn=\"norm\" (default)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
+p32 = plot(e32.points[:, 1], e32.points[:, 2], seriestype = :scatter, group=e32.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e32: proj_dist_fn=\"unif\"", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
+p33 = plot(e33.points[:, 1], e33.points[:, 2], seriestype = :scatter, group=e33.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e33: custom proj_dist_fn (Laplace)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
 
 plt = plot(p31, p32, p33, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex2d_11.png") # hide
@@ -224,9 +236,12 @@ nothing # hide
 ```@example examples
 # Custom point_dist_fn: final points placed using the Exponential distribution
 function clupoints_n_1_exp(projs, lat_std, len, clu_dir, clu_ctr; rng=nothing)
-    dist_exp = (npts, lstd, rg) -> lstd .* rand(rg, Exponential(2 / lstd), npts, 1)
+    dist_exp(npts, lstd, rg) = lstd .* rand(rg, Exponential(2 / lstd), npts, 1)
     return CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng)
 end
+
+# Custom proj_dist_fn: point projections placed using the Laplace distribution
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e34 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0; point_dist_fn = clupoints_n_1_exp, rng = StableRNG(345))
 e35 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0; point_dist_fn = clupoints_n_1_exp, proj_dist_fn = "unif", rng = StableRNG(345))
@@ -246,14 +261,14 @@ nothing # hide
 ### Manipulating cluster sizes
 
 ```@example examples
-# Custom clusizes_fn (e02): cluster sizes determined via the uniform distribution, no correction for total points
-clusizes_unif = (nclu, npts, ae; rng = nothing) -> rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
+# Custom clusizes_fn (e38): cluster sizes determined via the uniform distribution, no correction for total points
+clusizes_unif(nclu, npts, ae; rng = nothing) = rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
 
-# Custom clusizes_fn (e03): clusters all have the same size, no correction for total points
-clusizes_equal = (nclu, npts, ae; rng = nothing) -> (npts ÷ nclu) .* ones(Integer, nclu)
+# Custom clusizes_fn (e39): clusters all have the same size, no correction for total points
+clusizes_equal(nclu, npts, ae; rng = nothing) = (npts ÷ nclu) .* ones(Integer, nclu)
 
 # Custom clucenters_fn (all): yields fixed positions for the clusters
-centers_fixed = (nclu, csep, coff; rng=nothing) -> [-csep[1] -csep[2]; csep[1] -csep[2]; -csep[1] csep[2]; csep[1] csep[2]]
+centers_fixed(nclu, csep, coff; rng=nothing) = [-csep[1] -csep[2]; csep[1] -csep[2]; -csep[1] csep[2]; csep[1] csep[2]]
 
 e37 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5; clucenters_fn = centers_fixed, point_dist_fn = "n", rng = StableRNG(9))
 e38 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5; clucenters_fn = centers_fixed, clusizes_fn = clusizes_unif, point_dist_fn = "n", rng = StableRNG(9))
@@ -274,6 +289,8 @@ nothing # hide
 
 ### Manipulating the direction of cluster-supporting lines
 
+#### Using the `direction` parameter
+
 ```@example examples
 e40 = clugen(3, 4, 500, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
 e41 = clugen(3, 4, 500, [1, 1, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
@@ -290,9 +307,11 @@ nothing # hide
 
 ![](ex3d_01.png)
 
+#### Changing the `angle_disp` parameter and using a custom `angle_deltas_fn` function
+
 ```@example examples
 # Custom angle_deltas function: arbitrarily rotate some clusters by 90 degrees
-angdel_90_fn = (nclu, astd; rng=nothing) -> rand(rng, [0, pi / 2], nclu)
+angdel_90_fn(nclu, astd; rng=nothing) = rand(rng, [0, pi / 2], nclu)
 
 e43 = clugen(3, 6, 1000, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(2))
 e44 = clugen(3, 6, 1000, [1, 0, 0], pi / 8, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(2))
@@ -311,6 +330,8 @@ nothing # hide
 
 ### Manipulating the length of cluster-supporting lines
 
+#### Using the `llength` parameter
+
 ```@example examples
 e46 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 0, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 e47 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 10, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -327,9 +348,11 @@ nothing # hide
 
 ![](ex3d_03.png)
 
+#### Changing the `llength_disp` parameter and using a custom `llengths_fn` function
+
 ```@example examples
 # Custom llengths function: line lengths grow for each new cluster
-llen_grow_fn = (nclu, llen, llenstd; rng = nothing) -> llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
+llen_grow_fn(nclu, llen, llenstd; rng = nothing) = llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
 
 e49 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 15,  0.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 e50 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 15, 10.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -348,6 +371,8 @@ nothing # hide
 
 ### Manipulating relative cluster positions
 
+#### Using the `cluster_sep` parameter
+
 ```@example examples
 e52 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [30, 10, 10], 25, 4, 3; rng = StableRNG(321))
 e53 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 30, 10], 25, 4, 3; rng = StableRNG(321))
@@ -364,9 +389,11 @@ nothing # hide
 
 ![](ex3d_05.png)
 
+#### Changing the `cluster_offset` parameter and using a custom `clucenters_fn` function
+
 ```@example examples
 # Custom clucenters function: places clusters in a diagonal
-centers_diag_fn = (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
+centers_diag_fn(nclu, csep, coff; rng=nothing) = ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
 
 e55 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 10], 12, 3, 2.5; rng = StableRNG(321))
 e56 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 10], 12, 3, 2.5; cluster_offset = [20, -20, 20], rng = StableRNG(321))
@@ -425,7 +452,7 @@ nothing # hide
 
 ```@example examples
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
-proj_laplace = (len, n, rng) -> rand(rng, Laplace(0, len / 6), n)
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e64 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
 e65 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
