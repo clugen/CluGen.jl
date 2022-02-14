@@ -33,13 +33,12 @@ Figure 1 provides a stylized overview of the algorithm's steps.
 ```@eval
 ENV["GKSwstype"] = "100"
 Base.include(Main, "extras/CluGenExtras.jl")
-using CluGen, LinearAlgebra, Plots, Printf, Random
-Random.seed!(111)
+using CluGen, LinearAlgebra, Plots, Printf, StableRNGs
 
 # Create clusters
 d = [1, 1]
 nclu = 4
-r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1)
+r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1; rng = StableRNG(9999))
 plt = Main.CluGenExtras.plot2d(d, r)
 
 savefig(plt, "algorithm.png")
@@ -68,14 +67,14 @@ meaning of each will be discussed shortly:
 
 Additionally, all optional parameters (not listed above) were left to their
 default values. These will also be discussed next. This example can be reproduced
-and plotted with the following instructions:
+and plotted with the following instructions (the
+[StableRNGs](https://github.com/JuliaRandom/StableRNGs.jl) package is used
+to keep the example reproducible between Julia versions):
 
 ```julia-repl
-julia> using CluGen, Plots, Random
+julia> using CluGen, Plots, StableRNGs
 
-julia> Random.seed!(111);
-
-julia> r = clugen(2, 4, 200, [1, 1], pi/16, [10, 10], 10, 1.5, 1);
+julia> r = clugen(2, 4, 200, [1, 1], pi/16, [10, 10], 10, 1.5, 1; rng = StableRNG(9999));
 
 julia> plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
 ```
@@ -183,7 +182,7 @@ that this is not a requirement of the *clugen* algorithm, i.e., user-defined
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, StableRNGs
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -202,9 +201,9 @@ clusz_names = ("a) Normal (default).", "b) Uniform.", "c) Poisson.", "d) Poisson
 
 clusz = Dict(
    clusz_names[1] => CluGen.clusizes,
-   clusz_names[2] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_num_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
-   clusz_names[3] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(CluGen.fix_num_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
-   clusz_names[4] => (nclu, npts, aempty; rng = Random.GLOBAL_RNG) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
+   clusz_names[2] => (nclu, npts, aempty; rng = nothing) -> CluGen.fix_num_points!(rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu), npts), # Never empty since we're starting at 1
+   clusz_names[3] => (nclu, npts, aempty; rng = nothing) -> CluGen.fix_empty!(CluGen.fix_num_points!(rand(rng, Poisson(npts / nclu), nclu), npts), aempty),
+   clusz_names[4] => (nclu, npts, aempty; rng = nothing) -> CluGen.fix_empty!(rand(rng, Poisson(npts / nclu), nclu), aempty)
 )
 
 # Plots
@@ -212,11 +211,11 @@ p_all = []
 cluszs_all = Dict()
 maxclu = 0
 
+rng = StableRNG(345)
+
 for csz_name in clusz_names
 
-   Random.seed!(111)
-
-   cluszs_all[csz_name] = clusz[csz_name](nclu, npts, false)
+   cluszs_all[csz_name] = clusz[csz_name](nclu, npts, false; rng = rng)
 
    if maximum(cluszs_all[csz_name]) > maxclu
       global maxclu = maximum(cluszs_all[csz_name])
@@ -283,7 +282,7 @@ and direct specification of cluster centers (Figure 3b).
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, StableRNGs
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -302,7 +301,7 @@ cluctr_names = ("a) Uniform (default).", "b) Hand-picked.")
 
 cluctr = Dict(
    cluctr_names[1] => CluGen.clucenters,
-   cluctr_names[2] => (nclu, clusep, cluoff; rng = Random.GLOBAL_RNG) -> rand(rng, nclu, length(clusep)) .* 0 + [-20 -20; -20 20; 20 20; 20 -20]
+   cluctr_names[2] => (nclu, clusep, cluoff; rng = nothing) -> rand(rng, nclu, length(clusep)) .* 0 + [-20 -20; -20 20; 20 20; 20 -20]
 )
 
 # Results and plots
@@ -310,8 +309,7 @@ r_all = []
 p_all = []
 
 for cluc_name in cluctr_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; clucenters_fn = cluctr[cluc_name])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; clucenters_fn = cluctr[cluc_name], rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -367,7 +365,7 @@ of ``l()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, StableRNGs
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -386,9 +384,9 @@ ll_names = ("a) Folded normal (default).", "b) Poisson.", "c) Uniform.", "d) Han
 
 ll = Dict(
    ll_names[1] => CluGen.llengths,
-   ll_names[2] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Poisson(ll), nclu),
-   ll_names[3] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, Uniform(0, ll * 2), nclu),
-   ll_names[4] => (nclu, ll, llstd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
+   ll_names[2] => (nclu, ll, llstd; rng = nothing) -> rand(rng, Poisson(ll), nclu),
+   ll_names[3] => (nclu, ll, llstd; rng = nothing) -> rand(rng, Uniform(0, ll * 2), nclu),
+   ll_names[4] => (nclu, ll, llstd; rng = nothing) -> rand(rng, nclu) .* 0 + [2, 8, 16, 32]
 )
 
 # Results and plots
@@ -396,8 +394,7 @@ r_all = []
 p_all = []
 
 for ll_name in ll_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; llengths_fn = ll[ll_name], proj_dist_fn="unif")
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; llengths_fn = ll[ll_name], proj_dist_fn="unif", rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -462,7 +459,7 @@ different implementations of ``\theta_\Delta()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, StableRNGs
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -481,7 +478,7 @@ la_names = ("a) Wrapped Normal (default).", "b) Hand-picked.")
 
 la = Dict(
    la_names[1] => CluGen.angle_deltas,
-   la_names[2] => (nclu, astd; rng=Random.GLOBAL_RNG) -> rand(rng, nclu) .* 0 + [0, pi/2, 0, pi/2]
+   la_names[2] => (nclu, astd; rng = nothing) -> rand(rng, nclu) .* 0 + [0, pi/2, 0, pi/2]
 )
 
 # Results and plots
@@ -489,8 +486,7 @@ r_all = []
 p_all = []
 
 for la_name in la_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; angle_deltas_fn = la[la_name], proj_dist_fn="unif")
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; angle_deltas_fn = la[la_name], proj_dist_fn="unif", rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -592,7 +588,7 @@ of Figures 6b-6d, and ``p``, which is set to 5000.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, StableRNGs
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -621,8 +617,7 @@ r_all = []
 p_all = []
 
 for pd_name in pdist_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; proj_dist_fn=pdists[pd_name])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; proj_dist_fn=pdists[pd_name], rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
@@ -736,7 +731,7 @@ using the built-in implementations for ``p_\text{final}()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, StableRNGs
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -770,8 +765,7 @@ r_all = []
 p_all = []
 
 for po_name in poffs_names
-   Random.seed!(111)
-   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_dist_fn=poffs[po_name][1], proj_dist_fn=poffs[po_name][2])
+   r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_dist_fn=poffs[po_name][1], proj_dist_fn=poffs[po_name][2], rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
       group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
