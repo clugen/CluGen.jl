@@ -7,6 +7,13 @@ preceded with:
 using CluGen, Distributions, Plots, StableRNGs
 ```
 
+The [StableRNGs](https://github.com/JuliaRandom/StableRNGs.jl) package is used
+in these examples to keep them reproducible between Julia versions. In practice
+it might be simpler to specify a seed with
+[`Random.seed!()`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!)
+and omit the PRNG altogether, or use a built-in PRNG such as the
+[Mersenne Twister](https://docs.julialang.org/en/v1/stdlib/Random/#Random.MersenneTwister).
+
 ## 2D examples
 
 ### Manipulating the direction of cluster-supporting lines
