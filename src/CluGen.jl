@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2022 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -17,6 +17,7 @@ module CluGen
 using LinearAlgebra
 using Random
 
+export angle_btw
 export clugen
 export points_on_line
 export rand_unit_vector
@@ -386,6 +387,44 @@ end
 # ############################################################################ #
 # ########################### Core functions ################################# #
 # ############################################################################ #
+
+"""
+    angle_btw(v1::AbstractArray{<:Real, 1}, v2::AbstractArray{<:Real, 1}) -> Real
+
+Angle between two ``n``-dimensional vectors.
+
+Typically, the angle between two vectors `v1` and `v2` can be obtained with:
+
+```julia
+acos(dot(v1, v2) / (norm(v1) * norm(v2)))
+```
+
+However, this approach is numerically unstable. The version provided here is
+numerically stable and based on the
+[AngleBetweenVectors.jl](https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl)
+package by Jeffrey Sarnoff (MIT license), implementing an algorithm provided
+by Prof. W. Kahan in [these notes](https://people.eecs.berkeley.edu/~wkahan/MathH110/Cross.pdf)
+(see page 15).
+
+# Examples
+```jldoctest
+julia> rad2deg(angle_btw([1.0, 1.0, 1.0, 1.0], [1.0, 0.0, 0.0, 0.0]))
+60.00000000000001
+```
+"""
+function angle_btw(v1::AbstractArray{<:Real, 1}, v2::AbstractArray{<:Real, 1})::Real
+
+    u1 = normalize(v1)
+    u2 = normalize(v2)
+
+    y = u1 .- u2
+    x = u1 .+ u2
+
+    a = 2 * atan(norm(y) / norm(x))
+
+    return !(signbit(a) || signbit(pi - a)) ? a : (signbit(a) ? 0.0 : pi)
+end
+
 
 """
     points_on_line(

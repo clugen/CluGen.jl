@@ -5,6 +5,7 @@
 * [Main function](@ref)
   * [`clugen`](@ref)
 * [Core functions](@ref)
+  * [`angle_btw`](@ref)
   * [`points_on_line`](@ref)
   * [`rand_ortho_vector`](@ref)
   * [`rand_unit_vector`](@ref)
@@ -40,6 +41,7 @@ algorithm. These functions may be useful in other contexts, and are thus exporte
 by the package.
 
 ```@docs
+angle_btw
 points_on_line
 rand_ortho_vector
 rand_unit_vector

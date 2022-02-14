@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2022 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -86,25 +86,6 @@ end
         f(x) ? (x, _filterargs(f, xs...)...) : _filterargs(f, xs...)
 end
 
-# Angle between two vectors, useful for checking correctness of results
-# Previous version was unstable: angle(u, v) = acos(dot(u, v) / (norm(u) * norm(v)))
-# Version below is based on AngleBetweenVectors.jl by Jeffrey Sarnoff (MIT license),
-# https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl
-# in turn based on these notes by Prof. W. Kahan, see page 15:
-# https://people.eecs.berkeley.edu/~wkahan/MathH110/Cross.pdf
-function angle_btw(v1, v2)
-
-    u1 = normalize(v1)
-    u2 = normalize(v2)
-
-    y = u1 .- u2
-    x = u1 .+ u2
-
-    a = 2 * atan(norm(y) / norm(x))
-
-    return !(signbit(a) || signbit(pi - a)) ? a : (signbit(a) ? 0.0 : pi)
-end
-
 # ############################################# #
 # Perform test for each function in the package #
 # ############################################# #
@@ -113,6 +94,7 @@ end
 include("clugen.jl")
 
 # Core functions
+include("angle_btw.jl")
 include("points_on_line.jl")
 include("rand_ortho_vector.jl")
 include("rand_unit_vector.jl")
