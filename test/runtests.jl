@@ -73,7 +73,7 @@ lang_fns = Dict(
 # For compatibility with Julia 1.0, from Compat.jl by Stefan Karpinski and other
 # contributors (MIT license)
 # https://github.com/JuliaLang/Compat.jl/blob/master/src/Compat.jl
-if VERSION < v"1.1.0-DEV.792"
+@static if VERSION < v"1.1.0-DEV.792"
     eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
     eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
 end
@@ -123,6 +123,12 @@ include("clupoints_n_1_template.jl")
 include("fix_empty.jl")
 include("fix_num_points.jl")
 
-# Run doctests
-DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen, LinearAlgebra, Random); recursive=true)
-doctest(CluGen)
+# Run doctests (only for Julia == 1.6.x)
+@static if v"1.6" ≤ VERSION < v"1.7"
+    DocMeta.setdocmeta!(
+        CluGen,
+        :DocTestSetup,
+        :(using CluGen, LinearAlgebra, Random);
+        recursive = true)
+    doctest(CluGen)
+end

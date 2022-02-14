@@ -167,7 +167,7 @@ julia> # Create 5 clusters in 3D space with a total of 10000 points...
 julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
 
 julia> out.cluster_centers # What are the cluster centers?
-5×3 Array{Float64,2}:
+5×3 Matrix{Float64}:
    8.12774  -16.8167    -1.80764
    4.30111   -1.34916  -11.209
  -22.3933    18.2706    -2.6716
@@ -413,7 +413,7 @@ line, and ``\\mathbf{1}`` is a ``p \\times 1`` vector with all entries equal to 
 # Examples
 ```jldoctest
 julia> points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
-5×2 Array{Float64,2}:
+5×2 Matrix{Float64}:
  1.0  5.0
  3.0  5.0
  5.0  5.0
@@ -421,7 +421,7 @@ julia> points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
  9.0  5.0
 
 julia> points_on_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
-2×4 Array{Float64,2}:
+2×4 Matrix{Float64}:
  -2.0  0.0  -10.0  2.0
  -2.0  0.0   10.0  2.0
 ```
@@ -456,7 +456,7 @@ julia> dot(u, v) # Check that vectors are orthogonal (needs LinearAlgebra packag
 0.0
 
 julia> rand_ortho_vector([1,0,0]; rng=MersenneTwister(567)) # 3D, reproducible
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
   0.0
  -0.717797705156548
   0.6962517177515569
@@ -508,7 +508,7 @@ Get a random unit vector with `num_dims` dimensions.
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
 julia> v = rand_unit_vector(4) # 4D
-4-element Array{Float64,1}:
+4-element Vector{Float64}:
  -0.24033021128704707
  -0.032103799230189585
   0.04223910709972599
@@ -518,7 +518,7 @@ julia> norm(v) # Check vector magnitude is 1 (needs LinearAlgebra package)
 1.0
 
 julia> rand_unit_vector(2; rng=MersenneTwister(33)) # 2D, reproducible
-2-element Array{Float64,1}:
+2-element Vector{Float64}:
   0.8429232717309576
  -0.5380337888779647
 ```
@@ -555,7 +555,7 @@ julia> a = acos(dot(u, v) / (norm(u) * norm(v))) # Angle (radians) between u and
 0.7853981633974483
 
 julia> rand_vector_at_angle([0, 1], pi/6; rng=MersenneTwister(456)) # 2D, reproducible
-2-element Array{Float64,1}:
+2-element Vector{Float64}:
  -0.4999999999999999
   0.8660254037844387
 ```
@@ -604,14 +604,14 @@ if invoked by user code.
 # Examples
 ```jldoctest; setup = :(Random.seed!(111))
 julia> CluGen.angle_deltas(4, pi/128)
-4-element Array{Float64,1}:
+4-element Vector{Float64}:
   0.01888791855096079
  -0.027851298321307266
   0.03274154825228485
  -0.004475798744567242
 
 julia> CluGen.angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
   0.08834204306583336
   0.014678748091943444
  -0.15202559427536264
@@ -674,14 +674,14 @@ if invoked by user code.
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
 julia> CluGen.clucenters(4, [10, 50], [0, 0]) # 2D
-4×2 Array{Float64,2}:
+4×2 Matrix{Float64}:
  10.7379   -37.3512
  17.6206    32.511
   6.95835   17.2044
  -4.18188  -89.5734
 
 julia> CluGen.clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
-5×3 Array{Float64,2}:
+5×3 Matrix{Float64}:
  -13.136    15.8746      2.34767
  -29.1129   -0.715105  -46.6028
  -23.6334    8.19236    20.879
@@ -689,7 +689,7 @@ julia> CluGen.clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
   46.5412    7.3284    -42.8401
 
 julia> CluGen.clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D, reproducible
-3×1 Array{Float64,2}:
+3×1 Matrix{Float64}:
   -91.3675026663759
   140.98964768714384
  -124.90981996579862
@@ -741,7 +741,7 @@ if invoked by user code.
 # Examples
 ```jldoctest
 julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
-5×2 Array{Float64,2}:
+5×2 Matrix{Float64}:
  1.0  5.0
  3.0  5.0
  5.0  5.0
@@ -749,7 +749,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  9.0  5.0
 
 julia> CluGen.clupoints_n_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
-5×2 Array{Float64,2}:
+5×2 Matrix{Float64}:
  1.0  5.59513
  3.0  3.97591
  5.0  4.42867
@@ -807,7 +807,7 @@ if invoked by user code.
 # Examples
 ```jldoctest
 julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
-5×2 Array{Float64,2}:
+5×2 Matrix{Float64}:
  1.0  5.0
  3.0  5.0
  5.0  5.0
@@ -815,7 +815,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  9.0  5.0
 
 julia> CluGen.clupoints_n(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
-5×2 Array{Float64,2}:
+5×2 Matrix{Float64}:
  1.59513  4.66764
  4.02409  5.49048
  5.57133  4.96226
@@ -866,21 +866,21 @@ if invoked by user code.
 # Examples
 ```jldoctest; setup = :(Random.seed!(90))
 julia> CluGen.clusizes(4, 6, true)
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  0
  3
  2
 
 julia> CluGen.clusizes(4, 100, false)
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  29
  26
  24
  21
 
 julia> CluGen.clusizes(5, 500, true; rng=MersenneTwister(123)) # Reproducible
-5-element Array{Int64,1}:
+5-element Vector{Int64}:
  108
  129
  107
@@ -947,7 +947,7 @@ if invoked by user code.
 # Examples
 ```jldoctest; setup = :(Random.seed!(123))
 julia> CluGen.llengths(5, 10, 3)
-5-element Array{Float64,1}:
+5-element Vector{Float64}:
  13.57080364295883
  16.14453912336772
  13.427952708601596
@@ -955,7 +955,7 @@ julia> CluGen.llengths(5, 10, 3)
   8.809962762114331
 
 julia> CluGen.llengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  146.1737820482947
   31.914161161783426
  180.04064126207396
