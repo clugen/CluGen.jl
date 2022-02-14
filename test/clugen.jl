@@ -55,7 +55,7 @@
         # Check that cluster directions have the correct angles with the main direction
         if nd > 1
             for i in 1:nclu
-                @test angle(dir, result.cluster_directions[i, :]) ≈ abs(result.cluster_angles[i]) atol=1e-11
+                @test angle_btw(dir, result.cluster_directions[i, :]) ≈ abs(result.cluster_angles[i]) atol=1e-11
             end
         end
 
@@ -120,7 +120,7 @@
         # Check that cluster directions have the correct angles with the main direction
         if nd > 1
             for i in 1:nclu
-                @test angle(dir, result.cluster_directions[i, :]) ≈ abs(result.cluster_angles[i]) atol=1e-11
+                @test angle_btw(dir, result.cluster_directions[i, :]) ≈ abs(result.cluster_angles[i]) atol=1e-11
             end
         end
 

@@ -92,7 +92,7 @@ end
 # https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl
 # in turn based on these notes by Prof. W. Kahan, see page 15:
 # https://people.eecs.berkeley.edu/~wkahan/MathH110/Cross.pdf
-function angle(v1, v2)
+function angle_btw(v1, v2)
 
     u1 = normalize(v1)
     u2 = normalize(v2)
