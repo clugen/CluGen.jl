@@ -225,11 +225,16 @@
             llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
 
         # Invalid point_dist_fn given as function
-        @test_throws MethodError clugen(
+        fn_to_test() = clugen(
             nd, nclu, tpts, dir, astd, clu_sep, len_mu, len_std, lat_std;
             allow_empty=ae, cluster_offset=clu_off, proj_dist_fn=pt_dist,
             point_dist_fn=()->nothing, clusizes_fn=csizes_fn, clucenters_fn=ccenters_fn,
             llengths_fn=llengths_fn, angle_deltas_fn=langles_fn, rng=rng)
+        @static if VERSION < v"1.4"
+            @test_throws ErrorException fn_to_test()
+        else
+            @test_throws MethodError fn_to_test()
+        end
 
     end
 

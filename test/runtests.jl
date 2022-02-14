@@ -78,6 +78,15 @@ lang_fns = Dict(
     eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
 end
 
+# For compatibility with Julia < 1.4, add a filter function which supports
+# tuples (https://github.com/JuliaLang/julia/pull/32968)
+@static if VERSION < v"1.4"
+    filter(f, t::Tuple) = _filterargs(f, t...)
+    _filterargs(f) = ()
+    _filterargs(f, x, xs...) =
+        f(x) ? (x, _filterargs(f, xs...)...) : _filterargs(f, xs...)
+end
+
 # Angle between two vectors, useful for checking correctness of results
 # Previous version was unstable: angle(u, v) = acos(dot(u, v) / (norm(u) * norm(v)))
 # Version below is based on AngleBetweenVectors.jl by Jeffrey Sarnoff (MIT license),
