@@ -1,7 +1,7 @@
-# Practice
+# Examples
 
-A number of examples on how to use CluGen.jl. All these examples must be
-preceded with:
+A number of examples on how to use CluGen.jl. Each example must be preceded
+with:
 
 ```@example
 using CluGen, Distributions, Plots, StableRNGs

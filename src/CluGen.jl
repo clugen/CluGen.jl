@@ -182,7 +182,7 @@ The following instruction displays a scatter plot of the clusters in 3D space:
 julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.point_clusters)
 ```
 
-Check the [Practice](@ref) section for a number of illustrative examples on how to
+Check the [Examples](@ref) section for a number of illustrative examples on how to
 use the `clugen()` function. The [Theory](@ref) section provides more information
 on how the function works and the impact each parameter has on the final result.
 """
