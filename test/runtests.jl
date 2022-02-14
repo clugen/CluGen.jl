@@ -3,7 +3,6 @@
 # at http://opensource.org/licenses/MIT)
 
 using CluGen
-using Documenter
 using LinearAlgebra
 using Random
 using Test
@@ -134,6 +133,7 @@ include("fix_num_points.jl")
 
 # Run doctests (only for Julia == 1.6.x)
 @static if v"1.6" ≤ VERSION < v"1.7"
+    using Documenter
     DocMeta.setdocmeta!(
         CluGen,
         :DocTestSetup,
