@@ -651,7 +651,7 @@ nothing # hide
 
 ## Examples in other dimensions
 
-### 1D
+#### Basic 1D example with density plot
 
 The following example also requires the `StatsPlots` package:
 
@@ -711,6 +711,62 @@ nothing # hide
 
 ![](ex1d_01.png)
 
-### 5D
+#### 5D example with default optional arguments
 
-TODO
+```@example
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
+
+nd = 5
+e82 = clugen(nd, 6, 1500, [1, 1, 0.5, 0, 0], pi / 16, 30 .* ones(nd), 30, 4, 3; rng = StableRNG(123))
+
+plts = []
+for i in 1:nd
+    for j in 1:nd
+        p = plot(e82.points[:, i], e82.points[:, j], seriestype = :scatter, group=e82.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, tickfontsize=5)
+        if i == 1
+            plot!(p, title = "\$x_$(j)\$", titlefontsize = 10)
+        end
+        if j == 1
+            plot!(p, yguide = "\$x_$(i)\$", guidefontsize = 10)
+        end
+        push!(plts, p)
+    end
+end
+
+plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e82: 5D with default optional parameters", plot_titlefontsize = 10) # hide
+savefig(plt, "ex5d_01.png") # hide
+nothing # hide
+```
+
+![](ex5d_01.png)
+
+#### 5D example with `proj_dist_fn = "unif"` and `point_dist_fn = "n"`
+
+```@example
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
+
+nd = 5
+e83 = clugen(nd, 6, 1500, [0.1, 0.3, 0.5, 0.3, 0.1], pi / 12, 30 .* ones(nd), 35, 5, 3.5; proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(321))
+
+plts = []
+for i in 1:nd
+    for j in 1:nd
+        p = plot(e83.points[:, i], e83.points[:, j], seriestype = :scatter, group=e83.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, tickfontsize=5)
+        if i == 1
+            plot!(p, title = "\$x_$(j)\$", titlefontsize = 10)
+        end
+        if j == 1
+            plot!(p, yguide = "\$x_$(i)\$", guidefontsize = 10)
+        end
+        push!(plts, p)
+    end
+end
+
+plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e83: 5D with proj_dist_fn=\"unif\" and point_dist_fn=\"n\"", plot_titlefontsize = 10) # hide
+savefig(plt, "ex5d_02.png") # hide
+nothing # hide
+```
+
+![](ex5d_02.png)
