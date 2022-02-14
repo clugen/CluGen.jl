@@ -4,7 +4,7 @@ A number of examples on how to use CluGen.jl. All these examples must be
 preceded with:
 
 ```@example
-using CluGen, Distributions, Plots, Random, StableRNGs
+using CluGen, Distributions, Plots, StableRNGs
 ```
 
 ## 2D examples
@@ -15,7 +15,7 @@ using CluGen, Distributions, Plots, Random, StableRNGs
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e01 = clugen(2, 4, 200, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
 e02 = clugen(2, 4, 200, [1, 1], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
@@ -36,7 +36,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom angle_deltas function: arbitrarily rotate some clusters by 90 degrees
 angdel_90_fn(nclu, astd; rng=nothing) = rand(rng, [0, pi / 2], nclu)
@@ -62,7 +62,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e07 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 0, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 e08 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 10, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -83,7 +83,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom llengths function: line lengths grow for each new cluster
 llen_grow_fn(nclu, llen, llenstd; rng = nothing) = llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
@@ -109,7 +109,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e13 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = StableRNG(321))
 e14 = clugen(2, 8, 1000, [1, 1], pi / 4, [30, 10], 10, 2, 2.5; rng = StableRNG(321))
@@ -130,7 +130,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom clucenters function: places clusters in a diagonal
 centers_diag_fn(nclu, csep, coff; rng=nothing) = ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
@@ -156,7 +156,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e19 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; rng = StableRNG(456))
 e20 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; rng = StableRNG(456))
@@ -177,7 +177,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e22 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; proj_dist_fn = "unif", rng = StableRNG(456))
 e23 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; proj_dist_fn = "unif", rng = StableRNG(456))
@@ -198,7 +198,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -224,7 +224,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -248,7 +248,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -272,7 +272,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom point_dist_fn: final points placed using the Exponential distribution
 function clupoints_n_1_exp(projs, lat_std, len, clu_dir, clu_ctr; rng=nothing)
@@ -302,7 +302,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom clusizes_fn (e38): cluster sizes determined via the uniform distribution, no correction for total points
 clusizes_unif(nclu, npts, ae; rng = nothing) = rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
@@ -336,7 +336,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e40 = clugen(3, 4, 500, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
 e41 = clugen(3, 4, 500, [1, 1, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
@@ -357,7 +357,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom angle_deltas function: arbitrarily rotate some clusters by 90 degrees
 angdel_90_fn(nclu, astd; rng=nothing) = rand(rng, [0, pi / 2], nclu)
@@ -383,7 +383,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e46 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 0, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
 e47 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 10, 0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -404,7 +404,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom llengths function: line lengths grow for each new cluster
 llen_grow_fn(nclu, llen, llenstd; rng = nothing) = llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
@@ -430,7 +430,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e52 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [30, 10, 10], 25, 4, 3; rng = StableRNG(321))
 e53 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 30, 10], 25, 4, 3; rng = StableRNG(321))
@@ -451,7 +451,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom clucenters function: places clusters in a diagonal
 centers_diag_fn(nclu, csep, coff; rng=nothing) = ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
@@ -477,7 +477,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e58 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; rng = StableRNG(456))
 e59 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; rng = StableRNG(456))
@@ -498,7 +498,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 e61 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; proj_dist_fn = "unif", rng = StableRNG(456))
 e62 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; proj_dist_fn = "unif", rng = StableRNG(456))
@@ -519,7 +519,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -545,7 +545,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -569,7 +569,7 @@ nothing # hide
 
 ```@example examples
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -593,7 +593,7 @@ nothing # hide
 
 ```@example examples
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom point_dist_fn: final points placed using the Exponential distribution
 function clupoints_n_1_exp(projs, lat_std, len, clu_dir, clu_ctr; rng=nothing)
@@ -623,7 +623,7 @@ nothing # hide
 
 ```@example
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, Random, StableRNGs # hide
+using CluGen, Distributions, Plots, StableRNGs # hide
 
 # Custom clusizes_fn (e77): cluster sizes determined via the uniform distribution, no correction for total points
 clusizes_unif(nclu, npts, ae; rng = nothing) = rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
@@ -653,7 +653,63 @@ nothing # hide
 
 ### 1D
 
-TODO
+The following example also requires the `StatsPlots` package:
+
+```julia
+using StatsPlots
+```
+
+```julia
+# Custom proj_dist_fn: point projections placed using the Laplace distribution
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
+
+e79 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = StableRNG(45))
+e80 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = StableRNG(45))
+e81 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = StableRNG(45))
+
+p79 = plot(e79.points, seriestype = :density, group=e79.point_clusters, fill=true, fillalpha=0.35, legend=nothing, title="e79: proj_dist_fn=\"norm\" (default)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="x", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
+plot!(p79, e79.points, -0.04 .* ones(sum(e79.cluster_sizes)), seriestype = :scatter, group=e79.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+
+p80 = plot(e80.points, seriestype = :density, group=e80.point_clusters, fill=true, fillalpha=0.35, legend=nothing, title="e80: proj_dist_fn=\"unif\"", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="x", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
+plot!(p80, e80.points, -0.04 .* ones(sum(e80.cluster_sizes)), seriestype = :scatter, group=e80.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+
+p81 = plot(e81.points, seriestype = :density, group=e81.point_clusters, fill=true, fillalpha=0.35, legend=nothing, title="e81: custom proj_dist_fn (Laplace)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="x", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
+plot!(p81, e81.points, -0.04 .* ones(sum(e81.cluster_sizes)), seriestype = :scatter, group=e81.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+```
+
+```@eval
+# There is a bug in StatsPlots which shows a warning in the generated output.
+# https://github.com/JuliaPlots/Plots.jl/issues/3746
+# https://discourse.julialang.org/t/warning-when-using-both-plots-and-statsplots/50118
+# We show the code above, which is not executed (thus shows no warning), and the
+# actual executed code is below. The warning shows in the CLI but doesn't appear
+# in the generated output. We can remove this trick when the bug is fixed.
+
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, StableRNGs, StatsPlots # hide
+
+# Custom proj_dist_fn: point projections placed using the Laplace distribution
+proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
+
+e79 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = StableRNG(45))
+e80 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = StableRNG(45))
+e81 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = StableRNG(45))
+
+p79 = plot(e79.points, seriestype = :density, group=e79.point_clusters, fill=true, fillalpha=0.35, legend=nothing, title="e79: proj_dist_fn=\"norm\" (default)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="x", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
+plot!(p79, e79.points, -0.04 .* ones(sum(e79.cluster_sizes)), seriestype = :scatter, group=e79.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+
+p80 = plot(e80.points, seriestype = :density, group=e80.point_clusters, fill=true, fillalpha=0.35, legend=nothing, title="e80: proj_dist_fn=\"unif\"", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="x", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
+plot!(p80, e80.points, -0.04 .* ones(sum(e80.cluster_sizes)), seriestype = :scatter, group=e80.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+
+p81 = plot(e81.points, seriestype = :density, group=e81.point_clusters, fill=true, fillalpha=0.35, legend=nothing, title="e81: custom proj_dist_fn (Laplace)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="x", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
+plot!(p81, e81.points, -0.04 .* ones(sum(e81.cluster_sizes)), seriestype = :scatter, group=e81.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+
+plt = plot(p79, p80, p81, size=(900, 215), layout=(1, 3)) # hide
+savefig(plt, "ex1d_01.png") # hide
+nothing # hide
+```
+
+![](ex1d_01.png)
 
 ### 5D
 
