@@ -2,6 +2,20 @@
 
 TODO The README!
 
+## Install the package
+
+From registry:
+
+```julia-repl
+pkg> add CluGen
+```
+
+From GitHub:
+
+```julia-repl
+pkg> add https://github.com/clugen/CluGen.jl
+```
+
 ## Build docs
 
 ```
