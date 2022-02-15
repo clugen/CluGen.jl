@@ -1,62 +1,84 @@
 # Development
 
-## Get the source code
+## Setup package for development
 
-```
-$ git clone https://github.com/clugen/CluGen.jl.git
+```julia-repl
+pkg> dev https://github.com/clugen/CluGen.jl.git
 ```
 
 ## Run tests
 
-To run the tests, `cd` into the `CluGen.jl` folder, enter the `julia` REPL and
-run the following commands:
-
 ```julia-repl
-pkg> activate .
-
-julia> import CluGen
-
-julia> using CluGen, Pkg
-
-julia> Pkg.test("CluGen")
+pkg> test CluGen
 ```
 
-Notes:
+!!! warning
 
-* Press `]` to enter the `pkg>` mode in the Julia REPL and backspace to leave
-  it.
-* In earlier versions of Julia it may be necessary to install dependencies by
-  hand (see [Develop CluGen.jl](@ref)).
+    At the moment, due to PRNG differences between Julia versions, doctests will
+    only run in Julia 1.6 LTS.
 
 ## Build the documentation
 
-To build the documentation, and assuming we're on the `CluGen.jl` folder, run
-the following commands in the terminal (requires the `Documenter` and `Plots`
-packages):
+!!! note
 
-```
-$ cd docs
-$ julia --color=yes make.jl
-```
+    Building the documentation requires at least Julia 1.5.
 
-The generated documentation can be served locally with, e.g., the built-in HTTP
-server in Python:
+The following instructions assume we're on the `CluGen` folder (typically
+located in `~/.julia/dev/`).
 
-```
-$ cd build
-$ python3 -m http.server 9000
-```
-
-## Develop CluGen.jl
-
-After [running the tests](@ref Run-tests), to continue developing CluGen, a number
-of packages should be installed and loaded:
+To build the documentation, enter the Julia REPL. Then activate the `docs`
+project and install its dependencies:
 
 ```julia-repl
-pkg> add Revise Plots Random LinearAlgebra Pkg Test Documenter Distributions
+pkg> activate docs
 
-julia> using Revise, CluGen, Plots, Random, LinearAlgebra, Pkg, Test, Documenter, Distributions
+pkg> instantiate
 ```
+
+The documentation can now be generated from the Julia REPL:
+
+```
+julia> include("docs/make.jl")
+```
+
+Or from the system terminal:
+
+```
+$ julia --project=docs --color=yes ./docs/make.jl
+```
+
+The generated documentation can be served locally with, e.g., Python's built-in
+HTTP server:
+
+```
+$ python -m http.server 9000 -d ./docs/build
+```
+
+Point your browser to <http://localhost:9000/> to read the generated
+documentation.
+
+!!! warning
+
+    At the moment, due to PRNG differences between Julia versions, doctests will
+    only run in Julia 1.6 LTS.
+
+## Useful packages for helping development
+
+While developing CluGen, the [Revise](https://timholy.github.io/Revise.jl/stable/)
+package is useful to avoid restarting the Julia session each time CluGen's code
+is edited. Install it with:
+
+```julia-repl
+pkg> add Revise
+```
+
+Then load it before CluGen, e.g.:
+
+```julia-repl
+julia> using Revise, CluGen
+```
+
+## Code style
 
 To contribute to CluGen, follow this code style:
 
