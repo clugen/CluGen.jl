@@ -26,5 +26,6 @@ p = plot(r.points[:, 1], r.points[:, 2], r.points[:, 3], seriestype = :scatter,
     background_color = :transparent,
     xlim = (-20, 29), ylim = (-20, 18), zlim = (-23, 20))
 
-mkpath("src/assets")
-savefig(p, "src/assets/logo.svg")
+logo_path = (@__DIR__) * "/src/assets"
+mkpath(logo_path)
+savefig(p, logo_path * "/logo.svg")
