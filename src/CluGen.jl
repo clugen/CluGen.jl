@@ -162,7 +162,7 @@ possible that `num_points` may have a different value than what was specified in
 `clugen`'s `num_points` parameter.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(123))
+```jldoctest; setup = :(using Random; Random.seed!(123))
 julia> # Create 5 clusters in 3D space with a total of 10000 points...
 
 julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
@@ -486,7 +486,7 @@ Get a random unit vector orthogonal to `u`.
 Note that `u` is expected to be a unit vector itself.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(111))
+```jldoctest; setup = :(using LinearAlgebra, Random; Random.seed!(111))
 julia> u = normalize([1,2,5.0,-3,-0.2]); # Define a 5D unit vector
 
 julia> v = rand_ortho_vector(u);
@@ -545,7 +545,7 @@ end
 Get a random unit vector with `num_dims` dimensions.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(111))
+```jldoctest; setup = :(using LinearAlgebra, Random; Random.seed!(111))
 julia> v = rand_unit_vector(4) # 4D
 4-element Vector{Float64}:
  -0.24033021128704707
@@ -585,7 +585,7 @@ Get a random unit vector which is at `angle` radians of vector `u`.
 Note that `u` is expected to be a unit vector itself.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(111))
+```jldoctest; setup = :(using LinearAlgebra, Random; Random.seed!(111))
 julia> u = normalize([1,0.5,0.3,-0.1]); # Define a 4D unit vector
 
 julia> v = rand_vector_at_angle(u, pi/4); # pi/4 = 0.7853981... radians = 45 degrees
@@ -641,7 +641,7 @@ This function is not exported by the package and must be prefixed with `CluGen`
 if invoked by user code.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(111))
+```jldoctest; setup = :(using Random; Random.seed!(111))
 julia> CluGen.angle_deltas(4, pi/128)
 4-element Vector{Float64}:
   0.01888791855096079
@@ -711,7 +711,7 @@ This function is not exported by the package and must be prefixed with `CluGen`
 if invoked by user code.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(123))
+```jldoctest; setup = :(using Random; Random.seed!(123))
 julia> CluGen.clucenters(4, [10, 50], [0, 0]) # 2D
 4×2 Matrix{Float64}:
  10.7379   -37.3512
@@ -778,7 +778,7 @@ if invoked by user code.
 - `rng`: An optional pseudo-random number generator for reproducible executions.
 
 # Examples
-```jldoctest
+```jldoctest; setup = :(using Random)
 julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
 5×2 Matrix{Float64}:
  1.0  5.0
@@ -844,7 +844,7 @@ if invoked by user code.
 - `rng`: An optional pseudo-random number generator for reproducible executions.
 
 # Examples
-```jldoctest
+```jldoctest; setup = :(using Random)
 julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
 5×2 Matrix{Float64}:
  1.0  5.0
@@ -903,7 +903,7 @@ This function is not exported by the package and must be prefixed with `CluGen`
 if invoked by user code.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(90))
+```jldoctest; setup = :(using Random; Random.seed!(90))
 julia> CluGen.clusizes(4, 6, true)
 4-element Vector{Int64}:
  1
@@ -984,7 +984,7 @@ This function is not exported by the package and must be prefixed with `CluGen`
 if invoked by user code.
 
 # Examples
-```jldoctest; setup = :(Random.seed!(123))
+```jldoctest; setup = :(using Random; Random.seed!(123))
 julia> CluGen.llengths(5, 10, 3)
 5-element Vector{Float64}:
  13.57080364295883

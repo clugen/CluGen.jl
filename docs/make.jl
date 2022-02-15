@@ -6,12 +6,7 @@ using CluGen, Documenter
 # Generate the logo
 include("logo.jl")
 
-DocMeta.setdocmeta!(
-    CluGen,
-    :DocTestSetup,
-    :(using CluGen, LinearAlgebra, Random);
-    recursive=true
-)
+DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen); recursive=true)
 
 makedocs(
     modules = [ CluGen ],
