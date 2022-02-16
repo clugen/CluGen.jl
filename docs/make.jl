@@ -22,8 +22,8 @@ makedocs(
     sitename="CluGen documentation",
     pages = [
         "Home" => "index.md",
-        "Examples" => "examples.md",
         "Theory" => "theory.md",
+        "Examples" => "examples.md",
         "API" => "api.md",
         "Development" => "dev.md"
         ],

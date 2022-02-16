@@ -14,7 +14,6 @@ module CluGenExtras
 using CluGen
 using LinearAlgebra
 using Plots
-using Printf
 using Random
 
 export plot2d
@@ -48,7 +47,6 @@ function plot2d(d, r)
     # ###### #
     # Plot 1 #
     # ###### #
-    p1format = (x) -> x - trunc(x) ≈ 0 ? "$(round(Int,x))" : @sprintf("%.3f", x)
 
     # Setup plot
     p1 = plot(legend=false, title="1. Normalize direction vector", ticks=[],

@@ -1,8 +1,8 @@
 # Theory
 
-```@contents
-Pages = ["theory.md"]
-```
+This section describes the theoretical framework of the CluGen algorithm,
+starting with a general [Overview](@ref), then moving on to a
+[Detailed description](@ref).
 
 ## Overview
 

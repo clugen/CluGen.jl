@@ -1,5 +1,5 @@
-# Table of contents
+# Home
 
 ```@contents
-Pages = ["index.md", "examples.md", "theory.md", "api.md", "dev.md"]
+Pages = ["theory.md", "examples.md", "api.md", "dev.md"]
 ```

@@ -57,11 +57,6 @@ $ python -m http.server 9000 -d ./docs/build
 Point your browser to <http://localhost:9000/> to read the generated
 documentation.
 
-!!! warning
-
-    At the moment, due to PRNG differences between Julia versions, doctests will
-    only run in Julia 1.6 LTS.
-
 ## Useful packages for helping development
 
 While developing CluGen, the [Revise](https://timholy.github.io/Revise.jl/stable/)
