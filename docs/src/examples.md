@@ -33,11 +33,11 @@ p02 = plot(e02.points[:, 1], e02.points[:, 2], seriestype = :scatter, group=e02.
 p03 = plot(e03.points[:, 1], e03.points[:, 2], seriestype = :scatter, group=e03.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e03: direction = [0, 1]", titlefontsize=9, xlim=(-20, 20), ylim=(-25, 25))
 
 plt = plot(p01, p02, p03, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_01.png") # hide
+savefig(plt, "ex2d_01.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_01.png)
+![](ex2d_01.svg)
 
 #### Changing the `angle_disp` parameter and using a custom `angle_deltas_fn` function
 
@@ -57,11 +57,11 @@ p05 = plot(e05.points[:, 1], e05.points[:, 2], seriestype = :scatter, group=e05.
 p06 = plot(e06.points[:, 1], e06.points[:, 2], seriestype = :scatter, group=e06.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e06: custom angle_deltas function", titlefontsize=9, xlim=(-35, 35), ylim=(-40, 20))
 
 plt = plot(p04, p05, p06, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_02.png") # hide
+savefig(plt, "ex2d_02.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_02.png)
+![](ex2d_02.svg)
 
 ### Manipulating the length of cluster-supporting lines
 
@@ -80,11 +80,11 @@ p08 = plot(e08.points[:, 1], e08.points[:, 2], seriestype = :scatter, group=e08.
 p09 = plot(e09.points[:, 1], e09.points[:, 2], seriestype = :scatter, group=e09.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e09: llength = 30", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
 
 plt = plot(p07, p08, p09, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_03.png") # hide
+savefig(plt, "ex2d_03.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_03.png)
+![](ex2d_03.svg)
 
 #### Changing the `llength_disp` parameter and using a custom `llengths_fn` function
 
@@ -104,11 +104,11 @@ p11 = plot(e11.points[:, 1], e11.points[:, 2], seriestype = :scatter, group=e11.
 p12 = plot(e12.points[:, 1], e12.points[:, 2], seriestype = :scatter, group=e12.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e12: custom llengths function", titlefontsize=9, xlim=(-20, 35), ylim=(-30, 20))
 
 plt = plot(p10, p11, p12, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_04.png") # hide
+savefig(plt, "ex2d_04.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_04.png)
+![](ex2d_04.svg)
 
 ### Manipulating relative cluster positions
 
@@ -127,11 +127,11 @@ p14 = plot(e14.points[:, 1], e14.points[:, 2], seriestype = :scatter, group=e14.
 p15 = plot(e15.points[:, 1], e15.points[:, 2], seriestype = :scatter, group=e15.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e15: cluster_sep = [10, 30]", titlefontsize=9, xlim=(-120, 80), ylim=(-125, 100))
 
 plt = plot(p13, p14, p15, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_05.png") # hide
+savefig(plt, "ex2d_05.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_05.png)
+![](ex2d_05.svg)
 
 #### Changing the `cluster_offset` parameter and using a custom `clucenters_fn` function
 
@@ -151,11 +151,11 @@ p17 = plot(e17.points[:, 1], e17.points[:, 2], seriestype = :scatter, group=e17.
 p18 = plot(e18.points[:, 1], e18.points[:, 2], seriestype = :scatter, group=e18.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e18: custom clucenters function", titlefontsize=9, xlim=(-70, 70), ylim=(-70, 70))
 
 plt = plot(p16, p17, p18, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_06.png") # hide
+savefig(plt, "ex2d_06.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_06.png)
+![](ex2d_06.svg)
 
 ### Lateral dispersion and placement of point projections on the line
 
@@ -174,11 +174,11 @@ p20 = plot(e20.points[:, 1], e20.points[:, 2], seriestype = :scatter, group=e20.
 p21 = plot(e21.points[:, 1], e21.points[:, 2], seriestype = :scatter, group=e21.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e21: lateral_disp=3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
 
 plt = plot(p19, p20, p21, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_07.png") # hide
+savefig(plt, "ex2d_07.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_07.png)
+![](ex2d_07.svg)
 
 #### Uniform projection placement: `proj_dist_fn = "unif"`
 
@@ -195,11 +195,11 @@ p23 = plot(e23.points[:, 1], e23.points[:, 2], seriestype = :scatter, group=e23.
 p24 = plot(e24.points[:, 1], e24.points[:, 2], seriestype = :scatter, group=e24.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e24: lateral_disp=3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
 
 plt = plot(p22, p23, p24, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_08.png") # hide
+savefig(plt, "ex2d_08.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_08.png)
+![](ex2d_08.svg)
 
 #### Custom projection placement using the Laplace distribution
 
@@ -219,11 +219,11 @@ p26 = plot(e26.points[:, 1], e26.points[:, 2], seriestype = :scatter, group=e26.
 p27 = plot(e27.points[:, 1], e27.points[:, 2], seriestype = :scatter, group=e27.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e27: lateral_disp=3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
 
 plt = plot(p25, p26, p27, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_09.png") # hide
+savefig(plt, "ex2d_09.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_09.png)
+![](ex2d_09.svg)
 
 ### Controlling final point positions from their projections on the cluster-supporting line
 
@@ -245,11 +245,11 @@ p29 = plot(e29.points[:, 1], e29.points[:, 2], seriestype = :scatter, group=e29.
 p30 = plot(e30.points[:, 1], e30.points[:, 2], seriestype = :scatter, group=e30.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e30: custom proj_dist_fn (Laplace)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
 
 plt = plot(p28, p29, p30, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_10.png") # hide
+savefig(plt, "ex2d_10.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_10.png)
+![](ex2d_10.svg)
 
 #### Points around projection on cluster-supporting line: `point_dist_fn = "n"`
 
@@ -269,11 +269,11 @@ p32 = plot(e32.points[:, 1], e32.points[:, 2], seriestype = :scatter, group=e32.
 p33 = plot(e33.points[:, 1], e33.points[:, 2], seriestype = :scatter, group=e33.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e33: custom proj_dist_fn (Laplace)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
 
 plt = plot(p31, p32, p33, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_11.png") # hide
+savefig(plt, "ex2d_11.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_11.png)
+![](ex2d_11.svg)
 
 #### Custom point placement using the exponential distribution
 
@@ -299,11 +299,11 @@ p35 = plot(e35.points[:, 1], e35.points[:, 2], seriestype = :scatter, group=e35.
 p36 = plot(e36.points[:, 1], e36.points[:, 2], seriestype = :scatter, group=e36.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e36: custom proj_dist_fn (Laplace)", titlefontsize=9, xlim=(-60, 40), ylim=(-30, 60))
 
 plt = plot(p34, p35, p36, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_12.png") # hide
+savefig(plt, "ex2d_12.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_12.png)
+![](ex2d_12.svg)
 
 ### Manipulating cluster sizes
 
@@ -329,11 +329,11 @@ p38 = plot(e38.points[:, 1], e38.points[:, 2], seriestype = :scatter, group=e38.
 p39 = plot(e39.points[:, 1], e39.points[:, 2], seriestype = :scatter, group=e39.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e39: equal size (custom)", titlefontsize=9, xlim=(-40, 40), ylim=(-40, 40))
 
 plt = plot(p37, p38, p39, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex2d_13.png") # hide
+savefig(plt, "ex2d_13.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_13.png)
+![](ex2d_13.svg)
 
 ## 3D examples
 
@@ -354,11 +354,11 @@ p41 = plot(e41.points[:, 1], e41.points[:, 2], e41.points[:, 3], seriestype = :s
 p42 = plot(e42.points[:, 1], e42.points[:, 2], e42.points[:, 3], seriestype = :scatter, group=e42.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e42: direction = [0, 1, 0]", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20,20), ylim=(-20,20), zlim=(-23,13))
 
 plt = plot(p40, p41, p42, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_01.png") # hide
+savefig(plt, "ex3d_01.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_01.png)
+![](ex3d_01.svg)
 
 #### Changing the `angle_disp` parameter and using a custom `angle_deltas_fn` function
 
@@ -378,11 +378,11 @@ p44 = plot(e44.points[:, 1], e44.points[:, 2], e44.points[:, 3], seriestype = :s
 p45 = plot(e45.points[:, 1], e45.points[:, 2], e45.points[:, 3], seriestype = :scatter, group=e45.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e45: custom angle_deltas function", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-16, 40), ylim=(-30, 25), zlim=(-35, 32))
 
 plt = plot(p43, p44, p45, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_02.png") # hide
+savefig(plt, "ex3d_02.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_02.png)
+![](ex3d_02.svg)
 
 ### Manipulating the length of cluster-supporting lines
 
@@ -401,11 +401,11 @@ p47 = plot(e47.points[:, 1], e47.points[:, 2], e47.points[:, 3], seriestype = :s
 p48 = plot(e48.points[:, 1], e48.points[:, 2], e48.points[:, 3], seriestype = :scatter, group=e48.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e48: llength = 30", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20, 40), ylim=(-30, 20), zlim=(-20, 25))
 
 plt = plot(p46, p47, p48, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_03.png") # hide
+savefig(plt, "ex3d_03.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_03.png)
+![](ex3d_03.svg)
 
 #### Changing the `llength_disp` parameter and using a custom `llengths_fn` function
 
@@ -425,11 +425,11 @@ p50 = plot(e50.points[:, 1], e50.points[:, 2], e50.points[:, 3], seriestype = :s
 p51 = plot(e51.points[:, 1], e51.points[:, 2], e51.points[:, 3], seriestype = :scatter, group=e51.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e51: custom llengths function", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20, 40), ylim=(-30, 25), zlim=(-20, 25))
 
 plt = plot(p49, p50, p51, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_04.png") # hide
+savefig(plt, "ex3d_04.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_04.png)
+![](ex3d_04.svg)
 
 ### Manipulating relative cluster positions
 
@@ -448,11 +448,11 @@ p53 = plot(e53.points[:, 1], e53.points[:, 2], e53.points[:, 3], seriestype = :s
 p54 = plot(e54.points[:, 1], e54.points[:, 2], e54.points[:, 3], seriestype = :scatter, group=e54.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e54: cluster_sep = [10, 10, 30]", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-100, 100), ylim=(-100, 100), zlim=(-100, 100))
 
 plt = plot(p52, p53, p54, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_05.png") # hide
+savefig(plt, "ex3d_05.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_05.png)
+![](ex3d_05.svg)
 
 #### Changing the `cluster_offset` parameter and using a custom `clucenters_fn` function
 
@@ -472,11 +472,11 @@ p56 = plot(e56.points[:, 1], e56.points[:, 2], e56.points[:, 3], seriestype = :s
 p57 = plot(e57.points[:, 1], e57.points[:, 2], e57.points[:, 3], seriestype = :scatter, group=e57.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e57: custom clucenters function", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 40), ylim=(-65, 40), zlim=(-50, 55))
 
 plt = plot(p55, p56, p57, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_06.png") # hide
+savefig(plt, "ex3d_06.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_06.png)
+![](ex3d_06.svg)
 
 ### Lateral dispersion and placement of point projections on the line
 
@@ -495,11 +495,11 @@ p59 = plot(e59.points[:, 1], e59.points[:, 2], e59.points[:, 3], seriestype = :s
 p60 = plot(e60.points[:, 1], e60.points[:, 2], e60.points[:, 3], seriestype = :scatter, group=e60.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e60: lateral_disp=3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
 
 plt = plot(p58, p59, p60, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_07.png") # hide
+savefig(plt, "ex3d_07.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_07.png)
+![](ex3d_07.svg)
 
 #### Uniform projection placement: `proj_dist_fn = "unif"`
 
@@ -516,11 +516,11 @@ p62 = plot(e62.points[:, 1], e62.points[:, 2], e62.points[:, 3], seriestype = :s
 p63 = plot(e63.points[:, 1], e63.points[:, 2], e63.points[:, 3], seriestype = :scatter, group=e63.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e63: lateral_disp=3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
 
 plt = plot(p61, p62, p63, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_08.png") # hide
+savefig(plt, "ex3d_08.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_08.png)
+![](ex3d_08.svg)
 
 #### Custom projection placement using the Laplace distribution
 
@@ -540,11 +540,11 @@ p65 = plot(e65.points[:, 1], e65.points[:, 2], e65.points[:, 3], seriestype = :s
 p66 = plot(e66.points[:, 1], e66.points[:, 2], e66.points[:, 3], seriestype = :scatter, group=e66.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e66: lateral_disp=3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
 
 plt = plot(p64, p65, p66, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_09.png") # hide
+savefig(plt, "ex3d_09.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_09.png)
+![](ex3d_09.svg)
 
 ### Controlling final point positions from their projections on the cluster-supporting line
 
@@ -566,11 +566,11 @@ p68 = plot(e68.points[:, 1], e68.points[:, 2], e68.points[:, 3], seriestype = :s
 p69 = plot(e69.points[:, 1], e69.points[:, 2], e69.points[:, 3], seriestype = :scatter, group=e69.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e69: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
 
 plt = plot(p67, p68, p69, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_10.png") # hide
+savefig(plt, "ex3d_10.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_10.png)
+![](ex3d_10.svg)
 
 #### Points around projection on cluster-supporting line: `point_dist_fn = "n"`
 
@@ -590,11 +590,11 @@ p71 = plot(e71.points[:, 1], e71.points[:, 2], e71.points[:, 3], seriestype = :s
 p72 = plot(e72.points[:, 1], e72.points[:, 2], e72.points[:, 3], seriestype = :scatter, group=e72.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e72: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
 
 plt = plot(p70, p71, p72, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_11.png") # hide
+savefig(plt, "ex3d_11.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_11.png)
+![](ex3d_11.svg)
 
 #### Custom point placement using the exponential distribution
 
@@ -620,11 +620,11 @@ p74 = plot(e74.points[:, 1], e74.points[:, 2], e74.points[:, 3], seriestype = :s
 p75 = plot(e75.points[:, 1], e75.points[:, 2], e75.points[:, 3], seriestype = :scatter, group=e75.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e75: custom proj_dist_fn (Laplace)", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 45), ylim=(-62, 38), zlim=(-58, 38))
 
 plt = plot(p73, p74, p75, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_12.png") # hide
+savefig(plt, "ex3d_12.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_12.png)
+![](ex3d_12.svg)
 
 ### Manipulating cluster sizes
 
@@ -650,11 +650,11 @@ p77 = plot(e77.points[:, 1], e77.points[:, 2], e77.points[:, 3], seriestype = :s
 p78 = plot(e78.points[:, 1], e78.points[:, 2], e78.points[:, 3], seriestype = :scatter, group=e78.point_clusters, markersize=2, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e78: equal size (custom)", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-40, 40), ylim=(-45, 39), zlim=(-43, 41))
 
 plt = plot(p76, p77, p78, size=(900, 300), layout=(1, 3)) # hide
-savefig(plt, "ex3d_13.png") # hide
+savefig(plt, "ex3d_13.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_13.png)
+![](ex3d_13.svg)
 
 ## Examples in other dimensions
 
@@ -712,11 +712,11 @@ p81 = plot(e81.points, seriestype = :density, group=e81.point_clusters, fill=tru
 plot!(p81, e81.points, -0.04 .* ones(sum(e81.cluster_sizes)), seriestype = :scatter, group=e81.point_clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
 
 plt = plot(p79, p80, p81, size=(900, 215), layout=(1, 3)) # hide
-savefig(plt, "ex1d_01.png") # hide
+savefig(plt, "ex1d_01.svg") # hide
 nothing # hide
 ```
 
-![](ex1d_01.png)
+![](ex1d_01.svg)
 
 #### 5D example with default optional arguments
 
@@ -742,11 +742,11 @@ for i in 1:nd
 end
 
 plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e82: 5D with default optional parameters", plot_titlefontsize = 10) # hide
-savefig(plt, "ex5d_01.png") # hide
+savefig(plt, "ex5d_01.svg") # hide
 nothing # hide
 ```
 
-![](ex5d_01.png)
+![](ex5d_01.svg)
 
 #### 5D example with `proj_dist_fn = "unif"` and `point_dist_fn = "n"`
 
@@ -772,8 +772,8 @@ for i in 1:nd
 end
 
 plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e83: 5D with proj_dist_fn=\"unif\" and point_dist_fn=\"n\"", plot_titlefontsize = 10) # hide
-savefig(plt, "ex5d_02.png") # hide
+savefig(plt, "ex5d_02.svg") # hide
 nothing # hide
 ```
 
-![](ex5d_02.png)
+![](ex5d_02.svg)

@@ -41,12 +41,12 @@ nclu = 4
 r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1; rng = StableRNG(9999))
 plt = Main.CluGenExtras.plot2d(d, r)
 
-savefig(plt, "algorithm.png")
+savefig(plt, "algorithm.svg")
 
 nothing
 ```
 
-![](algorithm.png)
+![](algorithm.svg)
 **Figure 1** - Stylized overview of the *clugen* algorithm. Background tiles
 are 10 units wide and tall, when applicable.
 
@@ -241,12 +241,12 @@ end
 
 plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
-savefig(plt, "clusizes.png")
+savefig(plt, "clusizes.svg")
 
 nothing
 ```
 
-![](clusizes.png)
+![](clusizes.svg)
 **Figure 2** - Possible cluster sizes with various definitions of ``c_s()`` for
 ``c=4`` and ``p=5000``.
 
@@ -324,12 +324,12 @@ push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
 
 plt = plot(p_all..., layout = (1, 3), size=(1200,400))
 
-savefig(plt, "clucenters.png")
+savefig(plt, "clucenters.svg")
 
 nothing
 ```
 
-![](clucenters.png)
+![](clucenters.svg)
 **Figure 3** - The output of *clugen* for two different implementations of the
 ``c_c()`` function for finding cluster centers: a) the default, using the uniform
 distribution; b) hand-picked centers. All parameters are the same as in Figure 1,
@@ -412,12 +412,12 @@ end
 
 plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
-savefig(plt, "llengths.png")
+savefig(plt, "llengths.svg")
 
 nothing
 ```
 
-![](llengths.png)
+![](llengths.svg)
 **Figure 4** - Line lengths for different implementations of ``l()``: a) the
 default, using the folded normal distribution; b) using the Poisson distribution,
 with ``\lambda=l``; c) using the uniform distribution in the interval
@@ -501,12 +501,12 @@ push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
 
 plt = plot(p_all..., layout = (1, 3), size=(1200,400))
 
-savefig(plt, "angle_deltas.png")
+savefig(plt, "angle_deltas.svg")
 
 nothing
 ```
 
-![](angle_deltas.png)
+![](angle_deltas.svg)
 **Figure 5** - Final directions of the cluster supporting-lines for different
 implementations of ``\theta_\Delta()``: a) the default, where angle differences
 were obtained using the wrapped normal distribution; and, d) hand-picked angle
@@ -635,12 +635,12 @@ end
 
 plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
-savefig(plt, "proj_dist_fn.png")
+savefig(plt, "proj_dist_fn.svg")
 
 nothing
 ```
 
-![](proj_dist_fn.png)
+![](proj_dist_fn.svg)
 **Figure 6** - Clusters generated for various implementations of ``p_\text{proj}()``:
 a) the default, where line center distances are drawn for the normal distribution,
 specified using the in-built `"norm"` option; b) in which center distances are
@@ -720,12 +720,12 @@ p3 = plot(showaxis=false,grid=false,ticks=[],aspectratio=1)
 
 plt = plot(p1, p2, p3, layout=(1,3), size=(1200,400))
 
-savefig(plt, "point_dist_ex.png")
+savefig(plt, "point_dist_ex.svg")
 
 nothing
 ```
 
-![](point_dist_ex.png)
+![](point_dist_ex.svg)
 **Figure 7** - Example of how the final cluster points are obtained in 2D when
 using the built-in implementations for ``p_\text{final}()``.
 
@@ -778,7 +778,7 @@ end
 
 plt = plot(p_all..., layout = (2, 3), size=(1200,800))
 
-savefig(plt, "point_dist_fn.png")
+savefig(plt, "point_dist_fn.svg")
 
 nothing
 ```
@@ -796,7 +796,7 @@ Figures 8e and 8f, with the latter also having the ``p_\text{proj}()`` function
 set to `"unif"`. The remaining parameters (for all subfigures) are set as in
 Figure 1, except for ``p``, which is set to 5000.
 
-![](point_dist_fn.png)
+![](point_dist_fn.svg)
 **Figure 8** - Examples of various implementations of ``p_\text{final}()``.
 Figures a and b shown the effect of the built-in implementations, while Figures
 c-f display results obtained using custom user functions.
