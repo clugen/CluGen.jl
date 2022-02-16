@@ -21,7 +21,7 @@ pkg> test CluGen
 
 !!! note
 
-    Building the documentation requires at least Julia 1.5.
+    Building the documentation requires at least Julia 1.6.
 
 The following instructions assume we're on the `CluGen` folder (typically
 located in `~/.julia/dev/`).
@@ -37,7 +37,7 @@ pkg> instantiate
 
 The documentation can now be generated from the Julia REPL:
 
-```
+```julia-repl
 julia> include("docs/make.jl")
 ```
 
