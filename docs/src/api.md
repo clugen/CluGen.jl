@@ -5,7 +5,6 @@
 * [Main function](@ref)
   * [`clugen`](@ref)
 * [Core functions](@ref)
-  * [`angle_btw`](@ref)
   * [`points_on_line`](@ref)
   * [`rand_ortho_vector`](@ref)
   * [`rand_unit_vector`](@ref)
@@ -17,7 +16,8 @@
   * [`CluGen.clupoints_n`](@ref)
   * [`CluGen.clusizes`](@ref)
   * [`CluGen.llengths`](@ref)
-* [Algorithm module helper functions](@ref)
+* [Helper functions](@ref)
+  * [`angle_btw`](@ref)
   * [`CluGen.clupoints_n_1_template`](@ref)
   * [`CluGen.fix_empty!`](@ref)
   * [`CluGen.fix_num_points!`](@ref)
@@ -41,7 +41,6 @@ algorithm. These functions may be useful in other contexts, and are thus exporte
 by the package.
 
 ```@docs
-angle_btw
 points_on_line
 rand_ortho_vector
 rand_unit_vector
@@ -67,16 +66,17 @@ CluGen.clusizes
 CluGen.llengths
 ```
 
-## Algorithm module helper functions
+## Helper functions
 
-The module helper functions provide reusable functionality to the module functions
-described in the previous section. This reusable functionality may be useful for
-users implementing their own customized module functions.
+The helper functions provide useful or reusable functionality, mainly to the
+module functions described in the previous section. This reusable functionality
+may be useful for users implementing their own customized module functions.
 
-These functions are not exported by the package since their use is limited to
-advanced algorithm customization scenarios.
+Except for [`angle_btw()`](@ref), these functions are not exported by the
+package since their use is limited to advanced algorithm customization scenarios.
 
 ```@docs
+angle_btw
 CluGen.clupoints_n_1_template
 CluGen.fix_empty!
 CluGen.fix_num_points!
