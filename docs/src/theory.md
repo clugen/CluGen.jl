@@ -1,15 +1,15 @@
 # Theory
 
-This section describes the theoretical framework of the CluGen algorithm,
+This section describes the theoretical framework of the _clugen_ algorithm,
 starting with a general [Overview](@ref), then moving on to a
 [Detailed description](@ref).
 
 ## Overview
 
-CluGen is an algorithm for generating multidimensional clusters. Each cluster is
-supported by a line segment, the position, orientation and length of which guide
-where the respective points are placed. For brevity, *line segments* will be
-referred to as *lines*.
+_Clugen_ is an algorithm for generating multidimensional clusters. Each cluster
+is supported by a line segment, the position, orientation and length of which
+guide where the respective points are placed. For brevity, *line segments* will
+be referred to as *lines*.
 
 Given an ``n``-dimensional direction vector ``\mathbf{d}`` (and a number of
 additional parameters, which will be discussed shortly), the _clugen_ algorithm
