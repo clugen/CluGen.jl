@@ -169,9 +169,9 @@ e19 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; rng = StableRNG(4
 e20 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; rng = StableRNG(456))
 e21 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0; rng = StableRNG(456))
 
-p19 = plot(e19.points[:, 1], e19.points[:, 2], seriestype = :scatter, group=e19.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e19: lateral_disp=0", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
-p20 = plot(e20.points[:, 1], e20.points[:, 2], seriestype = :scatter, group=e20.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e20: lateral_disp=1", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
-p21 = plot(e21.points[:, 1], e21.points[:, 2], seriestype = :scatter, group=e21.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e21: lateral_disp=3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p19 = plot(e19.points[:, 1], e19.points[:, 2], seriestype = :scatter, group=e19.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e19: lateral_disp = 0", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p20 = plot(e20.points[:, 1], e20.points[:, 2], seriestype = :scatter, group=e20.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e20: lateral_disp = 1", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p21 = plot(e21.points[:, 1], e21.points[:, 2], seriestype = :scatter, group=e21.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e21: lateral_disp = 3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
 
 plt = plot(p19, p20, p21, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex2d_07.svg") # hide
@@ -190,9 +190,9 @@ e22 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; proj_dist_fn = "u
 e23 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; proj_dist_fn = "unif", rng = StableRNG(456))
 e24 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0; proj_dist_fn = "unif", rng = StableRNG(456))
 
-p22 = plot(e22.points[:, 1], e22.points[:, 2], seriestype = :scatter, group=e22.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e22: lateral_disp=0", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
-p23 = plot(e23.points[:, 1], e23.points[:, 2], seriestype = :scatter, group=e23.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e23: lateral_disp=1", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
-p24 = plot(e24.points[:, 1], e24.points[:, 2], seriestype = :scatter, group=e24.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e24: lateral_disp=3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p22 = plot(e22.points[:, 1], e22.points[:, 2], seriestype = :scatter, group=e22.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e22: lateral_disp = 0", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p23 = plot(e23.points[:, 1], e23.points[:, 2], seriestype = :scatter, group=e23.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e23: lateral_disp = 1", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p24 = plot(e24.points[:, 1], e24.points[:, 2], seriestype = :scatter, group=e24.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e24: lateral_disp = 3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
 
 plt = plot(p22, p23, p24, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex2d_08.svg") # hide
@@ -214,9 +214,9 @@ e25 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; proj_dist_fn = pr
 e26 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
 e27 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
 
-p25 = plot(e25.points[:, 1], e25.points[:, 2], seriestype = :scatter, group=e25.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e25: lateral_disp=0", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
-p26 = plot(e26.points[:, 1], e26.points[:, 2], seriestype = :scatter, group=e26.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e26: lateral_disp=1", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
-p27 = plot(e27.points[:, 1], e27.points[:, 2], seriestype = :scatter, group=e27.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e27: lateral_disp=3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p25 = plot(e25.points[:, 1], e25.points[:, 2], seriestype = :scatter, group=e25.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e25: lateral_disp = 0", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p26 = plot(e26.points[:, 1], e26.points[:, 2], seriestype = :scatter, group=e26.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e26: lateral_disp = 1", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
+p27 = plot(e27.points[:, 1], e27.points[:, 2], seriestype = :scatter, group=e27.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e27: lateral_disp = 3", titlefontsize=9, xlim=(-50, 30), ylim=(-50, 30))
 
 plt = plot(p25, p26, p27, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex2d_09.svg") # hide
@@ -413,7 +413,7 @@ nothing # hide
 ENV["GKSwstype"] = "100" # hide
 using CluGen, Distributions, Plots, StableRNGs # hide
 
-# Custom llengths function: line lengths grow for each new cluster
+# Custom llengths function: line lengths tend to grow for each new cluster
 llen_grow_fn(nclu, llen, llenstd; rng = nothing) = llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
 
 e49 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 15,  0.0, 0.5; point_dist_fn = "n", rng = StableRNG(2))
@@ -421,7 +421,7 @@ e50 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 15, 10.0, 0.5; point_d
 e51 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 10,  0.1, 0.5; llengths_fn = llen_grow_fn, point_dist_fn = "n", rng = StableRNG(2))
 
 p49 = plot(e49.points[:, 1], e49.points[:, 2], e49.points[:, 3], seriestype = :scatter, group=e49.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e49: llength_disp = 0.0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20, 40), ylim=(-30, 25), zlim=(-20, 25))
-p50 = plot(e50.points[:, 1], e50.points[:, 2], e50.points[:, 3], seriestype = :scatter, group=e50.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e50: llength_disp = 5.0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20, 40), ylim=(-30, 25), zlim=(-20, 25))
+p50 = plot(e50.points[:, 1], e50.points[:, 2], e50.points[:, 3], seriestype = :scatter, group=e50.point_clusters,  markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e50: llength_disp = 10.0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20, 40), ylim=(-30, 25), zlim=(-20, 25))
 p51 = plot(e51.points[:, 1], e51.points[:, 2], e51.points[:, 3], seriestype = :scatter, group=e51.point_clusters, markersize=2.5, markerstrokewidth=0.2, aspectratio=1, legend=nothing, title="e51: custom llengths function", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-20, 40), ylim=(-30, 25), zlim=(-20, 25))
 
 plt = plot(p49, p50, p51, size=(900, 300), layout=(1, 3)) # hide
@@ -490,9 +490,9 @@ e58 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; rng = Stab
 e59 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; rng = StableRNG(456))
 e60 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; rng = StableRNG(456))
 
-p58 = plot(e58.points[:, 1], e58.points[:, 2], e58.points[:, 3], seriestype = :scatter, group=e58.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e58: lateral_disp=0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
-p59 = plot(e59.points[:, 1], e59.points[:, 2], e59.points[:, 3], seriestype = :scatter, group=e59.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e59: lateral_disp=1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
-p60 = plot(e60.points[:, 1], e60.points[:, 2], e60.points[:, 3], seriestype = :scatter, group=e60.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e60: lateral_disp=3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p58 = plot(e58.points[:, 1], e58.points[:, 2], e58.points[:, 3], seriestype = :scatter, group=e58.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e58: lateral_disp = 0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p59 = plot(e59.points[:, 1], e59.points[:, 2], e59.points[:, 3], seriestype = :scatter, group=e59.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e59: lateral_disp = 1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p60 = plot(e60.points[:, 1], e60.points[:, 2], e60.points[:, 3], seriestype = :scatter, group=e60.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e60: lateral_disp = 3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
 
 plt = plot(p58, p59, p60, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex3d_07.svg") # hide
@@ -511,9 +511,9 @@ e61 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; proj_dist_
 e62 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; proj_dist_fn = "unif", rng = StableRNG(456))
 e63 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; proj_dist_fn = "unif", rng = StableRNG(456))
 
-p61 = plot(e61.points[:, 1], e61.points[:, 2], e61.points[:, 3], seriestype = :scatter, group=e61.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e61: lateral_disp=1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
-p62 = plot(e62.points[:, 1], e62.points[:, 2], e62.points[:, 3], seriestype = :scatter, group=e62.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e62: lateral_disp=1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
-p63 = plot(e63.points[:, 1], e63.points[:, 2], e63.points[:, 3], seriestype = :scatter, group=e63.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e63: lateral_disp=3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p61 = plot(e61.points[:, 1], e61.points[:, 2], e61.points[:, 3], seriestype = :scatter, group=e61.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e61: lateral_disp = 0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p62 = plot(e62.points[:, 1], e62.points[:, 2], e62.points[:, 3], seriestype = :scatter, group=e62.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e62: lateral_disp = 1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p63 = plot(e63.points[:, 1], e63.points[:, 2], e63.points[:, 3], seriestype = :scatter, group=e63.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e63: lateral_disp = 3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
 
 plt = plot(p61, p62, p63, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex3d_08.svg") # hide
@@ -535,9 +535,9 @@ e64 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; proj_dist_
 e65 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
 e66 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; proj_dist_fn = proj_laplace, rng = StableRNG(456))
 
-p64 = plot(e64.points[:, 1], e64.points[:, 2], e64.points[:, 3], seriestype = :scatter, group=e64.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e64: lateral_disp=0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
-p65 = plot(e65.points[:, 1], e65.points[:, 2], e65.points[:, 3], seriestype = :scatter, group=e65.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e65: lateral_disp=1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
-p66 = plot(e66.points[:, 1], e66.points[:, 2], e66.points[:, 3], seriestype = :scatter, group=e66.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e66: lateral_disp=3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p64 = plot(e64.points[:, 1], e64.points[:, 2], e64.points[:, 3], seriestype = :scatter, group=e64.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e64: lateral_disp = 0", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p65 = plot(e65.points[:, 1], e65.points[:, 2], e65.points[:, 3], seriestype = :scatter, group=e65.point_clusters,  markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e65: lateral_disp = 1", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
+p66 = plot(e66.points[:, 1], e66.points[:, 2], e66.points[:, 3], seriestype = :scatter, group=e66.point_clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, title="e66: lateral_disp = 3", titlefontsize=9, xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$", xlim=(-45, 35), ylim=(-50, 40), zlim=(-40, 5))
 
 plt = plot(p64, p65, p66, size=(900, 300), layout=(1, 3)) # hide
 savefig(plt, "ex3d_09.svg") # hide
