@@ -532,7 +532,7 @@ supporting line, the following algorithm is used:
   ``\hat{\mathbf{d}}_i=\hat{\mathbf{r}}`` and terminate the algorithm.
 * **4.** If ``\hat{\mathbf{r}}`` is parallel to ``\hat{\mathbf{d}}`` go to **1**.
 * **5.** Determine vector ``\mathbf{d}_\perp`` orthogonal to ``\hat{\mathbf{d}}``
-  using the first iteration of the Gram--Schmidt process:
+  using the first iteration of the Gram-Schmidt process:
   ```math
   \mathbf{d}_\perp=\hat{\mathbf{r}}-\cfrac{\hat{\mathbf{d}}\cdot\hat{\mathbf{r}}}{\hat{\mathbf{d}}\cdot\hat{\mathbf{d}}}\:\hat{\mathbf{d}}
   ```
