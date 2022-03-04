@@ -741,7 +741,7 @@ for i in 1:nd
     end
 end
 
-plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e82: 5D with default optional parameters", plot_titlefontsize = 10) # hide
+plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e82: 5D with optional parameters set to defaults", plot_titlefontsize = 10)
 savefig(plt, "ex5d_01.svg") # hide
 nothing # hide
 ```
