@@ -19,7 +19,10 @@ DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen); recursive=true)
 # Generate the documentation
 makedocs(
     modules = [ CluGen ],
-    sitename="CluGen documentation",
+    sitename = "CluGen documentation",
+    format = Documenter.HTML(
+        assets = ["assets/favicon.ico"]
+    ),
     pages = [
         "Home" => "index.md",
         "Theory" => "theory.md",
