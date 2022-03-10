@@ -50,13 +50,13 @@ export rand_vector_at_angle
         angle_deltas_fn::Function = GluGen.angle_deltas,
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
-            :points,              # Array{<:Real,2}
-            :point_clusters,      # Array{<:Integer,1}
-            :point_projections,   # Array{<:Real,2}
-            :cluster_sizes,       # Array{<:Integer,1}
-            :cluster_centers,     # Array{<:Real,2}
-            :cluster_directions,  # Array{<:Real,2}
-            :cluster_lengths      # Array{<:Real,1}
+            :points,      # Array{<:Real,2}
+            :clusters,    # Array{<:Integer,1}
+            :projections, # Array{<:Real,2}
+            :sizes,       # Array{<:Integer,1}
+            :centers,     # Array{<:Real,2}
+            :directions,  # Array{<:Real,2}
+            :lengths      # Array{<:Real,1}
          )}
 
 Generate multidimensional clusters.
@@ -142,19 +142,19 @@ The function returns a `NamedTuple` with the following fields:
 
 - `points`: A `num_points` x `num_dims` matrix with the generated points for
    all clusters.
-- `point_clusters`: A `num_points` x 1 vector indicating which cluster
+- `clusters`: A `num_points` x 1 vector indicating which cluster
   each point in `points` belongs to.
-- `point_projections`: A `num_points` x `num_dims` matrix with the point
+- `projections`: A `num_points` x `num_dims` matrix with the point
   projections on the cluster-supporting lines.
-- `cluster_sizes`: A `num_clusters` x 1 vector with the number of
+- `sizes`: A `num_clusters` x 1 vector with the number of
   points in each cluster.
-- `cluster_centers`: A `num_clusters` x `num_dims` matrix with the coordinates
+- `centers`: A `num_clusters` x `num_dims` matrix with the coordinates
   of the cluster centers.
-- `cluster_directions`: A `num_clusters` x `num_dims` matrix with the direction
+- `directions`: A `num_clusters` x `num_dims` matrix with the direction
   of each cluster-supporting line.
-- `cluster_angles`: A `num_clusters` x 1 vector with the angles between the
+- `angles`: A `num_clusters` x 1 vector with the angles between the
   cluster-supporting lines and the main direction.
-- `cluster_lengths`: A `num_clusters` x 1 vector with the lengths of the
+- `lengths`: A `num_clusters` x 1 vector with the lengths of the
   cluster-supporting lines.
 
 Note that if a custom function was given in the `clusizes_fn` parameter, it is
@@ -167,7 +167,7 @@ julia> # Create 5 clusters in 3D space with a total of 10000 points...
 
 julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
 
-julia> out.cluster_centers # What are the cluster centers?
+julia> out.centers # What are the cluster centers?
 5×3 Matrix{Float64}:
    8.12774  -16.8167    -1.80764
    4.30111   -1.34916  -11.209
@@ -374,13 +374,13 @@ function clugen(
 
     return (
         points = points,
-        point_clusters = point_clusters,
-        point_projections = point_projections,
-        cluster_sizes = cluster_sizes,
-        cluster_centers = cluster_centers,
-        cluster_directions = cluster_directions,
-        cluster_angles = cluster_angles,
-        cluster_lengths = cluster_lengths)
+        clusters = point_clusters,
+        projections = point_projections,
+        sizes = cluster_sizes,
+        centers = cluster_centers,
+        directions = cluster_directions,
+        angles = cluster_angles,
+        lengths = cluster_lengths)
 
 end
 

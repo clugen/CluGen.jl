@@ -36,7 +36,7 @@ function plot2d(d, r)
     d_angl = atan(d1[2] / d1[1])
 
     # Obtain number of clusters
-    nclu = length(r.cluster_lengths)
+    nclu = length(r.lengths)
 
     # Get current theme colors
     theme_colors = theme_palette(:auto).colors.colors
@@ -76,12 +76,12 @@ function plot2d(d, r)
         foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
 
     # Use auxiliary function to perform plotting
-    plot_clusizes!(p2, r.cluster_sizes)
+    plot_clusizes!(p2, r.sizes)
 
     # ###### #
     # Plot 3 #
     # ###### #
-    p3 = plot(r.cluster_centers[:,1], r.cluster_centers[:,2], seriestype=:scatter,
+    p3 = plot(r.centers[:,1], r.centers[:,2], seriestype=:scatter,
         group=map((x)->"Cluster $x",1:nclu), markersize=5, legend=false,
         title="3. Cluster centers", formatter=x->"",
         titlefontsize=8, titlelocation=:left,
@@ -95,13 +95,13 @@ function plot2d(d, r)
         legend=false, framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         titlefontsize=8, titlelocation=:left,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
-    for i in 1:length(r.cluster_lengths)
-        l = r.cluster_lengths[i]
-        p = points_on_line(r.cluster_centers[i,:], d1, [-l/2,l/2])
+    for i in 1:length(r.lengths)
+        l = r.lengths[i]
+        p = points_on_line(r.centers[i,:], d1, [-l/2,l/2])
         plot!(p4, p[:,1],p[:,2], linewidth=1, color=theme_colors[i])
     end
-    for i in 1:length(r.cluster_lengths)
-        plot!(p4, [r.cluster_centers[i, 1]], [r.cluster_centers[i, 2]],
+    for i in 1:length(r.lengths)
+        plot!(p4, [r.centers[i, 1]], [r.centers[i, 2]],
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
 
@@ -113,14 +113,14 @@ function plot2d(d, r)
         legend=false, framestyle=:grid, foreground_color_grid=:white,
         titlefontsize=8, titlelocation=:left,
         gridalpha=1, background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
-    for i in 1:length(r.cluster_lengths)
-        l = r.cluster_lengths[i]
-        v1 = [cos(d_angl + r.cluster_angles[i]), sin(d_angl + r.cluster_angles[i])]
-        v2 = [cos(d_angl - r.cluster_angles[i]), sin(d_angl - r.cluster_angles[i])]
+    for i in 1:length(r.lengths)
+        l = r.lengths[i]
+        v1 = [cos(d_angl + r.angles[i]), sin(d_angl + r.angles[i])]
+        v2 = [cos(d_angl - r.angles[i]), sin(d_angl - r.angles[i])]
 
-        p = points_on_line(r.cluster_centers[i,:], d1, [-l/2,l/2])
-        v1edges = points_on_line(r.cluster_centers[i,:], v1, [-l/2,l/2])
-        v2edges = points_on_line(r.cluster_centers[i,:], v2, [-l/2,l/2])
+        p = points_on_line(r.centers[i,:], d1, [-l/2,l/2])
+        v1edges = points_on_line(r.centers[i,:], v1, [-l/2,l/2])
+        v2edges = points_on_line(r.centers[i,:], v2, [-l/2,l/2])
 
         poly = Shape([tuple(v1edges[1,:]...), tuple(v1edges[2,:]...),
             tuple(v2edges[2,:]...), tuple(v2edges[1,:]...), tuple(v1edges[1,:]...)])
@@ -130,8 +130,8 @@ function plot2d(d, r)
 
         #plot!(p5, p[:,1], p[:,2], linewidth=1, color=theme_colors[i])
     end
-    for i in 1:length(r.cluster_lengths)
-        plot!(p5, [r.cluster_centers[i, 1]], [r.cluster_centers[i, 2]],
+    for i in 1:length(r.lengths)
+        plot!(p5, [r.centers[i, 1]], [r.centers[i, 2]],
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
 
@@ -144,13 +144,13 @@ function plot2d(d, r)
         framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
     for i in 1:nclu
-        l = r.cluster_lengths[i]
-        v1 = [cos(d_angl + r.cluster_angles[i]), sin(d_angl + r.cluster_angles[i])]
-        v2 = [cos(d_angl - r.cluster_angles[i]), sin(d_angl - r.cluster_angles[i])]
+        l = r.lengths[i]
+        v1 = [cos(d_angl + r.angles[i]), sin(d_angl + r.angles[i])]
+        v2 = [cos(d_angl - r.angles[i]), sin(d_angl - r.angles[i])]
 
-        p = points_on_line(r.cluster_centers[i,:], d1, [-l/2,l/2])
-        v1edges = points_on_line(r.cluster_centers[i,:], v1, [-l/2,l/2])
-        v2edges = points_on_line(r.cluster_centers[i,:], v2, [-l/2,l/2])
+        p = points_on_line(r.centers[i,:], d1, [-l/2,l/2])
+        v1edges = points_on_line(r.centers[i,:], v1, [-l/2,l/2])
+        v2edges = points_on_line(r.centers[i,:], v2, [-l/2,l/2])
 
         poly = Shape([tuple(v1edges[1,:]...), tuple(v1edges[2,:]...),
             tuple(v2edges[2,:]...), tuple(v2edges[1,:]...), tuple(v1edges[1,:]...)])
@@ -159,11 +159,11 @@ function plot2d(d, r)
             fillalpha=0.15, linealpha=0.15)
 
         pf = points_on_line(
-            r.cluster_centers[i,:], r.cluster_directions[i, :], [-l/2,l/2])
+            r.centers[i,:], r.directions[i, :], [-l/2,l/2])
         plot!(p6, pf[:,1],pf[:,2], linewidth=3, linecolor=theme_colors[i])
     end
     for i in 1:nclu
-        plot!(p6, [r.cluster_centers[i, 1]], [r.cluster_centers[i, 2]],
+        plot!(p6, [r.centers[i, 1]], [r.centers[i, 2]],
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
 
@@ -177,32 +177,32 @@ function plot2d(d, r)
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     for i in 1:nclu
-        l = r.cluster_lengths[i]
+        l = r.lengths[i]
         pf = points_on_line(
-            r.cluster_centers[i,:], r.cluster_directions[i, :], [-l/2,l/2])
+            r.centers[i,:], r.directions[i, :], [-l/2,l/2])
         plot!(p7, pf[:,1],pf[:,2], linewidth=3, linecolor=theme_colors[i], linealpha=0.3)
     end
 
-    plot!(p7, r.point_projections[:,1], r.point_projections[:,2],
-        group=r.point_clusters, seriestype=:scatter, markersize=1,
+    plot!(p7, r.projections[:,1], r.projections[:,2],
+        group=r.clusters, seriestype=:scatter, markersize=1,
         markerstrokewidth=0.1, markerstrokealpha=0,color=:black, markeralpha=0.6)
 
     ol = 0.7
 
     for i in 1:nclu
-        l = r.cluster_lengths[i]
-        d_ortho = rand_ortho_vector(r.cluster_directions[i,:])
+        l = r.lengths[i]
+        d_ortho = rand_ortho_vector(r.directions[i,:])
 
-        strt = i == 1 ? 0 : cumsum(r.cluster_sizes[1:i-1])[end]
-        for j in 1:r.cluster_sizes[i]
+        strt = i == 1 ? 0 : cumsum(r.sizes[1:i-1])[end]
+        for j in 1:r.sizes[i]
             pti = strt + j
-            pts = points_on_line(r.point_projections[pti,:], d_ortho, [-ol/2,ol/2])
+            pts = points_on_line(r.projections[pti,:], d_ortho, [-ol/2,ol/2])
             plot!(p7, pts[:,1], pts[:,2], linecolor=theme_colors[i], linewidth=1.2)
         end
     end
 
-    for i in 1:length(r.cluster_lengths)
-        plot!(p7, [r.cluster_centers[i, 1]], [r.cluster_centers[i, 2]],
+    for i in 1:length(r.lengths)
+        plot!(p7, [r.centers[i, 1]], [r.centers[i, 2]],
             seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
     end
 
@@ -217,17 +217,17 @@ function plot2d(d, r)
         background_color_inside = pltbg, gridlinewidth=2, aspectratio=1)
 
     for i in 1:nclu
-        l = r.cluster_lengths[i]
+        l = r.lengths[i]
 
-        strt = i == 1 ? 0 : cumsum(r.cluster_sizes[1:i-1])[end]
-        for j in 1:r.cluster_sizes[i]
+        strt = i == 1 ? 0 : cumsum(r.sizes[1:i-1])[end]
+        for j in 1:r.sizes[i]
             pti = strt + j
-            plot!(p8, [r.point_projections[pti, 1], r.points[pti, 1]],
-                [r.point_projections[pti, 2], r.points[pti, 2]],
+            plot!(p8, [r.projections[pti, 1], r.points[pti, 1]],
+                [r.projections[pti, 2], r.points[pti, 2]],
                 linecolor=theme_colors[i])#, linealpha=0.3)
         end
 
-        fnsh = strt + r.cluster_sizes[i]
+        fnsh = strt + r.sizes[i]
         strt += 1
 
         plot!(p8, r.points[strt:fnsh,1], r.points[strt:fnsh,2],
@@ -235,7 +235,7 @@ function plot2d(d, r)
             markeralpha=0.6,color=:black)#theme_colors[i])
 
         pf = points_on_line(
-            r.cluster_centers[i,:], r.cluster_directions[i, :], [-l/2,l/2])
+            r.centers[i,:], r.directions[i, :], [-l/2,l/2])
         plot!(p8, pf[:,1],pf[:,2], linewidth=3, linecolor=theme_colors[i], linealpha=0.5)
 
     end
@@ -243,7 +243,7 @@ function plot2d(d, r)
     # ###### #
     # Plot 9 #
     # ###### #
-    p9 = plot(r.points[:,1], r.points[:,2], group=r.point_clusters,
+    p9 = plot(r.points[:,1], r.points[:,2], group=r.clusters,
         title="End result", formatter=x->"", legend=false,
         titlefontsize=8, titlelocation=:left,
         seriestype=:scatter, markersize=3, markerstrokewidth=0.2,

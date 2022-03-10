@@ -76,7 +76,7 @@ julia> using CluGen, Plots, StableRNGs
 
 julia> r = clugen(2, 4, 200, [1, 1], pi/16, [10, 10], 10, 1.5, 1; rng = StableRNG(9999));
 
-julia> plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.point_clusters)
+julia> plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.clusters)
 ```
 
 ## Detailed description
@@ -312,7 +312,7 @@ for cluc_name in cluctr_names
    r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; clucenters_fn = cluctr[cluc_name], rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      group=r.clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
       gridlinewidth=2, aspectratio=1, title=cluc_name, titlefontsize=10,
@@ -397,7 +397,7 @@ for ll_name in ll_names
    r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; llengths_fn = ll[ll_name], proj_dist_fn="unif", rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      group=r.clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
       gridlinewidth=2, aspectratio=1, title=ll_name, titlefontsize=10,
@@ -489,7 +489,7 @@ for la_name in la_names
    r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; angle_deltas_fn = la[la_name], proj_dist_fn="unif", rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      group=r.clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
       gridlinewidth=2, aspectratio=1, title=la_name, titlefontsize=10,
@@ -620,7 +620,7 @@ for pd_name in pdist_names
    r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; proj_dist_fn=pdists[pd_name], rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      group=r.clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
       gridlinewidth=2, aspectratio=1, title=pd_name, titlefontsize=10,
@@ -768,7 +768,7 @@ for po_name in poffs_names
    r = clugen(2, nclu, npts, d, astd, clusep, linelen, linelen_std, latstd; point_dist_fn=poffs[po_name][1], proj_dist_fn=poffs[po_name][2], rng = StableRNG(9999))
    push!(r_all, r)
    p = plot(r.points[:,1], r.points[:,2], seriestype = :scatter,
-      group=r.point_clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
+      group=r.clusters, xlim=(-35,35), ylim=(-35,35), legend=false,
       markersize=1.5, markerstrokewidth=0.1, formatter=x->"", framestyle=:grid,
       foreground_color_grid=:white, gridalpha=1, background_color_inside=pltbg,
       gridlinewidth=2, aspectratio=1, title=po_name, titlefontsize=10,

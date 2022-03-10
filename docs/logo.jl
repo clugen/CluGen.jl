@@ -21,7 +21,7 @@ r = clugen(3, 4, 5000, [1, 1, 1], 0, [15, 5, 10], 10, 0, 3.5;
     rng = StableRNG(9))
 
 p = plot(r.points[:, 1], r.points[:, 2], r.points[:, 3], seriestype = :scatter,
-    group=r.point_clusters, markersize = 2, markerstrokewidth = 0.2, aspectratio=1,
+    group=r.clusters, markersize = 2, markerstrokewidth = 0.2, aspectratio=1,
     legend = nothing, grid = false, framestyle = :none, ticks = false,
     background_color = :transparent,
     xlim = (-20, 29), ylim = (-20, 18), zlim = (-23, 20))
