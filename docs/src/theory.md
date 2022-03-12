@@ -32,14 +32,13 @@ Figure 1 provides a stylized overview of the algorithm's steps.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-Base.include(Main, "extras/CluGenExtras.jl")
-using CluGen, LinearAlgebra, Plots, Printf, StableRNGs
+using CluGen, LinearAlgebra, Plots, StableRNGs, Main.CluGenExtras
 
 # Create clusters
 d = [1, 1]
 nclu = 4
 r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1; rng = StableRNG(9999))
-plt = Main.CluGenExtras.plot2d(d, r)
+plt = plot_story_2d(d, r)
 
 savefig(plt, "algorithm.svg")
 
@@ -182,7 +181,7 @@ that this is not a requirement of the *clugen* algorithm, i.e., user-defined
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, StableRNGs
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -229,8 +228,7 @@ for csz_name in clusz_names
       showaxis=false, foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[],
       aspectratio=1, background_color_inside=pltbg)
 
-   Main.CluGenExtras.plot_clusizes!(p, cluszs_all[csz_name];
-      maxsize = round(Integer, maxclu * 1.1))
+   plot_clusizes!(p, cluszs_all[csz_name]; maxsize = round(Integer, maxclu * 1.1))
 
    push!(p_all, p)
 
@@ -322,7 +320,7 @@ end
 
 push!(p_all, plot(showaxis=false,grid=false,ticks=[],aspectratio=1))
 
-plt = plot(p_all..., layout = (1, 3), size=(1200,400))
+plt = plot(p_all..., layout = (1, 3), size=(1200, 400))
 
 savefig(plt, "clucenters.svg")
 
@@ -708,15 +706,15 @@ hyperplane is simply a line.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, Random
+using CluGen, Distributions, Plots, Random, Main.CluGenExtras
 
 Random.seed!(123)
-p1 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n_1)
+p1 = plot_point_placement_2d(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n_1)
 plot!(p1, title="a) Using the \"n-1\" option (the default).", titlefontsize=10, titlelocation=:left)
-p2 = Main.CluGenExtras.plot2d_point_placement(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n)
+p2 = plot_point_placement_2d(20*rand(100).-10, 20, [0,0], [1,1], 2, CluGen.clupoints_n)
 plot!(p2, title="b) Using the \"n\" option.", titlefontsize=10, titlelocation=:left)
 
-p3 = plot(showaxis=false,grid=false,ticks=[],aspectratio=1)
+p3 = plot(showaxis = false, grid = false, ticks = [], aspectratio = 1)
 
 plt = plot(p1, p2, p3, layout=(1,3), size=(1200,400))
 
@@ -731,7 +729,7 @@ using the built-in implementations for ``p_\text{final}()``.
 
 ```@eval
 ENV["GKSwstype"] = "100"
-using CluGen, Distributions, Plots, StableRNGs
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras
 
 pltbg = RGB(0.92, 0.92, 0.95) #"whitesmoke"
 
@@ -756,8 +754,8 @@ poffs = Dict(
    poffs_names[2] => ("n", "norm"),
    poffs_names[3] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_exp; rng=rng), "norm"),
    poffs_names[4] => ((projs, lat_std, len, clu_dir, clu_ctr; rng=nothing) -> CluGen.clupoints_n_1_template(projs, lat_std, clu_dir, dist_bimod; rng=rng), "norm"),
-   poffs_names[5] => (Main.CluGenExtras.clupoints_n_hollow, "norm"),
-   poffs_names[6] => (Main.CluGenExtras.clupoints_n_hollow, "unif")
+   poffs_names[5] => (clupoints_n_hollow, "norm"),
+   poffs_names[6] => (clupoints_n_hollow, "unif")
 )
 
 # Results and plots

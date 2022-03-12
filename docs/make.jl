@@ -6,6 +6,9 @@ using CluGen, Documenter
 # Generate the logo
 include("logo.jl")
 
+# Include the CluGenExtras module, necessary for building the docs
+include("./CluGenExtras.jl")
+
 # Only run doctests in Julia 1.6 LTS
 @static if v"1.6" ≤ VERSION < v"1.7"
     run_doctests = true
@@ -14,7 +17,7 @@ else
 end
 
 # Set doctest metadata
-DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen); recursive=true)
+DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen); recursive = true)
 
 # Generate the documentation
 makedocs(

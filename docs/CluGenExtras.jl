@@ -16,10 +16,13 @@ using LinearAlgebra
 using Plots
 using Random
 
-export plot2d
+export clupoints_n_hollow
+export plot_clusizes!
+export plot_point_placement_2d
+export plot_story_2d
 
 """
-    plot2d(d, r)
+    plot_story_2d(d, r)
 
 Create a nice descriptive plot for a `clugen()` run in 2D.
 
@@ -27,7 +30,7 @@ Create a nice descriptive plot for a `clugen()` run in 2D.
 - `d`: main direction passed to `clugen()`.
 - `r`: results returned by `clugen()`.
 """
-function plot2d(d, r)
+function plot_story_2d(d, r)
 
     # Normalize direction
     d1 = normalize(d)
@@ -320,7 +323,7 @@ function plot_clusizes!(
         g_x = (i - 1) % gside
         scal = 0.48 * iclusizes[i]
         an = (g_x, g_y, text("$(clusizes[i]) points", :center,
-            pointsize=7, color=:black))
+            pointsize = 7, color = :black))
         plot!(plt, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
             linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
             annotations = an)
@@ -419,7 +422,7 @@ function clupoints_n_hollow(
 end
 
 """
-    plot2d_point_placement(
+    plot_point_placement_2d(
         pre_projs::AbstractArray{<:Real, 1},
         line_len::Integer,
         clu_ctr::AbstractArray{<:Real, 1},
@@ -448,14 +451,16 @@ projections on the cluster-supporting line to the respective final cluster point
 
 # Examples
 ```julia-repl
-julia> include("docs/extras/CluGenExtras.jl")
+julia> include("docs/CluGenExtras.jl")
 Main.CluGenExtras
 
-julia> Main.CluGenExtras.plot_point_placement(rand(800) .* 40 .- 20, 40, [0,0],
-       normalize([1,1]), 5, Main.CluGenExtras.clupoints_n_hollow)
+julia> using Main.GluGenExtras
+
+julia> plot_point_placement_2d(rand(800) .* 40 .- 20, 40, [0,0],
+           normalize([1,1]), 5, clupoints_n_hollow)
 ```
 """
-function plot2d_point_placement(
+function plot_point_placement_2d(
     pre_projs::AbstractArray{<:Real, 1},
     line_len::Integer,
     clu_ctr::AbstractArray{<:Real, 1},
