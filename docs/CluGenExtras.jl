@@ -18,6 +18,7 @@ using Random
 
 export clupoints_n_hollow
 export plot_clusizes!
+export plot_examples_2d
 export plot_point_placement_2d
 export plot_story_2d
 
@@ -517,6 +518,72 @@ function plot_point_placement_2d(
 
     # Return plot
     return plt
+end
+
+"""
+    function plot_examples_2d(
+        ets...;
+        pmargin::Real = 0.1,
+        ncols::Integer = 3,
+        side::Integer = 300
+    ) -> Plots.Plot
+
+Plot a set of 2D examples.
+"""
+function plot_examples_2d(
+    ets...;
+    pmargin::Real = 0.1,
+    ncols::Integer = 3,
+    side::Integer = 300
+)::Plots.Plot
+
+    # Get examples
+    ex = ets[1:2:end]
+    # Get titles
+    et = ets[2:2:end]
+
+    # Number of plots and number of rows in combined plot
+    num_plots = length(ets) ÷ 2
+    nrows = max(1, ceil(Integer, num_plots / ncols))
+    blank_plots = nrows * ncols - num_plots
+
+    # Get maximum and minimum points in each dimension for all examples
+    xmax = maximum(map(e -> maximum(e.points[:, 1]), ex))
+    xmin = minimum(map(e -> minimum(e.points[:, 1]), ex))
+    ymax = maximum(map(e -> maximum(e.points[:, 2]), ex))
+    ymin = minimum(map(e -> minimum(e.points[:, 2]), ex))
+
+    # Determine plots centers in each dimension
+    xcenter = (xmax + xmin) / 2
+    ycenter = (ymax + ymin) / 2
+
+    # Determine plots span in both dimensions
+    sidespan = (1 + pmargin) * max(abs(xmax - xmin), abs(ymax - ymin)) / 2
+
+    # Determine final plots limits in both dimensions
+    xmax = xcenter + sidespan
+    xmin = xcenter - sidespan
+    ymax = ycenter + sidespan
+    ymin = ycenter - sidespan
+
+    # Create individual plots
+    plts = map(
+        ((e, t),) ->
+            plot(e.points[: ,1], e.points[:, 2], seriestype = :scatter,
+                group = e.clusters, markersize = 2.5, markerstrokewidth = 0.2,
+                aspectratio = 1, legend = nothing, title = t, titlefontsize = 9,
+                xlim = (xmin, xmax), ylim=(ymin, ymax)),
+        zip(ex, et)
+    )
+
+    # Remaining plots are left blank
+    for _ in 1:blank_plots
+        push!(plts, plot(grid = false, showaxis = false, ticks = false))
+    end
+
+    # Return plots combined as subplots
+    return plot(plts..., size = (side * ncols, side * nrows), layout=(nrows, ncols))
+
 end
 
 end # Module
