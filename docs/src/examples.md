@@ -18,6 +18,11 @@ and omit the PRNG altogether, or use a built-in PRNG such as the
 
 The 2D examples were plotted with the `plot_examples_2d()` function available
 [here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+For plotting an example directly, e.g. for `e01`, run:
+
+```julia
+plot(e01.points[:, 1], e01.points[:, 2], seriestype = :scatter, group = e01.clusters)
+```
 
 ### Manipulating the direction of cluster-supporting lines
 
@@ -380,6 +385,11 @@ nothing # hide
 
 The 3D examples were plotted with the `plot_examples_3d()` function available
 [here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+For plotting an example directly, e.g. for `e40`, run:
+
+```julia
+plot(e40.points[:, 1], e40.points[:, 2], e40.points[:, 3], seriestype = :scatter, group = e40.clusters)`.
+```
 
 ### Manipulating the direction of cluster-supporting lines
 
