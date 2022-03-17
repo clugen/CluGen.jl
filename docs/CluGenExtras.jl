@@ -22,6 +22,7 @@ export plot_clusizes!
 export plot_examples_1d
 export plot_examples_2d
 export plot_examples_3d
+export plot_examples_nd
 export plot_point_placement_2d
 export plot_story_2d
 
@@ -558,22 +559,22 @@ function plot_examples_1d(
     # Create individual plots
     plts = map(
         # Density plots
-        ((e, t),) ->
-            plot(e.points, seriestype = :density, group = e.clusters,
-                fill = true, fillalpha = 0.35, legend = nothing,
-                title = t, titlefontsize = 9, xlabel="\$x\$",
-                color = theme_palette(:auto).colors.colors',
-                aspectratio = 12, grid = false, showaxis = :x,
-                framestyle=:zerolines, yticks=false,
-                xlim = (xmins[1], xmaxs[1]), ylim = (-0.09, ymax)),
+        ((e, t),) -> plot(
+            e.points, seriestype = :density, group = e.clusters,
+            fill = true, fillalpha = 0.35, legend = nothing,
+            title = t, titlefontsize = 9, xlabel="\$x\$",
+            color = theme_palette(:auto).colors.colors',
+            aspectratio = 12, grid = false, showaxis = :x,
+            framestyle=:zerolines, yticks=false,
+            xlim = (xmins[1], xmaxs[1]), ylim = (-0.09, ymax)),
         zip(ex, et)
     )
     map(
         # Scatter plots on y ≈ 0
-        ((e, p),) ->
-            plot!(p, e.points, -0.04 .* ones(sum(e.sizes)), group = e.clusters,
-                seriestype = :scatter, markersize = 2.5, markerstrokewidth = 0.1,
-                legend = nothing, color = theme_palette(:auto).colors.colors'),
+        ((e, p),) -> plot!(
+            p, e.points, -0.04 .* ones(sum(e.sizes)), group = e.clusters,
+            seriestype = :scatter, markersize = 2.5, markerstrokewidth = 0.1,
+            legend = nothing, color = theme_palette(:auto).colors.colors'),
         zip(ex, plts)
     )
 
@@ -619,11 +620,11 @@ function plot_examples_2d(
 
     # Create individual plots
     plts = map(
-        ((e, t),) ->
-            plot(e.points[: ,1], e.points[:, 2], seriestype = :scatter,
-                group = e.clusters, markersize = 2.5, markerstrokewidth = 0.2,
-                aspectratio = 1, legend = nothing, title = t, titlefontsize = 9,
-                xlim = (xmins[1], xmaxs[1]), ylim = (xmins[2], xmaxs[2])),
+        ((e, t),) -> plot(
+            e.points[:, 1], e.points[:, 2], seriestype = :scatter,
+            group = e.clusters, markersize = 2.5, markerstrokewidth = 0.2,
+            aspectratio = 1, legend = nothing, title = t, titlefontsize = 9,
+            xlim = (xmins[1], xmaxs[1]), ylim = (xmins[2], xmaxs[2])),
         zip(ex, et)
     )
 
@@ -636,7 +637,6 @@ function plot_examples_2d(
     return plot(plts..., size = (side * ncols, side * nrows), layout = (nrows, ncols))
 
 end
-
 
 """
     plot_examples_3d(
@@ -670,13 +670,15 @@ function plot_examples_3d(
 
     # Create individual plots
     plts = map(
-        ((e, t),) ->
-            plot(e.points[: ,1], e.points[:, 2], e.points[:, 3],
-                seriestype = :scatter, group = e.clusters,
-                markersize = 2.5, markerstrokewidth = 0.2, aspectratio = 1,
-                legend = nothing, title = t, titlefontsize = 9,
-                xlim = (xmins[1], xmaxs[1]), ylim=(xmins[2], xmaxs[2]), zlim=(xmins[3], xmaxs[3]),
-                xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$"),
+        ((e, t),) -> plot(
+            e.points[:, 1], e.points[:, 2], e.points[:, 3],
+            seriestype = :scatter, group = e.clusters,
+            markersize = 2.5, markerstrokewidth = 0.2, aspectratio = 1,
+            legend = nothing, title = t, titlefontsize = 9,
+            xlim = (xmins[1], xmaxs[1]),
+            ylim = (xmins[2], xmaxs[2]),
+            zlim = (xmins[3], xmaxs[3]),
+            xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$"),
         zip(ex, et)
     )
 
@@ -686,7 +688,55 @@ function plot_examples_3d(
     end
 
     # Return plots combined as subplots
-    return plot(plts..., size = (side * ncols, side * nrows), layout=(nrows, ncols))
+    return plot(plts..., size = (side * ncols, side * nrows), layout = (nrows, ncols))
+
+end
+
+"""
+    plot_examples_nd(
+        e,
+        title;
+        pmargin::Real = 0.1,
+        side::Integer = 200
+    ) -> Plots.Plot
+
+Plot one nD example.
+"""
+function plot_examples_nd(
+    e,
+    title;
+    pmargin::Real = 0.1,
+    side::Integer = 200
+)::Plots.Plot
+
+    # How many dimensions?
+    nd = size(e.points, 2)
+
+    # Get limits in each dimension
+    (xmaxs, xmins) = get_plot_lims((e,), pmargin)
+
+    # All possible combinations
+    idxs = Iterators.product(1:nd, 1:nd)
+
+    # Create individual plots
+    plts = map(
+        ei ->
+            if ei[1] == ei[2]
+                plot(grid = false, showaxis = false, ticks = false,
+                    annotations = ((0.5, 0.5), Plots.text("\$x_$(ei[1])\$", 30, :center)))
+            else
+                plot(e.points[:, ei[2]], e.points[:, ei[1]], group = e.clusters,
+                    seriestype = :scatter, markersize = 2, markerstrokewidth = 0.1,
+                    aspectratio = 1, legend = nothing, tickfontsize = 5,
+                    xlim = (xmins[ei[2]], xmaxs[ei[2]]),
+                    ylim = (xmins[ei[1]], xmaxs[ei[1]]))
+            end,
+        idxs
+    )
+
+    # Return plots combined as subplots
+    return plot(plts..., size = (side * nd, side * nd), layout = (nd, nd),
+        plot_title = title, plot_titlefontsize = 10)
 
 end
 

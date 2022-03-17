@@ -4,7 +4,7 @@ This section contains a number of examples on how to use CluGen. Each example
 must be preceded with:
 
 ```@example
-using CluGen, Distributions, Plots, StableRNGs
+using CluGen, Distributions, StableRNGs
 ```
 
 The [StableRNGs](https://github.com/JuliaRandom/StableRNGs.jl) package is used
@@ -14,9 +14,13 @@ it might be simpler to specify a seed with
 and omit the PRNG altogether, or use a built-in PRNG such as the
 [Mersenne Twister](https://docs.julialang.org/en/v1/stdlib/Random/#Random.MersenneTwister).
 
+The plots of each example are generated with helper functions available
+[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+
 ## 2D examples
 
-The 2D examples were plotted with the `plot_examples_2d()` function available
+The 2D examples were plotted with the `plot_examples_2d()` helper function,
+available
 [here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
 For plotting an example directly, e.g. for `e01`, run:
 
@@ -383,7 +387,8 @@ nothing # hide
 
 ## 3D examples
 
-The 3D examples were plotted with the `plot_examples_3d()` function available
+The 3D examples were plotted with the `plot_examples_3d()` helper function
+available
 [here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
 For plotting an example directly, e.g. for `e40`, run:
 
@@ -800,28 +805,19 @@ nothing # hide
 
 #### 5D example with default optional arguments
 
+The following examples were plotted with the `plot_examples_nd()` function available
+[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+
 ```@example
 ENV["GKSwstype"] = "100" # hide
 using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
 
 nd = 5
-e82 = clugen(nd, 6, 1500, [1, 1, 0.5, 0, 0], pi / 16, 30 .* ones(nd), 30, 4, 3; rng = StableRNG(123))
+e82 = clugen(nd, 6, 1500, [1, 1, 0.5, 0, 0], pi / 16, 30 .* ones(nd), 30, 4, 3;
+    rng = StableRNG(123))
 
-plts = []
-for i in 1:nd
-    for j in 1:nd
-        p = plot(e82.points[:, i], e82.points[:, j], seriestype = :scatter, group=e82.clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, tickfontsize=5)
-        if i == 1
-            plot!(p, title = "\$x_$(j)\$", titlefontsize = 10)
-        end
-        if j == 1
-            plot!(p, yguide = "\$x_$(i)\$", guidefontsize = 10)
-        end
-        push!(plts, p)
-    end
-end
+plt = plot_examples_nd(e82, "e82: 5D with optional parameters set to defaults")
 
-plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e82: 5D with optional parameters set to defaults", plot_titlefontsize = 10)
 savefig(plt, "ex5d_01.svg") # hide
 nothing # hide
 ```
@@ -835,23 +831,11 @@ ENV["GKSwstype"] = "100" # hide
 using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
 
 nd = 5
-e83 = clugen(nd, 6, 1500, [0.1, 0.3, 0.5, 0.3, 0.1], pi / 12, 30 .* ones(nd), 35, 5, 3.5; proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(321))
+e83 = clugen(nd, 6, 1500, [0.1, 0.3, 0.5, 0.3, 0.1], pi / 12, 30 .* ones(nd), 35, 5, 3.5;
+    proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(321))
 
-plts = []
-for i in 1:nd
-    for j in 1:nd
-        p = plot(e83.points[:, i], e83.points[:, j], seriestype = :scatter, group=e83.clusters, markersize=2, markerstrokewidth=0.1, aspectratio=1, legend=nothing, tickfontsize=5)
-        if i == 1
-            plot!(p, title = "\$x_$(j)\$", titlefontsize = 10)
-        end
-        if j == 1
-            plot!(p, yguide = "\$x_$(i)\$", guidefontsize = 10)
-        end
-        push!(plts, p)
-    end
-end
+plt = plot_examples_nd(e83, "e83: 5D with proj_dist_fn=\"unif\" and point_dist_fn=\"n\"")
 
-plt = plot(plts..., size=(1000, 1000), layout=(nd, nd), plot_title = "e83: 5D with proj_dist_fn=\"unif\" and point_dist_fn=\"n\"", plot_titlefontsize = 10) # hide
 savefig(plt, "ex5d_02.svg") # hide
 nothing # hide
 ```
