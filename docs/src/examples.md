@@ -102,7 +102,8 @@ ENV["GKSwstype"] = "100" # hide
 using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
 
 # Custom llengths function: line lengths grow for each new cluster
-llen_grow_fn(nclu, llen, llenstd; rng = nothing) = llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
+llen_grow_fn(nclu, llen, llenstd; rng = nothing) =
+    llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
 
 e10 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15,  0.0, 0.5;
     point_dist_fn = "n", rng = StableRNG(2))
@@ -152,7 +153,8 @@ ENV["GKSwstype"] = "100" # hide
 using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
 
 # Custom clucenters function: places clusters in a diagonal
-centers_diag_fn(nclu, csep, coff; rng=nothing) = ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
+centers_diag_fn(nclu, csep, coff; rng=nothing) =
+    ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
 
 e16 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5;
     rng = StableRNG(321))
@@ -341,14 +343,17 @@ nothing # hide
 ENV["GKSwstype"] = "100" # hide
 using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
 
-# Custom clusizes_fn (e38): cluster sizes determined via the uniform distribution, no correction for total points
-clusizes_unif(nclu, npts, ae; rng = nothing) = rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
+# Custom clusizes_fn (e38): cluster sizes determined via the uniform distribution,
+# no correction for total points
+clusizes_unif(nclu, npts, ae; rng = nothing) =
+    rand(rng, DiscreteUniform(1, 2 * npts / nclu), nclu)
 
 # Custom clusizes_fn (e39): clusters all have the same size, no correction for total points
 clusizes_equal(nclu, npts, ae; rng = nothing) = (npts ÷ nclu) .* ones(Integer, nclu)
 
 # Custom clucenters_fn (all): yields fixed positions for the clusters
-centers_fixed(nclu, csep, coff; rng = nothing) = [-csep[1] -csep[2]; csep[1] -csep[2]; -csep[1] csep[2]; csep[1] csep[2]]
+centers_fixed(nclu, csep, coff; rng = nothing) =
+    [-csep[1] -csep[2]; csep[1] -csep[2]; -csep[1] csep[2]; csep[1] csep[2]]
 
 e37 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, point_dist_fn = "n",
