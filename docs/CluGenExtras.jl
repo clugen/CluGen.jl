@@ -15,9 +15,11 @@ using CluGen
 using LinearAlgebra
 using Plots
 using Random
+using StatsPlots
 
 export clupoints_n_hollow
 export plot_clusizes!
+export plot_examples_1d
 export plot_examples_2d
 export plot_examples_3d
 export plot_point_placement_2d
@@ -519,6 +521,70 @@ function plot_point_placement_2d(
 
     # Return plot
     return plt
+end
+
+"""
+    plot_examples_1d(
+        ets...;
+        ymax::Real = 0.85,
+        pmargin::Real = 0.1,
+        ncols::Integer = 3,
+        side::Integer = 300
+    ) -> Plots.Plot
+
+Plot a set of 1D examples.
+"""
+function plot_examples_1d(
+    ets...;
+    ymax::Real = 0.85,
+    pmargin::Real = 0.1,
+    ncols::Integer = 3,
+    side::Integer = 300
+)::Plots.Plot
+
+    # Get examples
+    ex = ets[1:2:end]
+    # Get titles
+    et = ets[2:2:end]
+
+    # Number of plots and number of rows in combined plot
+    num_plots = length(ets) ÷ 2
+    nrows = max(1, ceil(Integer, num_plots / ncols))
+    blank_plots = nrows * ncols - num_plots
+
+    # Get limits in each dimension (just one in this case)
+    (xmaxs, xmins) = get_plot_lims(ex, pmargin)
+
+    # Create individual plots
+    plts = map(
+        # Density plots
+        ((e, t),) ->
+            plot(e.points, seriestype = :density, group = e.clusters,
+                fill = true, fillalpha = 0.35, legend = nothing,
+                title = t, titlefontsize = 9, xlabel="\$x\$",
+                color = theme_palette(:auto).colors.colors',
+                aspectratio = 12, grid = false, showaxis = :x,
+                framestyle=:zerolines, yticks=false,
+                xlim = (xmins[1], xmaxs[1]), ylim = (-0.09, ymax)),
+        zip(ex, et)
+    )
+    map(
+        # Scatter plots on y ≈ 0
+        ((e, p),) ->
+            plot!(p, e.points, -0.04 .* ones(sum(e.sizes)), group = e.clusters,
+                seriestype = :scatter, markersize = 2.5, markerstrokewidth = 0.1,
+                legend = nothing, color = theme_palette(:auto).colors.colors'),
+        zip(ex, plts)
+    )
+
+    # Remaining plots are left blank
+    for _ in 1:blank_plots
+        push!(plts, plot(grid = false, showaxis = false, ticks = false))
+    end
+
+    # Return plots combined as subplots
+    return plot(plts..., size = (side * ncols, side * nrows), layout = (nrows, ncols))
+
 end
 
 """

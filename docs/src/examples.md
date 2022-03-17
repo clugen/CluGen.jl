@@ -752,11 +752,8 @@ nothing # hide
 
 #### Basic 1D example with density plot
 
-The following example also requires the `StatsPlots` package:
-
-```julia
-using StatsPlots
-```
+The following example was plotted with the `plot_examples_1d()` function available
+[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
 
 ```julia
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
@@ -766,14 +763,10 @@ e79 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = StableRNG(45))
 e80 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = StableRNG(45))
 e81 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = StableRNG(45))
 
-p79 = plot(e79.points, seriestype = :density, group=e79.clusters, fill=true, fillalpha=0.35, legend=nothing, title="e79: proj_dist_fn=\"norm\" (default)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="\$x\$", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
-plot!(p79, e79.points, -0.04 .* ones(sum(e79.sizes)), seriestype = :scatter, group=e79.clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
-
-p80 = plot(e80.points, seriestype = :density, group=e80.clusters, fill=true, fillalpha=0.35, legend=nothing, title="e80: proj_dist_fn=\"unif\"", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="\$x\$", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
-plot!(p80, e80.points, -0.04 .* ones(sum(e80.sizes)), seriestype = :scatter, group=e80.clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
-
-p81 = plot(e81.points, seriestype = :density, group=e81.clusters, fill=true, fillalpha=0.35, legend=nothing, title="e81: custom proj_dist_fn (Laplace)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="\$x\$", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
-plot!(p81, e81.points, -0.04 .* ones(sum(e81.sizes)), seriestype = :scatter, group=e81.clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+plt = plot_examples_1d(
+    e79, "e79: proj_dist_fn=\"norm\" (default)",
+    e80, "e80: proj_dist_fn=\"unif\"",
+    e81, "e81: custom proj_dist_fn (Laplace)")
 ```
 
 ```@eval
@@ -785,7 +778,7 @@ plot!(p81, e81.points, -0.04 .* ones(sum(e81.sizes)), seriestype = :scatter, gro
 # in the generated output. We can remove this trick when the bug is fixed.
 
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, StableRNGs, StatsPlots # hide
+using CluGen, Distributions, StableRNGs, StatsPlots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
@@ -794,16 +787,11 @@ e79 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = StableRNG(45))
 e80 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = StableRNG(45))
 e81 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = StableRNG(45))
 
-p79 = plot(e79.points, seriestype = :density, group=e79.clusters, fill=true, fillalpha=0.35, legend=nothing, title="e79: proj_dist_fn=\"norm\" (default)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="\$x\$", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
-plot!(p79, e79.points, -0.04 .* ones(sum(e79.sizes)), seriestype = :scatter, group=e79.clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
+plt = plot_examples_1d(
+    e79, "e79: proj_dist_fn=\"norm\" (default)",
+    e80, "e80: proj_dist_fn=\"unif\"",
+    e81, "e81: custom proj_dist_fn (Laplace)")
 
-p80 = plot(e80.points, seriestype = :density, group=e80.clusters, fill=true, fillalpha=0.35, legend=nothing, title="e80: proj_dist_fn=\"unif\"", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="\$x\$", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
-plot!(p80, e80.points, -0.04 .* ones(sum(e80.sizes)), seriestype = :scatter, group=e80.clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
-
-p81 = plot(e81.points, seriestype = :density, group=e81.clusters, fill=true, fillalpha=0.35, legend=nothing, title="e81: custom proj_dist_fn (Laplace)", titlefontsize=9, color=theme_palette(:auto).colors.colors', xlim=(-19,4), ylim=(-0.09, 0.85), aspect_ratio=12, xlabel="\$x\$", grid=false, showaxis=:x, framestyle=:zerolines, yticks=false)
-plot!(p81, e81.points, -0.04 .* ones(sum(e81.sizes)), seriestype = :scatter, group=e81.clusters, markersize=2.5, markerstrokewidth=0.1, legend=nothing, color=theme_palette(:auto).colors.colors')
-
-plt = plot(p79, p80, p81, size=(900, 215), layout=(1, 3)) # hide
 savefig(plt, "ex1d_01.svg") # hide
 nothing # hide
 ```
