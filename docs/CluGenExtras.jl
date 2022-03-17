@@ -547,24 +547,19 @@ function plot_examples_2d(
     nrows = max(1, ceil(Integer, num_plots / ncols))
     blank_plots = nrows * ncols - num_plots
 
-    # Get maximum and minimum points in each dimension for all examples
-    xmax = maximum(map(e -> maximum(e.points[:, 1]), ex))
-    xmin = minimum(map(e -> minimum(e.points[:, 1]), ex))
-    ymax = maximum(map(e -> maximum(e.points[:, 2]), ex))
-    ymin = minimum(map(e -> minimum(e.points[:, 2]), ex))
+    # Get maximum and minimum points in each dimension
+    xmaxs = maximum(vcat(map(e -> maximum(e.points; dims = 1), ex)...); dims = 1)
+    xmins = minimum(vcat(map(e -> minimum(e.points; dims = 1), ex)...); dims = 1)
 
     # Determine plots centers in each dimension
-    xcenter = (xmax + xmin) / 2
-    ycenter = (ymax + ymin) / 2
+    xcenters = (xmaxs + xmins) / 2
 
-    # Determine plots span in both dimensions
-    sidespan = (1 + pmargin) * max(abs(xmax - xmin), abs(ymax - ymin)) / 2
+    # Determine plots span for all dimensions
+    sidespan = (1 + pmargin) * maximum(abs.(xmaxs - xmins)) / 2
 
     # Determine final plots limits in both dimensions
-    xmax = xcenter + sidespan
-    xmin = xcenter - sidespan
-    ymax = ycenter + sidespan
-    ymin = ycenter - sidespan
+    xmaxs = xcenters .+ sidespan
+    xmins = xcenters .- sidespan
 
     # Create individual plots
     plts = map(
@@ -572,7 +567,7 @@ function plot_examples_2d(
             plot(e.points[: ,1], e.points[:, 2], seriestype = :scatter,
                 group = e.clusters, markersize = 2.5, markerstrokewidth = 0.2,
                 aspectratio = 1, legend = nothing, title = t, titlefontsize = 9,
-                xlim = (xmin, xmax), ylim=(ymin, ymax)),
+                xlim = (xmins[1], xmaxs[1]), ylim=(xmins[2], xmaxs[2])),
         zip(ex, et)
     )
 
