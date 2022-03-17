@@ -19,6 +19,7 @@ using Random
 export clupoints_n_hollow
 export plot_clusizes!
 export plot_examples_2d
+export plot_examples_3d
 export plot_point_placement_2d
 export plot_story_2d
 
@@ -521,7 +522,7 @@ function plot_point_placement_2d(
 end
 
 """
-    function plot_examples_2d(
+    plot_examples_2d(
         ets...;
         pmargin::Real = 0.1,
         ncols::Integer = 3,
@@ -547,6 +548,89 @@ function plot_examples_2d(
     nrows = max(1, ceil(Integer, num_plots / ncols))
     blank_plots = nrows * ncols - num_plots
 
+    # Get limits in each dimension
+    (xmaxs, xmins) = get_plot_lims(ex, pmargin)
+
+    # Create individual plots
+    plts = map(
+        ((e, t),) ->
+            plot(e.points[: ,1], e.points[:, 2], seriestype = :scatter,
+                group = e.clusters, markersize = 2.5, markerstrokewidth = 0.2,
+                aspectratio = 1, legend = nothing, title = t, titlefontsize = 9,
+                xlim = (xmins[1], xmaxs[1]), ylim = (xmins[2], xmaxs[2])),
+        zip(ex, et)
+    )
+
+    # Remaining plots are left blank
+    for _ in 1:blank_plots
+        push!(plts, plot(grid = false, showaxis = false, ticks = false))
+    end
+
+    # Return plots combined as subplots
+    return plot(plts..., size = (side * ncols, side * nrows), layout = (nrows, ncols))
+
+end
+
+
+"""
+    plot_examples_3d(
+        ets...;
+        pmargin::Real = 0.1,
+        ncols::Integer = 3,
+        side::Integer = 300
+    ) -> Plots.Plot
+
+Plot a set of 3D examples.
+"""
+function plot_examples_3d(
+    ets...;
+    pmargin::Real = 0.02,
+    ncols::Integer = 3,
+    side::Integer = 300
+)::Plots.Plot
+
+    # Get examples
+    ex = ets[1:2:end]
+    # Get titles
+    et = ets[2:2:end]
+
+    # Number of plots and number of rows in combined plot
+    num_plots = length(ets) ÷ 2
+    nrows = max(1, ceil(Integer, num_plots / ncols))
+    blank_plots = nrows * ncols - num_plots
+
+    # Get limits in each dimension
+    (xmaxs, xmins) = get_plot_lims(ex, pmargin)
+
+    # Create individual plots
+    plts = map(
+        ((e, t),) ->
+            plot(e.points[: ,1], e.points[:, 2], e.points[:, 3],
+                seriestype = :scatter, group = e.clusters,
+                markersize = 2.5, markerstrokewidth = 0.2, aspectratio = 1,
+                legend = nothing, title = t, titlefontsize = 9,
+                xlim = (xmins[1], xmaxs[1]), ylim=(xmins[2], xmaxs[2]), zlim=(xmins[3], xmaxs[3]),
+                xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$"),
+        zip(ex, et)
+    )
+
+    # Remaining plots are left blank
+    for _ in 1:blank_plots
+        push!(plts, plot(grid = false, showaxis = false, ticks = false))
+    end
+
+    # Return plots combined as subplots
+    return plot(plts..., size = (side * ncols, side * nrows), layout=(nrows, ncols))
+
+end
+
+"""
+    get_plot_lims(ex::Tuple, pmargin::Real) -> Tuple
+
+Determine the plot limits for the clugen results given in `ex`.
+"""
+function get_plot_lims(ex::Tuple, pmargin::Real)::Tuple
+
     # Get maximum and minimum points in each dimension
     xmaxs = maximum(vcat(map(e -> maximum(e.points; dims = 1), ex)...); dims = 1)
     xmins = minimum(vcat(map(e -> minimum(e.points; dims = 1), ex)...); dims = 1)
@@ -561,23 +645,7 @@ function plot_examples_2d(
     xmaxs = xcenters .+ sidespan
     xmins = xcenters .- sidespan
 
-    # Create individual plots
-    plts = map(
-        ((e, t),) ->
-            plot(e.points[: ,1], e.points[:, 2], seriestype = :scatter,
-                group = e.clusters, markersize = 2.5, markerstrokewidth = 0.2,
-                aspectratio = 1, legend = nothing, title = t, titlefontsize = 9,
-                xlim = (xmins[1], xmaxs[1]), ylim=(xmins[2], xmaxs[2])),
-        zip(ex, et)
-    )
-
-    # Remaining plots are left blank
-    for _ in 1:blank_plots
-        push!(plts, plot(grid = false, showaxis = false, ticks = false))
-    end
-
-    # Return plots combined as subplots
-    return plot(plts..., size = (side * ncols, side * nrows), layout=(nrows, ncols))
+    return (xmaxs, xmins)
 
 end
 
