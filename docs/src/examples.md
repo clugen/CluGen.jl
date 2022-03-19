@@ -453,7 +453,7 @@ nothing # hide
 plt = plot_examples_3d(
     e40, "e40: direction = [1, 0, 0]",
     e41, "e41: direction = [1, 1, 1]",
-    e42, "e42: direction = [0, 1, 0]")
+    e42, "e42: direction = [0, 0, 1]")
 
 savefig(plt, "ex3d_01.svg") # hide
 nothing # hide
