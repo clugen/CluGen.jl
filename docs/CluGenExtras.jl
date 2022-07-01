@@ -757,7 +757,7 @@ function get_plot_lims(ex::Tuple, pmargin::Real)::Tuple
     # Determine plots span for all dimensions
     sidespan = (1 + pmargin) * maximum(abs.(xmaxs - xmins)) / 2
 
-    # Determine final plots limits in both dimensions
+    # Determine final plots limits
     xmaxs = xcenters .+ sidespan
     xmins = xcenters .- sidespan
 
