@@ -38,7 +38,7 @@ using CluGen, LinearAlgebra, Plots, StableRNGs, Main.CluGenExtras
 d = [1, 1]
 nclu = 4
 r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1; rng = StableRNG(9999))
-plt = plot_story_2d(d, r)
+plt, _ = plot_story_2d(d, r)
 
 savefig(plt, "algorithm.svg")
 

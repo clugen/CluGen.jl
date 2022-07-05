@@ -12,6 +12,7 @@ official CluGen module.
 module CluGenExtras
 
 using CluGen
+using LaTeXStrings
 using LinearAlgebra
 using Plots
 using Random
@@ -65,7 +66,7 @@ function plot_story_2d(d, r)
     plot!(p1, [0, d1[1]],[0, d1[2]], label="", color=theme_colors[1], arrow=true,
         titlefontsize=8, titlelocation=:left,
         linewidth=2)
-    plot!(p1, annotations = (0.5, 0.4, text("\$\\mathbf{d}\$", pointsize=11,
+    plot!(p1, annotations = (0.5, 0.4, text(L"\mathbf{d}", pointsize=11,
         color=theme_colors[1])))
 
     # Draw unit circle
@@ -287,7 +288,7 @@ function plot_story_2d(d, r)
     allplt = plot(p1, p2, p3, p4, p5, p6, p7, p8, p9, layout = (3, 3),
         size=(1200,1200))
 
-    return allplt
+    return allplt, (p1, p2, p3, p4, p5, p6, p7, p8, p9)
 end
 
 """
