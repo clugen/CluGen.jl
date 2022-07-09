@@ -302,7 +302,8 @@ Plots cluster sizes within circles which are themselves sized accordingly.
 function plot_clusizes!(
     plt::Plots.Plot,
     clusizes::AbstractArray{<:Integer, 1};
-    maxsize::Union{Nothing, Integer} = nothing
+    maxsize::Union{Nothing, Integer} = nothing,
+    fontsize::Integer = 7
 )::Plots.Plot
 
     # Get current theme colors
@@ -329,7 +330,7 @@ function plot_clusizes!(
         g_x = (i - 1) % gside
         scal = 0.48 * iclusizes[i]
         an = (g_x, g_y, text("$(clusizes[i]) points", :center,
-            pointsize = 7, color = :black))
+            pointsize=fontsize, color=:black))
         plot!(plt, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
             linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
             annotations = an)
