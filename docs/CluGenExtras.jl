@@ -35,8 +35,9 @@ Create a nice descriptive plot for a `clugen()` run in 2D.
 # Arguments
 - `d`: main direction passed to `clugen()`.
 - `r`: results returned by `clugen()`.
+- `cs_args`: extra arguments to pass to plot_clusizes!()
 """
-function plot_story_2d(d, r)
+function plot_story_2d(d, r; cs_args = Dict())
 
     # Normalize direction
     d1 = normalize(d)
@@ -85,7 +86,7 @@ function plot_story_2d(d, r)
         foreground_color_axis=ARGB(1,1,1,0), grid=false, ticks=[], aspectratio=1)
 
     # Use auxiliary function to perform plotting
-    plot_clusizes!(p2, r.sizes)
+    plot_clusizes!(p2, r.sizes; cs_args...)
 
     # ###### #
     # Plot 3 #
@@ -303,7 +304,9 @@ function plot_clusizes!(
     plt::Plots.Plot,
     clusizes::AbstractArray{<:Integer, 1};
     maxsize::Union{Nothing, Integer} = nothing,
-    fontsize::Integer = 7
+    fontsize::Integer = 8,
+    pt_str::AbstractString = "<POINTS> points",
+    total_str::Union{Nothing, AbstractString} = nothing
 )::Plots.Plot
 
     # Get current theme colors
@@ -329,11 +332,26 @@ function plot_clusizes!(
         g_y = -((i - 1) ÷ gside)
         g_x = (i - 1) % gside
         scal = 0.48 * iclusizes[i]
-        an = (g_x, g_y, text("$(clusizes[i]) points", :center,
+        txt = replace(pt_str, "<POINTS>" => "$(clusizes[i])")
+        if pt_str isa LaTeXString
+            txt = LaTeXString(txt)
+        end
+        an = (g_x, g_y, text(txt, :center,
             pointsize=fontsize, color=:black))
         plot!(plt, x->sin(x) * scal + g_x, x->cos(x) * scal + g_y, 0, 2π,
             linewidth = 3, fill = (0, theme_colors[i]), fillalpha = 0.3,
             annotations = an)
+    end
+
+    # Add annotation with total points?
+    if total_str !== nothing
+        txt = replace(total_str, "<POINTS>" => "$(sum(clusizes))")
+        if total_str isa LaTeXString
+            txt = LaTeXString(txt)
+        end
+        an = (gside / 4, -gside / 3.7,
+            text(LaTeXString(txt), :center, pointsize=fontsize, color=:black))
+        plot!(plt, annotations = an)
     end
 
     return plt
