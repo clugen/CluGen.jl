@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2022 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 using CluGen, Documenter
@@ -17,21 +17,19 @@ else
 end
 
 # Set doctest metadata
-DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen); recursive = true)
+DocMeta.setdocmeta!(CluGen, :DocTestSetup, :(using CluGen); recursive=true)
 
 # Generate the documentation
-makedocs(
-    modules = [ CluGen ],
-    sitename = "CluGen documentation",
-    format = Documenter.HTML(
-        assets = ["assets/favicon.ico"]
-    ),
-    pages = [
+makedocs(;
+    modules=[CluGen],
+    sitename="CluGen documentation",
+    format=Documenter.HTML(; assets=["assets/favicon.ico"]),
+    pages=[
         "Home" => "index.md",
         "Theory" => "theory.md",
         "Examples" => "examples.md",
         "API" => "api.md",
-        "Development" => "dev.md"
-        ],
-    doctest = run_doctests
+        "Development" => "dev.md",
+    ],
+    doctest=run_doctests,
 )

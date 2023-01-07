@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -14,8 +14,7 @@
     @testset """
         nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std,
         length=$length, dir=$dir, ctr=$ctr"
-        """ for
-        nd in num_dims,
+        """ for nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
@@ -25,7 +24,7 @@
         ctr in get_vecs(rng, ncts, nd)
 
         # Create some point projections
-        proj_dist_fn2ctr = length .* rand(rng, tpts) .- length / 2;
+        proj_dist_fn2ctr = length .* rand(rng, tpts) .- length / 2
         proj = points_on_line(ctr, dir, proj_dist_fn2ctr)
 
         # Check that the clupoints_n_1 function runs without warnings

@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2022 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -190,21 +190,21 @@ function clugen(
     num_dims::Integer,
     num_clusters::Integer,
     num_points::Integer,
-    direction::AbstractArray{<:Real, 1},
+    direction::AbstractArray{<:Real,1},
     angle_disp::Real,
-    cluster_sep::AbstractArray{<:Real, 1},
+    cluster_sep::AbstractArray{<:Real,1},
     llength::Real,
     llength_disp::Real,
     lateral_disp::Real;
-    allow_empty::Bool = false,
-    cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
-    proj_dist_fn::Union{String, <:Function} = "norm",
-    point_dist_fn::Union{String, <:Function} = "n-1",
-    clusizes_fn::Function = clusizes,
-    clucenters_fn::Function = clucenters,
-    llengths_fn::Function = llengths,
-    angle_deltas_fn::Function = angle_deltas,
-    rng::AbstractRNG = Random.GLOBAL_RNG
+    allow_empty::Bool=false,
+    cluster_offset::Union{AbstractArray{<:Real,1},Nothing}=nothing,
+    proj_dist_fn::Union{String,<:Function}="norm",
+    point_dist_fn::Union{String,<:Function}="n-1",
+    clusizes_fn::Function=clusizes,
+    clucenters_fn::Function=clucenters,
+    llengths_fn::Function=llengths,
+    angle_deltas_fn::Function=angle_deltas,
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::NamedTuple
 
     # ############### #
@@ -229,25 +229,34 @@ function clugen(
     # Check that direction has num_dims dimensions
     dir_len = length(direction)
     if dir_len != num_dims
-        throw(ArgumentError(
-            "Length of `direction` must be equal to `num_dims` " *
-            "($dir_len != $num_dims)"))
+        throw(
+            ArgumentError(
+                "Length of `direction` must be equal to `num_dims` " *
+                "($dir_len != $num_dims)",
+            ),
+        )
     end
 
     # If allow_empty is false, make sure there are enough points to distribute
     # by the clusters
     if !allow_empty && num_points < num_clusters
-        throw(ArgumentError(
-            "A total of $num_points points is not enough for " *
-            "$num_clusters non-empty clusters"))
+        throw(
+            ArgumentError(
+                "A total of $num_points points is not enough for " *
+                "$num_clusters non-empty clusters",
+            ),
+        )
     end
 
     # Check that cluster_sep has num_dims dimensions
     clusep_len = length(cluster_sep)
     if clusep_len != num_dims
-        throw(ArgumentError(
-            "Length of `cluster_sep` must be equal to `num_dims` " *
-            "($clusep_len != $num_dims)"))
+        throw(
+            ArgumentError(
+                "Length of `cluster_sep` must be equal to `num_dims` " *
+                "($clusep_len != $num_dims)",
+            ),
+        )
     end
 
     # If given, cluster_offset must have the correct number of dimensions,
@@ -255,9 +264,12 @@ function clugen(
     if cluster_offset === nothing
         cluster_offset = zeros(num_dims)
     elseif length(cluster_offset) != num_dims
-        throw(ArgumentError(
-            "Length of `cluster_offset` must be equal to `num_dims` " *
-            "($(length(cluster_offset)) != $num_dims)"))
+        throw(
+            ArgumentError(
+                "Length of `cluster_offset` must be equal to `num_dims` " *
+                "($(length(cluster_offset)) != $num_dims)",
+            ),
+        )
     end
 
     # Check that proj_dist_fn specifies a valid way for projecting points along
@@ -276,8 +288,11 @@ function clugen(
         # such that the line length contains ≈99.73% of the points
         pointproj_fn = (len, n, rng) -> (1.0 / 6.0) * len .* randn(rng, n)
     else
-        throw(ArgumentError(
-            "`proj_dist_fn` has to be either \"norm\", \"unif\" or user-defined function"))
+        throw(
+            ArgumentError(
+                "`proj_dist_fn` has to be either \"norm\", \"unif\" or user-defined function",
+            ),
+        )
     end
 
     # Check that point_dist_fn specifies a valid way for generating points given
@@ -301,8 +316,11 @@ function clugen(
         # centered at the point projection
         pt_from_proj_fn = clupoints_n
     else
-        throw(ArgumentError(
-            "point_dist_fn has to be either \"n-1\", \"n\" or a user-defined function"))
+        throw(
+            ArgumentError(
+                "point_dist_fn has to be either \"n-1\", \"n\" or a user-defined function"
+            ),
+        )
     end
 
     # ############################ #
@@ -329,7 +347,8 @@ function clugen(
     cluster_angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
 
     # Determine normalized cluster directions
-    cluster_directions = hcat([rand_vector_at_angle(direction, a; rng=rng) for a in cluster_angles]...)'
+    cluster_directions =
+        hcat([rand_vector_at_angle(direction, a; rng=rng) for a in cluster_angles]...)'
 
     # ################################# #
     # Determine points for each cluster #
@@ -359,7 +378,8 @@ function clugen(
         # Determine coordinates of point projections on the line using the
         # parametric line equation (this works since cluster direction is normalized)
         point_projections[idx_start:idx_end, :] = points_on_line(
-            cluster_centers[i, :], cluster_directions[i, :], ptproj_dist_fn_center)
+            cluster_centers[i, :], cluster_directions[i, :], ptproj_dist_fn_center
+        )
 
         # Determine points from their projections on the line
         points[idx_start:idx_end, :] = pt_from_proj_fn(
@@ -368,20 +388,20 @@ function clugen(
             cluster_lengths[i],
             cluster_directions[i, :],
             cluster_centers[i, :];
-            rng=rng)
-
+            rng=rng,
+        )
     end
 
     return (
-        points = points,
-        clusters = point_clusters,
-        projections = point_projections,
-        sizes = cluster_sizes,
-        centers = cluster_centers,
-        directions = cluster_directions,
-        angles = cluster_angles,
-        lengths = cluster_lengths)
-
+        points=points,
+        clusters=point_clusters,
+        projections=point_projections,
+        sizes=cluster_sizes,
+        centers=cluster_centers,
+        directions=cluster_directions,
+        angles=cluster_angles,
+        lengths=cluster_lengths,
+    )
 end
 
 # ############################################################################ #
@@ -428,13 +448,11 @@ julia> points_on_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
 ```
 """
 function points_on_line(
-    center::AbstractArray{<:Real, 1},
-    direction::AbstractArray{<:Real, 1},
-    dist_center::AbstractArray{<:Real, 1}
-)::AbstractArray{<:Real, 2}
-
+    center::AbstractArray{<:Real,1},
+    direction::AbstractArray{<:Real,1},
+    dist_center::AbstractArray{<:Real,1},
+)::AbstractArray{<:Real,2}
     return center' .+ dist_center * direction'
-
 end
 
 """
@@ -464,9 +482,8 @@ julia> rand_ortho_vector([1,0,0]; rng=MersenneTwister(567)) # 3D, reproducible
 ```
 """
 function rand_ortho_vector(
-    u::AbstractArray{<:Real, 1};
-    rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Real, 1}
+    u::AbstractArray{<:Real,1}; rng::AbstractRNG=Random.GLOBAL_RNG
+)::AbstractArray{<:Real,1}
 
     # If 1D, just return a random unit vector
     length(u) == 1 && return rand_unit_vector(1; rng=rng)
@@ -484,7 +501,6 @@ function rand_ortho_vector(
         if abs(dot(u, r)) ≉ 1
             break
         end
-
     end
 
     # Get vector orthogonal to u using 1st iteration of Gram-Schmidt process
@@ -495,7 +511,6 @@ function rand_ortho_vector(
 
     # And return it
     return v
-
 end
 
 """
@@ -525,14 +540,11 @@ julia> rand_unit_vector(2; rng=MersenneTwister(33)) # 2D, reproducible
 ```
 """
 function rand_unit_vector(
-    num_dims::Integer;
-    rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Real, 1}
-
+    num_dims::Integer; rng::AbstractRNG=Random.GLOBAL_RNG
+)::AbstractArray{<:Real,1}
     r = rand(rng, num_dims) .- 0.5
     normalize!(r)
     return r
-
 end
 
 """
@@ -562,20 +574,16 @@ julia> rand_vector_at_angle([0, 1], pi/6; rng=MersenneTwister(456)) # 2D, reprod
 ```
 """
 function rand_vector_at_angle(
-    u::AbstractArray{<:Real, 1},
-    angle::Real;
-    rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Real, 1}
-
-    if abs(angle) ≈ pi/2 && length(u) > 1
+    u::AbstractArray{<:Real,1}, angle::Real; rng::AbstractRNG=Random.GLOBAL_RNG
+)::AbstractArray{<:Real,1}
+    if abs(angle) ≈ pi / 2 && length(u) > 1
         return rand_ortho_vector(u; rng=rng)
-    elseif -pi/2 < angle < pi/2 && length(u) > 1
+    elseif -pi / 2 < angle < pi / 2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))
     else
         # For |θ| > π/2 or the 1D case, simply return a random vector
         return rand_unit_vector(length(u); rng=rng)
     end
-
 end
 
 # ############################################################################ #
@@ -619,17 +627,15 @@ julia> CluGen.angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
 ```
 """
 function angle_deltas(
-    num_clusters::Integer,
-    angle_disp::Real;
-    rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Real, 1}
+    num_clusters::Integer, angle_disp::Real; rng::AbstractRNG=Random.GLOBAL_RNG
+)::AbstractArray{<:Real,1}
 
     # Helper function to return the minimum valid angle
     function minangle(a)
         a = atan(sin(a), cos(a))
-        if a > π/2
+        if a > π / 2
             a -= π
-        elseif a < -π/2
+        elseif a < -π / 2
             a += π
         end
         return a
@@ -642,7 +648,6 @@ function angle_deltas(
     map!(minangle, angles, angles)
 
     return angles
-
 end
 
 """
@@ -698,9 +703,9 @@ julia> CluGen.clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D, reproduc
 """
 function clucenters(
     num_clusters::Integer,
-    clu_sep::AbstractArray{<:Real, 1},
-    clu_offset::AbstractArray{<:Real, 1};
-    rng::AbstractRNG = Random.GLOBAL_RNG
+    clu_sep::AbstractArray{<:Real,1},
+    clu_offset::AbstractArray{<:Real,1};
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::AbstractArray{<:Real}
 
     # Obtain a num_clusters x num_dims matrix of uniformly distributed values
@@ -759,12 +764,12 @@ julia> CluGen.clupoints_n_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(1
 ```
 """
 function clupoints_n_1(
-    projs::AbstractArray{<:Real, 2},
+    projs::AbstractArray{<:Real,2},
     lat_disp::Real,
     line_len::Real,
-    clu_dir::AbstractArray{<:Real, 1},
-    clu_ctr::AbstractArray{<:Real, 1};
-    rng::AbstractRNG = Random.GLOBAL_RNG
+    clu_dir::AbstractArray{<:Real,1},
+    clu_ctr::AbstractArray{<:Real,1};
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::AbstractArray{<:Real}
 
     # Define function to get distances from points to their projections on the
@@ -773,7 +778,6 @@ function clupoints_n_1(
 
     # Use clupoints_n_1_template() to do the heavy lifting
     return clupoints_n_1_template(projs, lat_disp, clu_dir, dist_fn; rng=rng)
-
 end
 
 """
@@ -825,12 +829,12 @@ julia> CluGen.clupoints_n(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123
 ```
 """
 function clupoints_n(
-    projs::AbstractArray{<:Real, 2},
+    projs::AbstractArray{<:Real,2},
     lat_disp::Real,
     line_len::Real,
-    clu_dir::AbstractArray{<:Real, 1},
-    clu_ctr::AbstractArray{<:Real, 1};
-    rng::AbstractRNG = Random.GLOBAL_RNG
+    clu_dir::AbstractArray{<:Real,1},
+    clu_ctr::AbstractArray{<:Real,1};
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::AbstractArray{<:Real}
 
     # Number of dimensions
@@ -893,8 +897,8 @@ function clusizes(
     num_clusters::Integer,
     num_points::Integer,
     allow_empty::Bool;
-    rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Integer, 1}
+    rng::AbstractRNG=Random.GLOBAL_RNG,
+)::AbstractArray{<:Integer,1}
 
     # Determine number of points in each cluster using the normal distribution
 
@@ -912,7 +916,7 @@ function clusizes(
 
     # Fix imbalances, so that num_points is respected
     if sum(clu_num_points) > 0 # Be careful not to divide by zero
-        clu_num_points .*=  num_points / sum(clu_num_points)
+        clu_num_points .*= num_points / sum(clu_num_points)
     end
 
     # Round the real values to integers since a cluster sizes is represented by an integer
@@ -928,7 +932,6 @@ function clusizes(
     end
 
     return clu_num_points
-
 end
 
 """
@@ -966,11 +969,9 @@ function llengths(
     num_clusters::Integer,
     llength::Real,
     llength_disp::Real;
-    rng::AbstractRNG = Random.GLOBAL_RNG
-)::AbstractArray{<:Real, 1}
-
+    rng::AbstractRNG=Random.GLOBAL_RNG,
+)::AbstractArray{<:Real,1}
     return abs.(llength .+ llength_disp .* randn(rng, num_clusters))
-
 end
 
 # ############################################################################ #
@@ -1001,8 +1002,7 @@ julia> rad2deg(angle_btw([1.0, 1.0, 1.0, 1.0], [1.0, 0.0, 0.0, 0.0]))
 60.00000000000001
 ```
 """
-function angle_btw(v1::AbstractArray{<:Real, 1}, v2::AbstractArray{<:Real, 1})::Real
-
+function angle_btw(v1::AbstractArray{<:Real,1}, v2::AbstractArray{<:Real,1})::Real
     u1 = normalize(v1)
     u2 = normalize(v2)
 
@@ -1048,11 +1048,11 @@ if invoked by user code.
 - `rng`: An optional pseudo-random number generator for reproducible executions.
 """
 function clupoints_n_1_template(
-    projs::AbstractArray{<:Real, 2},
+    projs::AbstractArray{<:Real,2},
     lat_disp::Real,
-    clu_dir::AbstractArray{<:Real, 1},
+    clu_dir::AbstractArray{<:Real,1},
     dist_fn::Function;
-    rng::AbstractRNG = Random.GLOBAL_RNG
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::AbstractArray{<:Real}
 
     # Number of dimensions
@@ -1066,8 +1066,8 @@ function clupoints_n_1_template(
 
     # Get normalized vectors, orthogonal to the current line, for each point
     orth_vecs = zeros(clu_num_points, num_dims)
-    for j = 1:clu_num_points
-        orth_vecs[j, :] = rand_ortho_vector(clu_dir, rng=rng)
+    for j in 1:clu_num_points
+        orth_vecs[j, :] = rand_ortho_vector(clu_dir; rng=rng)
     end
 
     # Set vector magnitudes
@@ -1078,7 +1078,6 @@ function clupoints_n_1_template(
     points = projs + orth_vecs
 
     return points
-
 end
 
 """
@@ -1101,9 +1100,8 @@ This function is not exported by the package and must be prefixed with `CluGen`
 if invoked by user code.
 """
 function fix_empty!(
-    clu_num_points::AbstractArray{<:Integer, 1},
-    allow_empty::Bool = false
-)::AbstractArray{<:Integer, 1}
+    clu_num_points::AbstractArray{<:Integer,1}, allow_empty::Bool=false
+)::AbstractArray{<:Integer,1}
 
     # If the allow_empty parameter is set to true, don't do anything and return
     # immediately; this is useful for quick `clusizes_fn` one-liners
@@ -1123,12 +1121,10 @@ function fix_empty!(
             imax = argmax(clu_num_points)
             clu_num_points[imax] -= 1
             clu_num_points[i0] += 1
-
         end
     end
 
     return clu_num_points
-
 end
 
 """
@@ -1152,10 +1148,8 @@ This function is not exported by the package and must be prefixed with `CluGen`
 if invoked by user code.
 """
 function fix_num_points!(
-    clu_num_points::AbstractArray{<:Integer, 1},
-    num_points::Integer
-)::AbstractArray{<:Integer, 1}
-
+    clu_num_points::AbstractArray{<:Integer,1}, num_points::Integer
+)::AbstractArray{<:Integer,1}
     while sum(clu_num_points) < num_points
         imin = argmin(clu_num_points)
         clu_num_points[imin] += 1
@@ -1166,7 +1160,6 @@ function fix_num_points!(
     end
 
     return clu_num_points
-
 end
 
 end # Module

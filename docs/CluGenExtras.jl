@@ -1,5 +1,5 @@
 
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -59,40 +59,75 @@ function plot_story_2d(d, r; cs_args=Dict())
     # ###### #
 
     # Setup plot
-    p1 = plot(legend=false, ticks=[],
-        grid=false, framestyle=:zerolines, background_color_inside=pltbg,
-        xlim=(-1.2, 1.2), ylim=(-1.2, 1.2))
+    p1 = plot(;
+        legend=false,
+        ticks=[],
+        grid=false,
+        framestyle=:zerolines,
+        background_color_inside=pltbg,
+        xlim=(-1.2, 1.2),
+        ylim=(-1.2, 1.2),
+    )
 
     # Draw original vector
-    plot!(p1, [0, d[1]], [0, d[2] .- 0.01], label="", color=theme_colors[1],
-        arrow=true, linewidth=5)
-    plot!(p1, annotations=(0.7, 0.9, text(L"\mathbf{d}", pointsize=15,
-        color=theme_colors[1])))
+    plot!(
+        p1,
+        [0, d[1]],
+        [0, d[2] .- 0.01];
+        label="",
+        color=theme_colors[1],
+        arrow=true,
+        linewidth=5,
+    )
+    plot!(
+        p1; annotations=(0.7, 0.9, text(L"\mathbf{d}"; pointsize=15, color=theme_colors[1]))
+    )
 
     # Draw dashed lines
-    plot!(p1, [0, 1], [1, 1], color=theme_colors[1], linewidth=1, linestyle=:dot)
-    plot!(p1, [1, 1], [0, 1], color=theme_colors[1], linewidth=1, linestyle=:dot)
+    plot!(p1, [0, 1], [1, 1]; color=theme_colors[1], linewidth=1, linestyle=:dot)
+    plot!(p1, [1, 1], [0, 1]; color=theme_colors[1], linewidth=1, linestyle=:dot)
 
     # Draw normalized vector
-    plot!(p1, [0, d1[1]], [0, d1[2]] .+ 0.01, label="", color=theme_colors[2],
-        arrow=true, linewidth=3, linealpha=1)
-    plot!(p1, annotations=(0.3, 0.55, text(L"\mathbf{\widehat{d}}", pointsize=15,
-        color=theme_colors[2])))
+    plot!(
+        p1,
+        [0, d1[1]],
+        [0, d1[2]] .+ 0.01;
+        label="",
+        color=theme_colors[2],
+        arrow=true,
+        linewidth=3,
+        linealpha=1,
+    )
+    plot!(
+        p1;
+        annotations=(
+            0.3, 0.55, text(L"\mathbf{\widehat{d}}"; pointsize=15, color=theme_colors[2])
+        ),
+    )
 
     # Draw unit circle
-    plot!(p1, x -> sin(x), x -> cos(x), 0, 2π, linewidth=1, color=color = theme_colors[2])
+    plot!(p1, x -> sin(x), x -> cos(x), 0, 2π; linewidth=1, color=color = theme_colors[2])
 
     # Add 1's to clarify it's the unit circle
-    plot!(p1, annotations=(0.05, 1.10, text("1", pointsize=12)))
-    plot!(p1, annotations=(1.05, 0.10, text("1", pointsize=12)))
+    plot!(p1; annotations=(0.05, 1.10, text("1"; pointsize=12)))
+    plot!(p1; annotations=(1.05, 0.10, text("1"; pointsize=12)))
 
     # ###### #
     # Plot 2 #
     # ###### #
 
-    p2 = plot(title="2. Cluster sizes", legend=false, showaxis=false,
-        titlefontsize=8, titlelocation=:left, background_color_inside=pltbg,
-        foreground_color_axis=ARGB(1, 1, 1, 0), grid=false, ticks=[], aspectratio=1)
+    p2 = plot(;
+        title="2. Cluster sizes",
+        legend=false,
+        showaxis=false,
+        titlefontsize=8,
+        titlelocation=:left,
+        background_color_inside=pltbg,
+        foreground_color_axis=ARGB(1, 1, 1, 0),
+        grid=false,
+        ticks=[],
+        aspectratio=1,
+    )
 
     # Use auxiliary function to perform plotting
     plot_clusizes!(p2, r.sizes; cs_args...)
@@ -100,38 +135,74 @@ function plot_story_2d(d, r; cs_args=Dict())
     # ###### #
     # Plot 3 #
     # ###### #
-    p3 = plot(r.centers[:, 1], r.centers[:, 2], seriestype=:scatter,
-        group=map((x) -> "Cluster $x", 1:nclu), markersize=5, legend=false,
-        title="3. Cluster centers", formatter=x -> "",
-        titlefontsize=8, titlelocation=:left,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+    p3 = plot(
+        r.centers[:, 1],
+        r.centers[:, 2];
+        seriestype=:scatter,
+        group=map((x) -> "Cluster $x", 1:nclu),
+        markersize=5,
+        legend=false,
+        title="3. Cluster centers",
+        formatter=x -> "",
+        titlefontsize=8,
+        titlelocation=:left,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
 
     # ###### #
     # Plot 4 #
     # ###### #
-    p4 = plot(title="4. Lengths of cluster-supporting lines", formatter=x -> "",
-        legend=false, framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        titlefontsize=8, titlelocation=:left,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+    p4 = plot(;
+        title="4. Lengths of cluster-supporting lines",
+        formatter=x -> "",
+        legend=false,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        titlefontsize=8,
+        titlelocation=:left,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
     for i in 1:length(r.lengths)
         l = r.lengths[i]
         p = points_on_line(r.centers[i, :], d1, [-l / 2, l / 2])
-        plot!(p4, p[:, 1], p[:, 2], linewidth=1, color=theme_colors[i])
+        plot!(p4, p[:, 1], p[:, 2]; linewidth=1, color=theme_colors[i])
     end
     for i in 1:length(r.lengths)
-        plot!(p4, [r.centers[i, 1]], [r.centers[i, 2]],
-            seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
+        plot!(
+            p4,
+            [r.centers[i, 1]],
+            [r.centers[i, 2]];
+            seriestype=:scatter,
+            color=theme_colors[i],
+            label="",
+            markersize=5,
+        )
     end
 
     # ###### #
     # Plot 5 #
     # ###### #
-    p5 = plot(title="5. Angles between direction and cluster-supporting lines",
+    p5 = plot(;
+        title="5. Angles between direction and cluster-supporting lines",
         formatter=x -> "",
-        legend=false, framestyle=:grid, foreground_color_grid=:white,
-        titlefontsize=8, titlelocation=:left,
-        gridalpha=1, background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+        legend=false,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        titlefontsize=8,
+        titlelocation=:left,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
     for i in 1:length(r.lengths)
         l = r.lengths[i]
         v1 = [cos(d_angl + r.angles[i]), sin(d_angl + r.angles[i])]
@@ -141,27 +212,53 @@ function plot_story_2d(d, r; cs_args=Dict())
         v1edges = points_on_line(r.centers[i, :], v1, [-l / 2, l / 2])
         v2edges = points_on_line(r.centers[i, :], v2, [-l / 2, l / 2])
 
-        poly = Shape([tuple(v1edges[1, :]...), tuple(v1edges[2, :]...),
-            tuple(v2edges[2, :]...), tuple(v2edges[1, :]...), tuple(v1edges[1, :]...)])
+        poly = Shape([
+            tuple(v1edges[1, :]...),
+            tuple(v1edges[2, :]...),
+            tuple(v2edges[2, :]...),
+            tuple(v2edges[1, :]...),
+            tuple(v1edges[1, :]...),
+        ])
 
-        plot!(p5, poly, color=theme_colors[i], linecolor=theme_colors[i],
-            fillalpha=0.3, linealpha=0.3)
+        plot!(
+            p5,
+            poly;
+            color=theme_colors[i],
+            linecolor=theme_colors[i],
+            fillalpha=0.3,
+            linealpha=0.3,
+        )
 
         #plot!(p5, p[:,1], p[:,2], linewidth=1, color=theme_colors[i])
     end
     for i in 1:length(r.lengths)
-        plot!(p5, [r.centers[i, 1]], [r.centers[i, 2]],
-            seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
+        plot!(
+            p5,
+            [r.centers[i, 1]],
+            [r.centers[i, 2]];
+            seriestype=:scatter,
+            color=theme_colors[i],
+            label="",
+            markersize=5,
+        )
     end
 
     # ###### #
     # Plot 6 #
     # ###### #
-    p6 = plot(title="6.1. Direction of cluster-supporting lines",
-        formatter=x -> "", legend=false,
-        titlefontsize=8, titlelocation=:left,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+    p6 = plot(;
+        title="6.1. Direction of cluster-supporting lines",
+        formatter=x -> "",
+        legend=false,
+        titlefontsize=8,
+        titlelocation=:left,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
     for i in 1:nclu
         l = r.lengths[i]
         v1 = [cos(d_angl + r.angles[i]), sin(d_angl + r.angles[i])]
@@ -171,36 +268,60 @@ function plot_story_2d(d, r; cs_args=Dict())
         v1edges = points_on_line(r.centers[i, :], v1, [-l / 2, l / 2])
         v2edges = points_on_line(r.centers[i, :], v2, [-l / 2, l / 2])
 
-        poly = Shape([tuple(v1edges[1, :]...), tuple(v1edges[2, :]...),
-            tuple(v2edges[2, :]...), tuple(v2edges[1, :]...), tuple(v1edges[1, :]...)])
+        poly = Shape([
+            tuple(v1edges[1, :]...),
+            tuple(v1edges[2, :]...),
+            tuple(v2edges[2, :]...),
+            tuple(v2edges[1, :]...),
+            tuple(v1edges[1, :]...),
+        ])
 
-        plot!(p6, poly, color=theme_colors[i], linecolor=theme_colors[i],
-            fillalpha=0.15, linealpha=0.15)
+        plot!(
+            p6,
+            poly;
+            color=theme_colors[i],
+            linecolor=theme_colors[i],
+            fillalpha=0.15,
+            linealpha=0.15,
+        )
 
-        pf = points_on_line(
-            r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
-        plot!(p6, pf[:, 1], pf[:, 2], linewidth=3, linecolor=theme_colors[i])
+        pf = points_on_line(r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
+        plot!(p6, pf[:, 1], pf[:, 2]; linewidth=3, linecolor=theme_colors[i])
     end
     for i in 1:nclu
-        plot!(p6, [r.centers[i, 1]], [r.centers[i, 2]],
-            seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
+        plot!(
+            p6,
+            [r.centers[i, 1]],
+            [r.centers[i, 2]];
+            seriestype=:scatter,
+            color=theme_colors[i],
+            label="",
+            markersize=5,
+        )
     end
 
     # ###### #
     # Plot 7 #
     # ###### #
-    p7 = plot(titlefontsize=8, titlelocation=:left,
+    p7 = plot(;
+        titlefontsize=8,
+        titlelocation=:left,
         title="6.2-6.3. Point projections on cluster-supporting lines",
-        formatter=x -> "", legend=false,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+        formatter=x -> "",
+        legend=false,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
 
     # Lines
     for i in 1:nclu
         l = r.lengths[i]
-        pf = points_on_line(
-            r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
-        plot!(p7, pf[:, 1], pf[:, 2], linewidth=3, linecolor=theme_colors[i], linealpha=0.3)
+        pf = points_on_line(r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
+        plot!(p7, pf[:, 1], pf[:, 2]; linewidth=3, linecolor=theme_colors[i], linealpha=0.3)
     end
 
     # Line markers along cluster-supporting lines
@@ -209,86 +330,138 @@ function plot_story_2d(d, r; cs_args=Dict())
         l = r.lengths[i]
         d_ortho = rand_ortho_vector(r.directions[i, :])
 
-        strt = i == 1 ? 0 : cumsum(r.sizes[1:i-1])[end]
+        strt = i == 1 ? 0 : cumsum(r.sizes[1:(i - 1)])[end]
         for j in 1:r.sizes[i]
             pti = strt + j
             pts = points_on_line(r.projections[pti, :], d_ortho, [-ol / 2, ol / 2])
-            plot!(p7, pts[:, 1], pts[:, 2], linecolor=theme_colors[i], linewidth=0.3)
+            plot!(p7, pts[:, 1], pts[:, 2]; linecolor=theme_colors[i], linewidth=0.3)
         end
     end
 
     # Line centers
     for i in 1:length(r.lengths)
-        plot!(p7, [r.centers[i, 1]], [r.centers[i, 2]],
-            seriestype=:scatter, color=theme_colors[i], label="", markersize=5)
+        plot!(
+            p7,
+            [r.centers[i, 1]],
+            [r.centers[i, 2]];
+            seriestype=:scatter,
+            color=theme_colors[i],
+            label="",
+            markersize=5,
+        )
     end
 
     # ###### #
     # Plot 8 #
     # ###### #
-    p8 = plot(titlefontsize=8, titlelocation=:left,
+    p8 = plot(;
+        titlefontsize=8,
+        titlelocation=:left,
         title="6.2-6.3. Point projections on cluster-supporting lines",
-        formatter=x -> "", legend=false,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+        formatter=x -> "",
+        legend=false,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
 
     # Lines
     for i in 1:nclu
         l = r.lengths[i]
-        pf = points_on_line(
-            r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
-        plot!(p8, pf[:, 1], pf[:, 2], linewidth=3, linecolor=theme_colors[i], linealpha=0.3)
+        pf = points_on_line(r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
+        plot!(p8, pf[:, 1], pf[:, 2]; linewidth=3, linecolor=theme_colors[i], linealpha=0.3)
     end
 
     # Projections
-    plot!(p8, r.projections[:, 1], r.projections[:, 2],
-        group=r.clusters, seriestype=:scatter, markersize=0.8,
-        markerstrokewidth=0.1, markerstrokealpha=0, color=:black, markeralpha=0.6)
+    plot!(
+        p8,
+        r.projections[:, 1],
+        r.projections[:, 2];
+        group=r.clusters,
+        seriestype=:scatter,
+        markersize=0.8,
+        markerstrokewidth=0.1,
+        markerstrokealpha=0,
+        color=:black,
+        markeralpha=0.6,
+    )
 
     # ###### #
     # Plot 9 #
     # ###### #
 
-    p9 = plot(title="6.4. Final points from their projections",
-        formatter=x -> "", legend=false,
-        titlefontsize=8, titlelocation=:left,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+    p9 = plot(;
+        title="6.4. Final points from their projections",
+        formatter=x -> "",
+        legend=false,
+        titlefontsize=8,
+        titlelocation=:left,
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
 
     for i in 1:nclu
         l = r.lengths[i]
 
-        strt = i == 1 ? 0 : cumsum(r.sizes[1:i-1])[end]
+        strt = i == 1 ? 0 : cumsum(r.sizes[1:(i - 1)])[end]
         for j in 1:r.sizes[i]
             pti = strt + j
-            plot!(p9, [r.projections[pti, 1], r.points[pti, 1]],
-                [r.projections[pti, 2], r.points[pti, 2]],
-                linecolor=theme_colors[i])#, linealpha=0.3)
+            plot!(
+                p9,
+                [r.projections[pti, 1], r.points[pti, 1]],
+                [r.projections[pti, 2], r.points[pti, 2]];
+                linecolor=theme_colors[i],
+            )#, linealpha=0.3)
         end
 
         fnsh = strt + r.sizes[i]
         strt += 1
 
-        plot!(p9, r.points[strt:fnsh, 1], r.points[strt:fnsh, 2],
-            seriestype=:scatter, markersize=1.5, markerstrokewidth=0.1,
-            markeralpha=0.6, color=:black)#theme_colors[i])
+        plot!(
+            p9,
+            r.points[strt:fnsh, 1],
+            r.points[strt:fnsh, 2];
+            seriestype=:scatter,
+            markersize=1.5,
+            markerstrokewidth=0.1,
+            markeralpha=0.6,
+            color=:black,
+        )#theme_colors[i])
 
-        pf = points_on_line(
-            r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
-        plot!(p9, pf[:, 1], pf[:, 2], linewidth=3, linecolor=theme_colors[i], linealpha=0.5)
-
+        pf = points_on_line(r.centers[i, :], r.directions[i, :], [-l / 2, l / 2])
+        plot!(p9, pf[:, 1], pf[:, 2]; linewidth=3, linecolor=theme_colors[i], linealpha=0.5)
     end
 
     # ####### #
     # Plot 10 #
     # ####### #
-    p10 = plot(r.points[:, 1], r.points[:, 2], group=r.clusters,
-        title="End result", formatter=x -> "", legend=false,
-        titlefontsize=8, titlelocation=:left,
-        seriestype=:scatter, markersize=1.5, markerstrokewidth=0,
+    p10 = plot(
+        r.points[:, 1],
+        r.points[:, 2];
+        group=r.clusters,
+        title="End result",
+        formatter=x -> "",
+        legend=false,
+        titlefontsize=8,
+        titlelocation=:left,
+        seriestype=:scatter,
+        markersize=1.5,
+        markerstrokewidth=0,
         markerstrokealpha=0,
-        framestyle=:grid, foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
 
     # ###################################################### #
     # Plot limits adjustment based on existing larger limits #
@@ -310,14 +483,13 @@ function plot_story_2d(d, r; cs_args=Dict())
 
     # Apply larget limits to all relevant plots
     for plt in plts
-        plot!(plt, xlims=(llow, lhigh), ylims=(llow, lhigh))
+        plot!(plt; xlims=(llow, lhigh), ylims=(llow, lhigh))
     end
 
     # ################## #
     # All plots combined #
     # ################## #
-    allplt = plot(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, layout=(2, 5),
-        size=(1500, 600))
+    allplt = plot(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10; layout=(2, 5), size=(1500, 600))
 
     return allplt, (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
 end
@@ -336,7 +508,7 @@ function plot_clusizes!(
     maxsize::Union{Nothing,Integer}=nothing,
     fontsize::Integer=8,
     pt_str::AbstractString="<POINTS> points",
-    total_str::Union{Nothing,AbstractString}=nothing
+    total_str::Union{Nothing,AbstractString}=nothing,
 )::Plots.Plot
 
     # Get current theme colors
@@ -366,11 +538,18 @@ function plot_clusizes!(
         if pt_str isa LaTeXString
             txt = LaTeXString(txt)
         end
-        an = (g_x, g_y, text(txt, :center,
-            pointsize=fontsize, color=:black))
-        plot!(plt, x -> sin(x) * scal + g_x, x -> cos(x) * scal + g_y, 0, 2π,
-            linewidth=3, fill=(0, theme_colors[i]), fillalpha=0.3,
-            annotations=an)
+        an = (g_x, g_y, text(txt, :center; pointsize=fontsize, color=:black))
+        plot!(
+            plt,
+            x -> sin(x) * scal + g_x,
+            x -> cos(x) * scal + g_y,
+            0,
+            2π;
+            linewidth=3,
+            fill=(0, theme_colors[i]),
+            fillalpha=0.3,
+            annotations=an,
+        )
     end
 
     # Add annotation with total points?
@@ -379,9 +558,12 @@ function plot_clusizes!(
         if total_str isa LaTeXString
             txt = LaTeXString(txt)
         end
-        an = (gside / 4, -gside / 3.7,
-            text(LaTeXString(txt), :center, pointsize=fontsize, color=:black))
-        plot!(plt, annotations=an)
+        an = (
+            gside / 4,
+            -gside / 3.7,
+            text(LaTeXString(txt), :center; pointsize=fontsize, color=:black),
+        )
+        plot!(plt; annotations=an)
     end
 
     return plt
@@ -415,7 +597,7 @@ function clupoints_n_hollow(
     line_len::Real,
     clu_dir::AbstractArray{<:Real,1},
     clu_ctr::AbstractArray{<:Real,1};
-    rng::AbstractRNG=Random.GLOBAL_RNG
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::AbstractArray{<:Real}
 
     # Number of dimensions
@@ -431,7 +613,6 @@ function clupoints_n_hollow(
     edge2 = clu_ctr - (line_len / 2) .* clu_dir
 
     for i in 1:clu_num_points
-
         prj = projs[i, :]
 
         # Absolute and relative positions of projection w.r.t. the center
@@ -522,7 +703,7 @@ function plot_point_placement_2d(
     clu_dir::AbstractArray{<:Real,1},
     lat_disp::Real,
     clupoints_fn::Function;
-    rng::AbstractRNG=Random.GLOBAL_RNG
+    rng::AbstractRNG=Random.GLOBAL_RNG,
 )::Plots.Plot
 
     # Plot background
@@ -539,33 +720,73 @@ function plot_point_placement_2d(
     pts = clupoints_fn(projs, lat_disp, line_len, clu_dir, clu_ctr; rng=rng)
 
     # Create plot
-    plt = plot(legend=false, formatter=x -> "", framestyle=:grid,
-        foreground_color_grid=:white, gridalpha=1,
-        background_color_inside=pltbg, gridlinewidth=2, aspectratio=1)
+    plt = plot(;
+        legend=false,
+        formatter=x -> "",
+        framestyle=:grid,
+        foreground_color_grid=:white,
+        gridalpha=1,
+        background_color_inside=pltbg,
+        gridlinewidth=2,
+        aspectratio=1,
+    )
 
     # Draw line
-    plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], color=:orange, linewidth=4)
+    plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]]; color=:orange, linewidth=4)
 
     # Draw edeges
-    plot!(plt, [edge1[1], edge2[1]], [edge1[2], edge2[2]], seriestype=:scatter,
-        markershape=:vline, markercolor=:orange, markerstrokewidth=0.1, markersize=20)
+    plot!(
+        plt,
+        [edge1[1], edge2[1]],
+        [edge1[2], edge2[2]];
+        seriestype=:scatter,
+        markershape=:vline,
+        markercolor=:orange,
+        markerstrokewidth=0.1,
+        markersize=20,
+    )
 
     # Draw center
-    plot!(plt, [clu_ctr[1]], [clu_ctr[2]], seriestype=:scatter, markershape=:circle,
-        markercolor=:orange, markersize=8, markerstrokewidth=0.1)
+    plot!(
+        plt,
+        [clu_ctr[1]],
+        [clu_ctr[2]];
+        seriestype=:scatter,
+        markershape=:circle,
+        markercolor=:orange,
+        markersize=8,
+        markerstrokewidth=0.1,
+    )
 
     # Draw line from projection to respective point
     for i in 1:size(projs, 1)
-        plot!([pts[i, 1], projs[i, 1]], [pts[i, 2], projs[i, 2]], color=:grey, linewidth=0.5)
+        plot!(
+            [pts[i, 1], projs[i, 1]], [pts[i, 2], projs[i, 2]]; color=:grey, linewidth=0.5
+        )
     end
 
     # Draw projections
-    plot!(plt, projs[:, 1], projs[:, 2], seriestype=:scatter, markersize=2.5,
-        markerstrokewidth=0.1, markercolor=:red)
+    plot!(
+        plt,
+        projs[:, 1],
+        projs[:, 2];
+        seriestype=:scatter,
+        markersize=2.5,
+        markerstrokewidth=0.1,
+        markercolor=:red,
+    )
 
     # Draw final points
-    plot!(plt, pts[:, 1], pts[:, 2], markershape=:cross, seriestype=:scatter,
-        markersize=4, markerstrokewidth=0.1, markercolor=:green)
+    plot!(
+        plt,
+        pts[:, 1],
+        pts[:, 2];
+        markershape=:cross,
+        seriestype=:scatter,
+        markersize=4,
+        markerstrokewidth=0.1,
+        markercolor=:green,
+    )
 
     # Display plot
     display(plot(plt))
@@ -586,11 +807,7 @@ end
 Plot a set of 1D examples.
 """
 function plot_examples_1d(
-    ets...;
-    ymax::Real=0.85,
-    pmargin::Real=0.1,
-    ncols::Integer=3,
-    side::Integer=300
+    ets...; ymax::Real=0.85, pmargin::Real=0.1, ncols::Integer=3, side::Integer=300
 )::Plots.Plot
 
     # Get examples
@@ -610,32 +827,49 @@ function plot_examples_1d(
     plts = map(
         # Density plots
         ((e, t),) -> plot(
-            e.points, seriestype=:density, group=e.clusters,
-            fill=true, fillalpha=0.35, legend=nothing,
-            title=t, titlefontsize=9, xlabel="\$x\$",
+            e.points;
+            seriestype=:density,
+            group=e.clusters,
+            fill=true,
+            fillalpha=0.35,
+            legend=nothing,
+            title=t,
+            titlefontsize=9,
+            xlabel="\$x\$",
             color=theme_palette(:auto).colors.colors',
-            aspectratio=12, grid=false, showaxis=:x,
-            framestyle=:zerolines, yticks=false,
-            xlim=(xmins[1], xmaxs[1]), ylim=(-0.09, ymax)),
-        zip(ex, et)
+            aspectratio=12,
+            grid=false,
+            showaxis=:x,
+            framestyle=:zerolines,
+            yticks=false,
+            xlim=(xmins[1], xmaxs[1]),
+            ylim=(-0.09, ymax),
+        ),
+        zip(ex, et),
     )
     map(
         # Scatter plots on y ≈ 0
         ((e, p),) -> plot!(
-            p, e.points, -0.04 .* ones(sum(e.sizes)), group=e.clusters,
-            seriestype=:scatter, markersize=2.5, markerstrokewidth=0.1,
-            legend=nothing, color=theme_palette(:auto).colors.colors'),
-        zip(ex, plts)
+            p,
+            e.points,
+            -0.04 .* ones(sum(e.sizes));
+            group=e.clusters,
+            seriestype=:scatter,
+            markersize=2.5,
+            markerstrokewidth=0.1,
+            legend=nothing,
+            color=theme_palette(:auto).colors.colors',
+        ),
+        zip(ex, plts),
     )
 
     # Remaining plots are left blank
     for _ in 1:blank_plots
-        push!(plts, plot(grid=false, showaxis=false, ticks=false))
+        push!(plts, plot(; grid=false, showaxis=false, ticks=false))
     end
 
     # Return plots combined as subplots
-    return plot(plts..., size=(side * ncols, side * nrows), layout=(nrows, ncols))
-
+    return plot(plts...; size=(side * ncols, side * nrows), layout=(nrows, ncols))
 end
 
 """
@@ -649,10 +883,7 @@ end
 Plot a set of 2D examples.
 """
 function plot_examples_2d(
-    ets...;
-    pmargin::Real=0.1,
-    ncols::Integer=3,
-    side::Integer=300
+    ets...; pmargin::Real=0.1, ncols::Integer=3, side::Integer=300
 )::Plots.Plot
 
     # Get examples
@@ -671,21 +902,29 @@ function plot_examples_2d(
     # Create individual plots
     plts = map(
         ((e, t),) -> plot(
-            e.points[:, 1], e.points[:, 2], seriestype=:scatter,
-            group=e.clusters, markersize=2.5, markerstrokewidth=0.2,
-            aspectratio=1, legend=nothing, title=t, titlefontsize=9,
-            xlim=(xmins[1], xmaxs[1]), ylim=(xmins[2], xmaxs[2])),
-        zip(ex, et)
+            e.points[:, 1],
+            e.points[:, 2];
+            seriestype=:scatter,
+            group=e.clusters,
+            markersize=2.5,
+            markerstrokewidth=0.2,
+            aspectratio=1,
+            legend=nothing,
+            title=t,
+            titlefontsize=9,
+            xlim=(xmins[1], xmaxs[1]),
+            ylim=(xmins[2], xmaxs[2]),
+        ),
+        zip(ex, et),
     )
 
     # Remaining plots are left blank
     for _ in 1:blank_plots
-        push!(plts, plot(grid=false, showaxis=false, ticks=false))
+        push!(plts, plot(; grid=false, showaxis=false, ticks=false))
     end
 
     # Return plots combined as subplots
-    return plot(plts..., size=(side * ncols, side * nrows), layout=(nrows, ncols))
-
+    return plot(plts...; size=(side * ncols, side * nrows), layout=(nrows, ncols))
 end
 
 """
@@ -699,10 +938,7 @@ end
 Plot a set of 3D examples.
 """
 function plot_examples_3d(
-    ets...;
-    pmargin::Real=0.02,
-    ncols::Integer=3,
-    side::Integer=300
+    ets...; pmargin::Real=0.02, ncols::Integer=3, side::Integer=300
 )::Plots.Plot
 
     # Get examples
@@ -721,25 +957,34 @@ function plot_examples_3d(
     # Create individual plots
     plts = map(
         ((e, t),) -> plot(
-            e.points[:, 1], e.points[:, 2], e.points[:, 3],
-            seriestype=:scatter, group=e.clusters,
-            markersize=2.5, markerstrokewidth=0.2, aspectratio=1,
-            legend=nothing, title=t, titlefontsize=9,
+            e.points[:, 1],
+            e.points[:, 2],
+            e.points[:, 3];
+            seriestype=:scatter,
+            group=e.clusters,
+            markersize=2.5,
+            markerstrokewidth=0.2,
+            aspectratio=1,
+            legend=nothing,
+            title=t,
+            titlefontsize=9,
             xlim=(xmins[1], xmaxs[1]),
             ylim=(xmins[2], xmaxs[2]),
             zlim=(xmins[3], xmaxs[3]),
-            xlabel="\$x\$", ylabel="\$y\$", zlabel="\$z\$"),
-        zip(ex, et)
+            xlabel="\$x\$",
+            ylabel="\$y\$",
+            zlabel="\$z\$",
+        ),
+        zip(ex, et),
     )
 
     # Remaining plots are left blank
     for _ in 1:blank_plots
-        push!(plts, plot(grid=false, showaxis=false, ticks=false))
+        push!(plts, plot(; grid=false, showaxis=false, ticks=false))
     end
 
     # Return plots combined as subplots
-    return plot(plts..., size=(side * ncols, side * nrows), layout=(nrows, ncols))
-
+    return plot(plts...; size=(side * ncols, side * nrows), layout=(nrows, ncols))
 end
 
 """
@@ -752,12 +997,7 @@ end
 
 Plot one nD example.
 """
-function plot_examples_nd(
-    e,
-    title;
-    pmargin::Real=0.1,
-    side::Integer=200
-)::Plots.Plot
+function plot_examples_nd(e, title; pmargin::Real=0.1, side::Integer=200)::Plots.Plot
 
     # How many dimensions?
     nd = size(e.points, 2)
@@ -770,24 +1010,39 @@ function plot_examples_nd(
 
     # Create individual plots
     plts = map(
-        ei ->
-            if ei[1] == ei[2]
-                plot(grid=false, showaxis=false, ticks=false,
-                    annotations=((0.5, 0.5), Plots.text("\$x_$(ei[1])\$", 30, :center)))
-            else
-                plot(e.points[:, ei[2]], e.points[:, ei[1]], group=e.clusters,
-                    seriestype=:scatter, markersize=2, markerstrokewidth=0.1,
-                    aspectratio=1, legend=nothing, tickfontsize=5,
-                    xlim=(xmins[ei[2]], xmaxs[ei[2]]),
-                    ylim=(xmins[ei[1]], xmaxs[ei[1]]))
-            end,
-        idxs
+        ei -> if ei[1] == ei[2]
+            plot(;
+                grid=false,
+                showaxis=false,
+                ticks=false,
+                annotations=((0.5, 0.5), Plots.text("\$x_$(ei[1])\$", 30, :center)),
+            )
+        else
+            plot(
+                e.points[:, ei[2]],
+                e.points[:, ei[1]];
+                group=e.clusters,
+                seriestype=:scatter,
+                markersize=2,
+                markerstrokewidth=0.1,
+                aspectratio=1,
+                legend=nothing,
+                tickfontsize=5,
+                xlim=(xmins[ei[2]], xmaxs[ei[2]]),
+                ylim=(xmins[ei[1]], xmaxs[ei[1]]),
+            )
+        end,
+        idxs,
     )
 
     # Return plots combined as subplots
-    return plot(plts..., size=(side * nd, side * nd), layout=(nd, nd),
-        plot_title=title, plot_titlefontsize=10)
-
+    return plot(
+        plts...;
+        size=(side * nd, side * nd),
+        layout=(nd, nd),
+        plot_title=title,
+        plot_titlefontsize=10,
+    )
 end
 
 """
@@ -812,7 +1067,6 @@ function get_plot_lims(ex::Tuple, pmargin::Real)::Tuple
     xmins = xcenters .- sidespan
 
     return (xmaxs, xmins)
-
 end
 
 end # Module

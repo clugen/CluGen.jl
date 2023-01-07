@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -13,8 +13,7 @@
 
     @testset """
         nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), length=$length, dir=$dir, ctr=$ctr
-        """ for
-        nd in num_dims,
+        """ for nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
@@ -38,6 +37,5 @@
             # Check that it is approximately zero
             @test isapprox(d, 0, atol=1e-14)
         end
-
     end
 end

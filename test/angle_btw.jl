@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2022 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -22,5 +22,4 @@
     u = [1.5, 0, 0, 0, 0, 0, 0, -0.5]
     v = [7.5, -0.4, 0, 0, 0, -16.4, 0.1, -0.01]
     @test angle_btw(u, v) ≈ common_angle_btw(u, v)
-
 end

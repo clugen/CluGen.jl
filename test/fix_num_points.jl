@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -13,7 +13,7 @@
     @test clusts_copy == clusts_fixed
 
     # Fix due to too many points
-    clusts = [55; 12];
+    clusts = [55; 12]
     clusts_copy = clusts[:]
     num_pts = sum(clusts) - 14
     clusts_fixed = CluGen.fix_num_points!(clusts, num_pts)
@@ -54,5 +54,4 @@
     @test clusts === clusts_fixed
     @test clusts_copy != clusts_fixed
     @test sum(clusts_fixed) == num_pts
-
 end

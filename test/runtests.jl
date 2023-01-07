@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2022 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -19,14 +19,11 @@ num_clusters = (1, 2, 5, 10, 100)
 lat_stds = (0.0, 5.0, 500)
 llengths_mus = (0, 10)
 llengths_sigmas = (0, 15)
-angles_stds = (0, pi/256, pi/32, pi/4, pi/2, pi, 2*pi)
+angles_stds = (0, pi / 256, pi / 32, pi / 4, pi / 2, pi, 2 * pi)
 
 allow_empties = (true, false)
-get_clu_offsets = (ndims) -> (
-    zeros(ndims),
-    ones(ndims),
-    [1000 .* randn(rng, ndims) for rng in rngs]...
-)
+get_clu_offsets =
+    (ndims) -> (zeros(ndims), ones(ndims), [1000 .* randn(rng, ndims) for rng in rngs]...)
 get_clu_seps = get_clu_offsets
 
 get_vecs = (rng, n, nd) -> [v for v in eachcol(rand(rng, nd, n))]
@@ -36,37 +33,34 @@ get_angles = (rng, n) -> 2 * pi .* rand(rng, n) .- pi
 ptdist_fns = Dict(
     "norm" => "norm",
     "unif" => "unif",
-    "equidistant" =>  (len, n, rng) -> (-len/2:len/n:len/2)[1:n]
+    "equidistant" => (len, n, rng) -> ((-len / 2):(len / n):(len / 2))[1:n],
 )
 ptoff_fns = Dict(
     "n-1" => "n-1",
     "n" => "n",
-    "proj+1" => (projs, lstd, len, cdir, cctr; rng=nothing) -> projs + ones(size(projs))
+    "proj+1" => (projs, lstd, len, cdir, cctr; rng=nothing) -> projs + ones(size(projs)),
 )
 csz_fns = Dict(
-    "default" => CluGen.clusizes,
-    "equi_size" =>
-        function (nclu, tpts, ae; rng=nothing)
-            cs = zeros(Integer, nclu)
-            for i in 1:tpts
-                cs[i % nclu + 1] += 1
-            end
-            return cs
+    "default" => CluGen.clusizes, "equi_size" => function (nclu, tpts, ae; rng=nothing)
+        cs = zeros(Integer, nclu)
+        for i in 1:tpts
+            cs[i % nclu + 1] += 1
         end
+        return cs
+    end
 )
 cctr_fns = Dict(
     "default" => CluGen.clucenters,
-    "on_a_line" =>
-        (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu)
+    "on_a_line" => (nclu, csep, coff; rng=nothing) -> ones(nclu, length(csep)) .* (1:nclu),
 )
 llen_fns = Dict(
     "default" => CluGen.llengths,
     "unif_btw10-20" =>
-        (nclu, llen, llenstd; rng = Random.GLOBAL_RNG) -> 10 .+ 10 * rand(rng, nclu)
+        (nclu, llen, llenstd; rng=Random.GLOBAL_RNG) -> 10 .+ 10 * rand(rng, nclu),
 )
 lang_fns = Dict(
     "default" => CluGen.angle_deltas,
-    "same_angle" => (nclu, astd; rng=nothing) -> zeros(nclu)
+    "same_angle" => (nclu, astd; rng=nothing) -> zeros(nclu),
 )
 
 # For compatibility with Julia 1.0, from Compat.jl by Stefan Karpinski and other
@@ -82,8 +76,7 @@ end
 @static if VERSION < v"1.4"
     filter(f, t::Tuple) = _filterargs(f, t...)
     _filterargs(f) = ()
-    _filterargs(f, x, xs...) =
-        f(x) ? (x, _filterargs(f, xs...)...) : _filterargs(f, xs...)
+    _filterargs(f, x, xs...) = f(x) ? (x, _filterargs(f, xs...)...) : _filterargs(f, xs...)
 end
 
 # ############################################# #
@@ -117,9 +110,7 @@ include("fix_num_points.jl")
 @static if v"1.6" ≤ VERSION < v"1.7"
     using Documenter
     DocMeta.setdocmeta!(
-        CluGen,
-        :DocTestSetup,
-        :(using CluGen, LinearAlgebra, Random);
-        recursive = true)
+        CluGen, :DocTestSetup, :(using CluGen, LinearAlgebra, Random); recursive=true
+    )
     doctest(CluGen)
 end

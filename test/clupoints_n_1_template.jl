@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -17,8 +17,7 @@
     @testset """
         nd=$nd, tpts=$tpts, seed=$(Int(rng.seed[1])), lat_std=$lat_std,
         length=$length, dir=$dir, ctr=$ctr"
-        """ for
-        nd in num_dims,
+        """ for nd in num_dims,
         # Avoid too many points, otherwise testing will be very slow
         tpts in filter((x) -> x < 1000, num_points),
         rng in rngs,
@@ -32,12 +31,13 @@
         proj = points_on_line(ctr, dir, proj_dist_fn2ctr)
 
         # Very simple dist_fn, always puts points at a distance of dist_pt
-        dist_fn = (clu_num_points, ldisp, rg) ->
-            rand(rg, [-dist_pt, dist_pt], clu_num_points, 1)
+        dist_fn =
+            (clu_num_points, ldisp, rg) -> rand(rg, [-dist_pt, dist_pt], clu_num_points, 1)
 
         # Check that the clupoints_n_1_template function runs without warnings
         pts = @test_nowarn CluGen.clupoints_n_1_template(
-            proj, lat_std, dir, dist_fn; rng=rng)
+            proj, lat_std, dir, dist_fn; rng=rng
+        )
 
         # Check that number of points is the same as the number of projections
         @test size(pts) == size(proj)

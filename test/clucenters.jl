@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -6,8 +6,7 @@
 @testset "clucenters" begin
     @testset """
         nd=$nd, seed=$(Int(rng.seed[1])), nclu=$nclu, sep=$clu_sep, off=$clu_off
-        """ for
-        nd in num_dims,
+        """ for nd in num_dims,
         rng in rngs,
         nclu in num_clusters,
         clu_sep in get_clu_seps(nd),
@@ -18,6 +17,5 @@
 
         # Check that return value has the correct dimensions
         @test size(clu_ctrs) == (nclu, nd)
-
     end
 end

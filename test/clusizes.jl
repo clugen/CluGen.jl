@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Nuno Fachada and contributors
+# Copyright (c) 2020-2023 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -6,11 +6,7 @@
 @testset "clusizes" begin
     @testset """
         seed=$(Int(rng.seed[1])), nclu=$nclu, tot_points=$tpts, allow_empty=$ae
-        """ for
-        rng in rngs,
-        nclu in num_clusters,
-        tpts in num_points,
-        ae in allow_empties
+        """ for rng in rngs, nclu in num_clusters, tpts in num_points, ae in allow_empties
 
         # Don't test if number of points is less than number of
         # clusters and we don't allow empty clusters
@@ -22,7 +18,7 @@
         clu_sizes = @test_nowarn CluGen.clusizes(nclu, tpts, ae; rng=rng)
 
         # Check that the output has the correct number of clusters
-        @test size(clu_sizes) == (nclu, )
+        @test size(clu_sizes) == (nclu,)
 
         # Check that the total number of points is correct
         @test sum(clu_sizes) == tpts
