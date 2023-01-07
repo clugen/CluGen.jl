@@ -788,9 +788,6 @@ function plot_point_placement_2d(
         markercolor=:green,
     )
 
-    # Display plot
-    display(plot(plt))
-
     # Return plot
     return plt
 end
