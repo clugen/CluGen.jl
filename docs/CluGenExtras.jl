@@ -1012,12 +1012,12 @@ function plot_examples_nd(e, title; pmargin::Real=0.1, side::Integer=200)::Plots
                 grid=false,
                 showaxis=false,
                 ticks=false,
-                annotations=((0.5, 0.5), Plots.text("\$x_$(ei[1])\$", 30, :center)),
+                annotations=(0.5, 0.5, Plots.text("\$x_$(ei[1])\$", 30, :center)),
             )
         else
             plot(
-                e.points[:, ei[2]],
-                e.points[:, ei[1]];
+                e.points[:, ei[1]],
+                e.points[:, ei[2]];
                 group=e.clusters,
                 seriestype=:scatter,
                 markersize=2,
@@ -1025,8 +1025,8 @@ function plot_examples_nd(e, title; pmargin::Real=0.1, side::Integer=200)::Plots
                 aspectratio=1,
                 legend=nothing,
                 tickfontsize=5,
-                xlim=(xmins[ei[2]], xmaxs[ei[2]]),
-                ylim=(xmins[ei[1]], xmaxs[ei[1]]),
+                xlim=(xmins[ei[1]], xmaxs[ei[1]]),
+                ylim=(xmins[ei[2]], xmaxs[ei[2]]),
             )
         end,
         idxs,
