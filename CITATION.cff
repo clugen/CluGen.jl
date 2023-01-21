@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: Generating Multidimensional Clusters With Support Lines
+title: CluGen.jl
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -20,14 +20,27 @@ authors:
     orcid: 'https://orcid.org/0000-0001-9180-0545'
 repository-code: 'https://github.com/clugen/'
 abstract: >-
-  Clugen is a modular procedure for synthetic data
+  CluGen.jl is a modular procedure for synthetic data
   generation, capable of creating multidimensional clusters
   supported by line segments using arbitrary distributions.
-  It is open source, 100\% unit tested and fully documented,
-  and is available for the Python, R, Julia and
-  MATLAB/Octave ecosystems.
 keywords:
   - synthetic data generation
   - clustering
   - multidimensional data
 license: MIT
+preferred-citation:
+  type: article
+  authors:
+  - given-names: Nuno
+    family-names: Fachada
+    email: nuno.fachada@ulusofona.pt
+    affiliation: 'Lusófona University, COPELABS'
+    orcid: 'https://orcid.org/0000-0002-8487-5837'
+  - given-names: Diogo
+    family-names: de Andrade
+    email: diogo.andrade@ulusofona.pt
+    affiliation: 'Lusófona University, COPELABS'
+    orcid: 'https://orcid.org/0000-0001-9180-0545'
+  journal: "arXiv"
+  title: "Generating Multidimensional Clusters With Support Lines"
+  year: 2023
