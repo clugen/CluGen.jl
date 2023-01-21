@@ -1,5 +1,6 @@
-![Tests](https://github.com/clugen/CluGen.jl/actions/workflows/Tests.yml/badge.svg)
+![tests](https://github.com/clugen/CluGen.jl/actions/workflows/Tests.yml/badge.svg)
 [![codecov](https://codecov.io/gh/clugen/CluGen.jl/branch/main/graph/badge.svg?token=BJQ4UUK7V2)](https://codecov.io/gh/clugen/CluGen.jl)
+[![docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://clugen.github.io/CluGen.jl/stable)
 
 # CluGen.jl
 
