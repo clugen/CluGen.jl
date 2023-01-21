@@ -1,15 +1,11 @@
 ![Tests](https://github.com/clugen/CluGen.jl/actions/workflows/Tests.yml/badge.svg)
+[![codecov](https://codecov.io/gh/clugen/CluGen.jl/branch/main/graph/badge.svg?token=BJQ4UUK7V2)](https://codecov.io/gh/clugen/CluGen.jl)
 
 # CluGen.jl
 
 **CluGen.jl** is a Julia package for generating multidimensional clusters.
 Each cluster is supported by a line segment, the position, orientation and
-length of which guide where the respective points are placed. It provides the
-`clugen()` function for this purpose, as well as a number of auxiliary
-functions, used internally and modularly by `clugen()`. Users can swap
-these auxiliary functions by their own customized versions, fine-tuning their
-cluster generation strategies, or even use them as the basis for their own
-generation algorithms.
+length of which guide where the respective points are placed.
 
 ## Install the package
 
