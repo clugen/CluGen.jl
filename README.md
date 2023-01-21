@@ -1,3 +1,5 @@
+![Tests](https://github.com/clugen/CluGen.jl/actions/workflows/Tests.yml/badge.svg)
+
 # CluGen.jl
 
 **CluGen.jl** is a Julia package for generating multidimensional clusters.
