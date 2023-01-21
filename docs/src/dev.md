@@ -75,9 +75,4 @@ julia> using Revise, CluGen
 
 ## Code style
 
-To contribute to CluGen, follow this code style:
-
-* Encoding: UTF-8
-* Indentation: 4 spaces (no tabs)
-* Line size limit: 100 chars
-* Newlines: Unix style, i.e. LF or `\n`
+To contribute to CluGen, follow the [Blue Style](https://github.com/invenia/BlueStyle).
