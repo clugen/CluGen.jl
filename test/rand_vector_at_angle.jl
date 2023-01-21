@@ -26,8 +26,15 @@
         @test norm(r) ≈ 1
 
         # Check that vectors u and r have an angle of a between them
-        if nd > 1 && abs(a) < pi / 2
+        if nd > 1 && abs(a) < π / 2
             @test angle_btw(u, r) ≈ abs(a) atol = 1e-12
         end
+    end
+
+    # Test corner case where angle == pi / 2 and vector length > 1
+    @testset "u=[2, 2], a=π/2, seed=$(Int(rng.seed[1]))" for rng in rngs
+        u = [2, 2]
+        r = @test_nowarn rand_vector_at_angle(u, π / 2; rng=rng)
+        @test angle_btw(u, r) ≈ π / 2 atol = 1e-12
     end
 end
