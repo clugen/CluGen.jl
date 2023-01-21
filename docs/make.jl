@@ -33,3 +33,5 @@ makedocs(;
     ],
     doctest=run_doctests,
 )
+
+deploydocs(; repo="github.com/clugen/CluGen.jl.git", forcepush=true)
