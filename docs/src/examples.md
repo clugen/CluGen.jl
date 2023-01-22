@@ -15,13 +15,13 @@ and omit the PRNG altogether, or use a built-in PRNG such as the
 [Mersenne Twister](https://docs.julialang.org/en/v1/stdlib/Random/#Random.MersenneTwister).
 
 The plots of each example are generated with helper functions available
-[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+[here](https://github.com/clugen/CluGen.jl/blob/main/docs/CluGenExtras.jl).
 
 ## 2D examples
 
 The 2D examples were plotted with the `plot_examples_2d()` helper function,
 available
-[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+[here](https://github.com/clugen/CluGen.jl/blob/main/docs/CluGenExtras.jl).
 For plotting an example directly, e.g. for `e01`, run:
 
 ```julia
@@ -428,7 +428,7 @@ nothing # hide
 
 The 3D examples were plotted with the `plot_examples_3d()` helper function
 available
-[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+[here](https://github.com/clugen/CluGen.jl/blob/main/docs/CluGenExtras.jl).
 For plotting an example directly, e.g. for `e40`, run:
 
 ```julia
@@ -836,7 +836,7 @@ nothing # hide
 #### Basic 1D example with density plot
 
 The following example was plotted with the `plot_examples_1d()` function available
-[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+[here](https://github.com/clugen/CluGen.jl/blob/main/docs/CluGenExtras.jl).
 
 ```julia
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
@@ -886,7 +886,7 @@ nothing # hide
 #### 5D example with default optional arguments
 
 The following examples were plotted with the `plot_examples_nd()` function available
-[here](https://github.com/clugen/CluGen.jl/blob/master/docs/CluGenExtras.jl).
+[here](https://github.com/clugen/CluGen.jl/blob/main/docs/CluGenExtras.jl).
 
 ```@example 82
 ENV["GKSwstype"] = "100" # hide
