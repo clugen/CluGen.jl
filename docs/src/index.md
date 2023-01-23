@@ -55,5 +55,5 @@ nothing # hide
 ## Further reading
 
 ```@contents
-Pages = ["theory.md", "examples.md", "api.md", "dev.md"]
+Pages = ["theory.md", "examples.md", "reference.md", "dev.md"]
 ```

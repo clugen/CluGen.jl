@@ -28,7 +28,7 @@ makedocs(;
         "Home" => "index.md",
         "Theory" => "theory.md",
         "Examples" => "examples.md",
-        "API" => "api.md",
+        "Reference" => "reference.md",
         "Development" => "dev.md",
     ],
     doctest=run_doctests,
