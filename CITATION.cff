@@ -18,7 +18,7 @@ authors:
     email: diogo.andrade@ulusofona.pt
     affiliation: 'Lusófona University, COPELABS'
     orcid: 'https://orcid.org/0000-0001-9180-0545'
-repository-code: 'https://github.com/clugen/'
+repository-code: 'https://github.com/clugen/CluGen.jl/'
 abstract: >-
   CluGen.jl is a modular procedure for synthetic data
   generation, capable of creating multidimensional clusters
