@@ -1,11 +1,11 @@
 name: Coverage
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
+    paths: [ 'src/**', 'test/**' ]
   push:
-    branches:
-      - main
+    branches: [main]
+    paths: [ 'src/**', 'test/**' ]
     tags: '*'
 jobs:
   test:
