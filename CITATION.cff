@@ -31,16 +31,18 @@ license: MIT
 preferred-citation:
   type: article
   authors:
-  - given-names: Nuno
-    family-names: Fachada
-    email: nuno.fachada@ulusofona.pt
-    affiliation: 'Lusófona University, COPELABS'
-    orcid: 'https://orcid.org/0000-0002-8487-5837'
-  - given-names: Diogo
-    family-names: de Andrade
-    email: diogo.andrade@ulusofona.pt
-    affiliation: 'Lusófona University, COPELABS'
-    orcid: 'https://orcid.org/0000-0001-9180-0545'
+    - given-names: Nuno
+      family-names: Fachada
+      email: nuno.fachada@ulusofona.pt
+      affiliation: 'Lusófona University, COPELABS'
+      orcid: 'https://orcid.org/0000-0002-8487-5837'
+    - given-names: Diogo
+      family-names: de Andrade
+      email: diogo.andrade@ulusofona.pt
+      affiliation: 'Lusófona University, COPELABS'
+      orcid: 'https://orcid.org/0000-0001-9180-0545'
   journal: "arXiv"
   title: "Generating Multidimensional Clusters With Support Lines"
+  doi: 10.48550/arXiv.2301.10327
+  month: 1
   year: 2023
