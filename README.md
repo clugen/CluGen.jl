@@ -1,5 +1,7 @@
 [![Tests](https://github.com/clugen/CluGen.jl/actions/workflows/Tests.yml/badge.svg)](https://github.com/clugen/CluGen.jl/actions/workflows/Tests.yml)
 [![codecov](https://codecov.io/gh/clugen/CluGen.jl/branch/main/graph/badge.svg?token=BJQ4UUK7V2)](https://codecov.io/gh/clugen/CluGen.jl)
+[![version](https://juliahub.com/docs/CluGen/version.svg)](https://juliahub.com/ui/Packages/CluGen/hiy5g)
+[![pkgeval](https://juliahub.com/docs/CluGen/pkgeval.svg)](https://juliahub.com/ui/Packages/CluGen/hiy5g)
 [![docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://clugen.github.io/CluGen.jl/stable)
 [![MIT](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://tldrlegal.com/license/mit-license)
 
