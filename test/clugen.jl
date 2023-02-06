@@ -15,7 +15,7 @@
         nd in num_dims[1:(end - 1)],
         nclu in num_clusters,
         tpts in num_points[1:(end - 1)],
-        dir in get_vecs(rng, ndirs, nd),
+        dir in tuple(get_vecs(rng, ndirs, nd)..., rand(nclu, nd)),
         astd in angles_stds[1:(end - 1)],
         clu_sep in get_clu_seps(nd),
         len_mu in llengths_mus,
@@ -55,8 +55,11 @@
 
         # Check that cluster directions have the correct angles with the main direction
         if nd > 1
+            if ndims(dir) == 1
+                dir = repeat(dir', nclu, 1)
+            end
             for i in 1:nclu
-                @test angle_btw(dir, result.directions[i, :]) ≈ abs(result.angles[i]) atol =
+                @test angle_btw(dir[i, :], result.directions[i, :]) ≈ abs(result.angles[i]) atol =
                     1e-11
             end
         end
