@@ -170,7 +170,9 @@ julia> rand_vector_at_angle([0, 1], pi/6; rng=MersenneTwister(456)) # 2D, reprod
 function rand_vector_at_angle(
     u::AbstractArray{<:Real,1}, angle::Real; rng::AbstractRNG=Random.GLOBAL_RNG
 )::AbstractArray{<:Real,1}
-    if abs(angle) ≈ pi / 2 && length(u) > 1
+    if abs(angle) < eps()
+        return copy(u)
+    elseif abs(angle) ≈ pi / 2 && length(u) > 1
         return rand_ortho_vector(u; rng=rng)
     elseif -pi / 2 < angle < pi / 2 && length(u) > 1
         return normalize(u + rand_ortho_vector(u; rng=rng) * tan(angle))

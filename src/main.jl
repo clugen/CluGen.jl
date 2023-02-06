@@ -7,7 +7,7 @@
         num_dims::Integer,
         num_clusters::Integer,
         num_points::Integer,
-        direction::AbstractArray{<:Real, 1},
+        direction::AbstractArray{<:Real},
         angle_disp::Real,
         cluster_sep::AbstractArray{<:Real, 1},
         llength::Real,
@@ -42,7 +42,9 @@ most users will need.
 - `num_dims`: Number of dimensions.
 - `num_clusters`: Number of clusters to generate.
 - `num_points`: Total number of points to generate.
-- `direction`: Average direction of the cluster-supporting lines (`num_dims` x 1).
+- `direction`: Average direction of the cluster-supporting lines. Can be given as
+  the same vector for all clusters (`num_dims` x 1) or as a direction per cluster
+  matrix (`num_clusters` x `num_dims`).
 - `angle_disp`: Angle dispersion of cluster-supporting lines (radians).
 - `cluster_sep`: Average cluster separation in each dimension (`num_dims` x 1).
 - `llength`: Average length of cluster-supporting lines.
@@ -99,12 +101,12 @@ arguments, described next.
   parameter allows the user to specify a custom function for this purpose, which
   must follow [`CluGen.llengths()`](@ref)'s signature.
 - `angle_deltas_fn`: Distribution of line angle differences with respect to `direction`.
-  By default, the angles between `direction` and the direction of cluster-supporting
-  lines are determined by the [`CluGen.angle_deltas()`](@ref) function, which uses
-  the wrapped normal distribution (μ=0, σ=`angle_disp`) with support in the interval
-  ``\\left[-\\pi/2,\\pi/2\\right]``. This parameter allows the user to specify a
-  custom function for this purpose, which must follow [`CluGen.angle_deltas()`](@ref)'s
-  signature.
+  By default, the angles between the main `direction` of each cluster and the final
+  directions of their cluster-supporting lines are determined by the
+  [`CluGen.angle_deltas()`](@ref) function, which uses the wrapped normal distribution
+  (μ=0, σ=`angle_disp`) with support in the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
+  This parameter allows the user to specify a custom function for this purpose,
+  which must follow [`CluGen.angle_deltas()`](@ref)'s signature.
 - `rng`: A concrete instance of
   [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)
   for reproducible runs. Alternatively, the user can set the global RNG seed with
@@ -124,7 +126,7 @@ The function returns a `NamedTuple` with the following fields:
   points in each cluster.
 - `centers`: A `num_clusters` x `num_dims` matrix with the coordinates
   of the cluster centers.
-- `directions`: A `num_clusters` x `num_dims` matrix with the direction
+- `directions`: A `num_clusters` x `num_dims` matrix with the final direction
   of each cluster-supporting line.
 - `angles`: A `num_clusters` x 1 vector with the angles between the
   cluster-supporting lines and the main direction.
@@ -164,7 +166,7 @@ function clugen(
     num_dims::Integer,
     num_clusters::Integer,
     num_points::Integer,
-    direction::AbstractArray{<:Real,1},
+    direction::AbstractArray{<:Real},
     angle_disp::Real,
     cluster_sep::AbstractArray{<:Real,1},
     llength::Real,
@@ -195,20 +197,52 @@ function clugen(
         throw(ArgumentError("Number of clusters, `num_clust`, must be > 0"))
     end
 
-    # Check that direction vector has magnitude > 0
-    if norm(direction) < eps()
-        throw(ArgumentError("`direction` must have magnitude > 0"))
+    # Get number of dimensions in `direction` array
+    dir_ndims = ndims(direction)
+
+    # How many dimensions in `direction` array?
+    if dir_ndims == 1
+        # If a main direction vector given, transpose it, so we can treat it
+        # like a matrix later
+        direction = direction'
+    elseif dir_ndims == 2
+        # If a matrix was given (i.e. a main direction is given for each cluster),
+        # check if the number of directions is the same as the number of clusters
+        dir_size_1 = size(direction, 1)
+        if dir_size_1 != num_clusters
+            throw(
+                ArgumentError(
+                    "Number of rows in `direction` must be the same as the " *
+                    "number of clusters ($dir_size_1 != $num_clusters)",
+                ),
+            )
+        end
+    else
+        # The `directions` array must be a vector or a matrix, so if we get here
+        # it means we have invalid arguments
+        throw(
+            ArgumentError(
+                "`direction` must be a vector (1D array) or a matrix (2D array), " *
+                "but is $(dir_ndims)D",
+            ),
+        )
     end
 
     # Check that direction has num_dims dimensions
-    dir_len = length(direction)
-    if dir_len != num_dims
+    dir_size_2 = size(direction, 2)
+    if dir_size_2 != num_dims
         throw(
             ArgumentError(
-                "Length of `direction` must be equal to `num_dims` " *
-                "($dir_len != $num_dims)",
+                "Length of directions in `direction` must be equal to " *
+                "`num_dims` ($dir_size_2 != $num_dims)",
             ),
         )
+    end
+
+    # Check that directions have magnitude > 0
+    dir_magnitudes = mapslices(norm, direction; dims=2)
+    if any(dir_magnitudes .< eps())
+        throw(ArgumentError("Directions in `direction` must have magnitude > 0"))
     end
 
     # If allow_empty is false, make sure there are enough points to distribute
@@ -301,8 +335,13 @@ function clugen(
     # Determine cluster properties #
     # ############################ #
 
-    # Normalize main direction
-    direction = normalize(direction)
+    # Normalize main direction(s)
+    direction = mapslices(normalize, direction; dims=2)
+
+    # If only one main direction was given, expand it for all clusters
+    if dir_ndims == 1
+        direction = repeat(direction, num_clusters, 1)
+    end
 
     # Determine cluster sizes
     cluster_sizes = clusizes_fn(num_clusters, num_points, allow_empty; rng=rng)
@@ -320,9 +359,11 @@ function clugen(
     # Obtain angles between main direction and cluster-supporting lines
     cluster_angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
 
-    # Determine normalized cluster directions
-    cluster_directions =
-        hcat([rand_vector_at_angle(direction, a; rng=rng) for a in cluster_angles]...)'
+    # Determine normalized cluster directions by applying the obtained angles
+    cluster_directions = rand_vector_at_angle.(eachrow(direction), cluster_angles)
+
+    # Convert cluster_directions from vector of vectors to matrix
+    cluster_directions = transpose(reduce(hcat, cluster_directions))
 
     # ################################# #
     # Determine points for each cluster #
