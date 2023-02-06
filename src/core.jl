@@ -65,8 +65,8 @@ julia> u = normalize([1,2,5.0,-3,-0.2]); # Define a 5D unit vector
 
 julia> v = rand_ortho_vector(u);
 
-julia> dot(u, v) # Check that vectors are orthogonal (needs LinearAlgebra package)
-0.0
+julia> ≈(dot(u, v), 0; atol=1e-15) # Vectors orthogonal? (needs LinearAlgebra package)
+true
 
 julia> rand_ortho_vector([1,0,0]; rng=MersenneTwister(567)) # 3D, reproducible
 3-element Vector{Float64}:
