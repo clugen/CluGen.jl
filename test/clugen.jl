@@ -297,6 +297,28 @@
             rng=rng,
         )
 
+        # Specific direction for each cluster requires one direction per cluster
+        @test_throws ArgumentError clugen(
+            nd,
+            nclu,
+            tpts,
+            rand(rng, nclu + 1, nd),
+            astd,
+            clu_sep,
+            len_mu,
+            len_std,
+            lat_std;
+            allow_empty=ae,
+            cluster_offset=clu_off,
+            proj_dist_fn=pt_dist,
+            point_dist_fn=pt_off,
+            clusizes_fn=csizes_fn,
+            clucenters_fn=ccenters_fn,
+            llengths_fn=llengths_fn,
+            angle_deltas_fn=langles_fn,
+            rng=rng,
+        )
+
         # Direction needs to be a 1D array (vector) or 2D array (matrix)
         @test_throws ArgumentError clugen(
             nd,
