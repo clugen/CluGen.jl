@@ -491,6 +491,33 @@ nothing # hide
 
 ![](ex3d_02.svg)
 
+#### Specifying a main `direction` for each cluster and changing `angle_disp`
+
+```@example 3d_dirclu_angd
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+
+# Directions for each cluster
+dirs = [[0 0 1];[1 1 0];[-1 1 0];[1 0 0];[0 1 0]]
+
+e046 = clugen(3, 5, 1000, dirs, 0, zeros(3), 10, 0, 0.1; rng = StableRNG(77))
+e047 = clugen(3, 5, 1000, dirs, π/12, zeros(3), 10, 0, 0.1; rng = StableRNG(77))
+e048 = clugen(3, 5, 1000, dirs, π/4, zeros(3), 10, 0, 0.1; rng = StableRNG(77))
+nothing # hide
+```
+
+```@example 3d_dirclu_angd
+plt = plot_examples_3d(
+    e046, "e046: angle_disp = 0",
+    e047, "e047: angle_disp = π / 12",
+    e048, "e048: angle_disp = π / 4")
+
+savefig(plt, "ex3d_dirclu_angd.svg") # hide
+nothing # hide
+```
+
+![](ex3d_dirclu_angd.svg)
+
 ### Manipulating the length of cluster-supporting lines
 
 #### Using the `llength` parameter
