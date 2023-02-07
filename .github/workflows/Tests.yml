@@ -2,10 +2,10 @@ name: Tests
 on:
   pull_request:
     branches: [main]
-    paths: [ 'src/**', 'test/**' ]
+    paths: [ 'src/**', 'test/**', '.github/workflows/Tests.yml' ]
   push:
     branches: [main]
-    paths: [ 'src/**', 'test/**' ]
+    paths: [ 'src/**', 'test/**', '.github/workflows/Tests.yml' ]
     tags: '*'
 jobs:
   test:
