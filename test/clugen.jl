@@ -144,6 +144,22 @@
         end
     end
 
+    @testset """Reproducibility:
+        seed=$(Int(rng.seed[1]))
+        """ for rng in rngs[1:(end - 1)]
+        # Get a seed
+        seed = Int(rng.seed[1])
+        # Reseed PRNG, run clugen and get results
+        Random.seed!(seed)
+        r1 = @test_nowarn clugen(2, 4, 100, [1, 1], 0.01, [10, 10], 5, 1, 0.1)
+        # Do it again
+        Random.seed!(seed)
+        r2 = @test_nowarn clugen(2, 4, 100, [1, 1], 0.01, [10, 10], 5, 1, 0.1)
+        # Check that results are exactly the same
+        @test all(r1.points .== r2.points)
+        @test all(r1.clusters .== r2.clusters)
+    end
+
     @testset "Exceptions" for rng in rngs
 
         # Valid arguments
