@@ -48,11 +48,11 @@ plt = plot_examples_2d(
     e002, "e002: direction = [1, 1]",
     e003, "e003: direction = [0, 1]")
 
-savefig(plt, "ex2d_01.svg") # hide
+savefig(plt, "ex2d_dir.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_01.svg)
+![](ex2d_dir.svg)
 
 #### Changing the `angle_disp` parameter and using a custom `angle_deltas_fn` function
 
@@ -78,11 +78,11 @@ plt = plot_examples_2d(
     e005, "e005: angle_disp = π/8",
     e006, "e006: custom angle_deltas function")
 
-savefig(plt, "ex2d_02.svg") # hide
+savefig(plt, "ex2d_angdisp.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_02.svg)
+![](ex2d_angdisp.svg)
 
 ### Manipulating the length of cluster-supporting lines
 
@@ -107,11 +107,11 @@ plt = plot_examples_2d(
     e008, "e008: llength = 10",
     e009, "e009: llength = 30")
 
-savefig(plt, "ex2d_03.svg") # hide
+savefig(plt, "ex2d_llen.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_03.svg)
+![](ex2d_llen.svg)
 
 #### Changing the `llength_disp` parameter and using a custom `llengths_fn` function
 
@@ -138,11 +138,11 @@ plt = plot_examples_2d(
     e011, "e011: llength_disp = 5.0",
     e012, "e012: custom llengths function")
 
-savefig(plt, "ex2d_04.svg") # hide
+savefig(plt, "ex2d_llendisp.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_04.svg)
+![](ex2d_llendisp.svg)
 
 ### Manipulating relative cluster positions
 
@@ -164,11 +164,11 @@ plt = plot_examples_2d(
     e014, "e014: cluster_sep = [30, 10]",
     e015, "e015: cluster_sep = [10, 30]")
 
-savefig(plt, "ex2d_05.svg") # hide
+savefig(plt, "ex2d_clusep.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_05.svg)
+![](ex2d_clusep.svg)
 
 #### Changing the `cluster_offset` parameter and using a custom `clucenters_fn` function
 
@@ -195,11 +195,11 @@ plt = plot_examples_2d(
     e017, "e017: cluster_offset = [20, -20]",
     e018, "e018: custom clucenters function")
 
-savefig(plt, "ex2d_06.svg") # hide
+savefig(plt, "ex2d_cluoff.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_06.svg)
+![](ex2d_cluoff.svg)
 
 ### Lateral dispersion and placement of point projections on the line
 
@@ -221,11 +221,11 @@ plt = plot_examples_2d(
     e020, "e020: lateral_disp = 1",
     e021, "e021: lateral_disp = 3")
 
-savefig(plt, "ex2d_07.svg") # hide
+savefig(plt, "ex2d_projnorm.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_07.svg)
+![](ex2d_projnorm.svg)
 
 #### Uniform projection placement: `proj_dist_fn = "unif"`
 
@@ -248,11 +248,11 @@ plt = plot_examples_2d(
     e023, "e023: lateral_disp = 1",
     e024, "e024: lateral_disp = 3")
 
-savefig(plt, "ex2d_08.svg") # hide
+savefig(plt, "ex2d_projunif.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_08.svg)
+![](ex2d_projunif.svg)
 
 #### Custom projection placement using the Laplace distribution
 
@@ -278,11 +278,11 @@ plt = plot_examples_2d(
     e026, "e026: lateral_disp = 1",
     e027, "e027: lateral_disp = 3")
 
-savefig(plt, "ex2d_09.svg") # hide
+savefig(plt, "ex2d_projlap.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_09.svg)
+![](ex2d_projlap.svg)
 
 ### Controlling final point positions from their projections on the cluster-supporting line
 
@@ -310,11 +310,11 @@ plt = plot_examples_2d(
     e029, "e029: proj_dist_fn=\"unif\"",
     e030, "e030: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex2d_10.svg") # hide
+savefig(plt, "ex2d_pt_n_1.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_10.svg)
+![](ex2d_pt_n_1.svg)
 
 #### Points around projection on cluster-supporting line: `point_dist_fn = "n"`
 
@@ -340,11 +340,11 @@ plt = plot_examples_2d(
     e032, "e032: proj_dist_fn=\"unif\"",
     e033, "e033: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex2d_11.svg") # hide
+savefig(plt, "ex2d_pt_n.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_11.svg)
+![](ex2d_pt_n.svg)
 
 #### Custom point placement using the exponential distribution
 
@@ -376,11 +376,11 @@ plt = plot_examples_2d(
     e035, "e035: proj_dist_fn=\"unif\"",
     e036, "e036: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex2d_12.svg") # hide
+savefig(plt, "ex2d_ptexp.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_12.svg)
+![](ex2d_ptexp.svg)
 
 ### Manipulating cluster sizes
 
@@ -418,11 +418,11 @@ plt = plot_examples_2d(
     e038, "e038: unif. dist. (custom)",
     e039, "e039: equal size (custom)")
 
-savefig(plt, "ex2d_13.svg") # hide
+savefig(plt, "ex2d_clusizes.svg") # hide
 nothing # hide
 ```
 
-![](ex2d_13.svg)
+![](ex2d_clusizes.svg)
 
 ## 3D examples
 
@@ -455,11 +455,11 @@ plt = plot_examples_3d(
     e041, "e041: direction = [1, 1, 1]",
     e042, "e042: direction = [0, 0, 1]")
 
-savefig(plt, "ex3d_01.svg") # hide
+savefig(plt, "ex3d_dir.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_01.svg)
+![](ex3d_dir.svg)
 
 #### Changing the `angle_disp` parameter and using a custom `angle_deltas_fn` function
 
@@ -485,11 +485,11 @@ plt = plot_examples_3d(
     e044, "e044: angle_disp = π / 8",
     e045, "e045: custom angle_deltas function")
 
-savefig(plt, "ex3d_02.svg") # hide
+savefig(plt, "ex3d_angdisp.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_02.svg)
+![](ex3d_angdisp.svg)
 
 #### Specifying a main `direction` for each cluster and changing `angle_disp`
 
@@ -541,11 +541,11 @@ plt = plot_examples_3d(
     e050, "e050: llength = 10",
     e051, "e051: llength = 30")
 
-savefig(plt, "ex3d_03.svg") # hide
+savefig(plt, "ex3d_llen.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_03.svg)
+![](ex3d_llen.svg)
 
 #### Changing the `llength_disp` parameter and using a custom `llengths_fn` function
 
@@ -572,11 +572,11 @@ plt = plot_examples_3d(
     e053, "e053: llength_disp = 10.0",
     e054, "e054: custom llengths function")
 
-savefig(plt, "ex3d_04.svg") # hide
+savefig(plt, "ex3d_len_disp.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_04.svg)
+![](ex3d_len_disp.svg)
 
 ### Manipulating relative cluster positions
 
@@ -598,11 +598,11 @@ plt = plot_examples_3d(
     e056, "e056: cluster_sep = [10, 30, 10]",
     e057, "e057: cluster_sep = [10, 10, 30]")
 
-savefig(plt, "ex3d_05.svg") # hide
+savefig(plt, "ex3d_clusep.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_05.svg)
+![](ex3d_clusep.svg)
 
 #### Changing the `cluster_offset` parameter and using a custom `clucenters_fn` function
 
@@ -628,11 +628,11 @@ plt = plot_examples_3d(
     e059, "e059: cluster_offset = [20, -20, 20]",
     e060, "e060: custom clucenters function")
 
-savefig(plt, "ex3d_06.svg") # hide
+savefig(plt, "ex3d_cluoff.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_06.svg)
+![](ex3d_cluoff.svg)
 
 ### Lateral dispersion and placement of point projections on the line
 
@@ -654,11 +654,11 @@ plt = plot_examples_3d(
     e062, "e062: lateral_disp = 1",
     e063, "e063: lateral_disp = 3")
 
-savefig(plt, "ex3d_07.svg") # hide
+savefig(plt, "ex3d_normproj.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_07.svg)
+![](ex3d_normproj.svg)
 
 #### Uniform projection placement: `proj_dist_fn = "unif"`
 
@@ -681,11 +681,11 @@ plt = plot_examples_3d(
     e065, "e065: lateral_disp = 1",
     e066, "e066: lateral_disp = 3")
 
-savefig(plt, "ex3d_08.svg") # hide
+savefig(plt, "ex3d_unifproj.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_08.svg)
+![](ex3d_unifproj.svg)
 
 #### Custom projection placement using the Laplace distribution
 
@@ -711,11 +711,11 @@ plt = plot_examples_3d(
     e068, "e068: lateral_disp = 1",
     e069, "e069: lateral_disp = 3")
 
-savefig(plt, "ex3d_09.svg") # hide
+savefig(plt, "ex3d_custfproj.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_09.svg)
+![](ex3d_custfproj.svg)
 
 ### Controlling final point positions from their projections on the cluster-supporting line
 
@@ -743,11 +743,11 @@ plt = plot_examples_3d(
     e071, "e071: proj_dist_fn=\"unif\"",
     e072, "e072: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex3d_10.svg") # hide
+savefig(plt, "ex3d_n_1.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_10.svg)
+![](ex3d_n_1.svg)
 
 #### Points around projection on cluster-supporting line: `point_dist_fn = "n"`
 
@@ -773,11 +773,11 @@ plt = plot_examples_3d(
     e074, "e074: proj_dist_fn=\"unif\"",
     e075, "e075: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex3d_11.svg") # hide
+savefig(plt, "ex3d_n.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_11.svg)
+![](ex3d_n.svg)
 
 #### Custom point placement using the exponential distribution
 
@@ -809,11 +809,11 @@ plt = plot_examples_3d(
     e077, "e077: proj_dist_fn=\"unif\"",
     e078, "e078: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex3d_12.svg") # hide
+savefig(plt, "ex3d_custpt.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_12.svg)
+![](ex3d_custpt.svg)
 
 ### Manipulating cluster sizes
 
@@ -852,11 +852,11 @@ plt = plot_examples_3d(
     e080, "e080: unif. dist. (custom)",
     e081, "e081: equal size (custom)")
 
-savefig(plt, "ex3d_13.svg") # hide
+savefig(plt, "ex3d_clusizes.svg") # hide
 nothing # hide
 ```
 
-![](ex3d_13.svg)
+![](ex3d_clusizes.svg)
 
 ## Examples in other dimensions
 
@@ -904,11 +904,11 @@ plt = plot_examples_1d(
     e083, "e083: proj_dist_fn=\"unif\"",
     e084, "e084: custom proj_dist_fn (Laplace)")
 
-savefig(plt, "ex1d_01.svg") # hide
+savefig(plt, "ex1d_dist.svg") # hide
 nothing # hide
 ```
 
-![](ex1d_01.svg)
+![](ex1d_dist.svg)
 
 #### 5D example with default optional arguments
 
@@ -928,11 +928,11 @@ nothing # hide
 ```@example 5d_defopt
 plt = plot_examples_nd(e085, "e085: 5D with optional parameters set to defaults")
 
-savefig(plt, "ex5d_01.svg") # hide
+savefig(plt, "ex5d_defopt.svg") # hide
 nothing # hide
 ```
 
-![](ex5d_01.svg)
+![](ex5d_defopt.svg)
 
 #### 5D example with `proj_dist_fn = "unif"` and `point_dist_fn = "n"`
 
@@ -949,9 +949,8 @@ nothing # hide
 ```@example 5d_unif_n
 plt = plot_examples_nd(e086, "e086: 5D with proj_dist_fn=\"unif\" and point_dist_fn=\"n\"")
 
-savefig(plt, "ex5d_02.svg") # hide
+savefig(plt, "ex5d_unif_n.svg") # hide
 nothing # hide
 ```
 
-![](ex5d_02.svg)
-
+![](ex5d_unif_n.svg)
