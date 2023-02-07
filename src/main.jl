@@ -360,7 +360,7 @@ function clugen(
     cluster_angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
 
     # Determine normalized cluster directions by applying the obtained angles
-    cluster_directions = rand_vector_at_angle.(eachrow(direction), cluster_angles)
+    cluster_directions = rand_vector_at_angle.(eachrow(direction), cluster_angles; rng=rng)
 
     # Convert cluster_directions from vector of vectors to matrix
     cluster_directions = transpose(reduce(hcat, cluster_directions))
