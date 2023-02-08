@@ -15,7 +15,7 @@
         nd in num_dims[1:(end - 1)],
         nclu in num_clusters,
         tpts in num_points[1:(end - 1)],
-        dir in tuple(get_vecs(rng, ndirs, nd)..., rand(nclu, nd)),
+        dir in tuple(get_vecs(rng, ndirs, nd)..., rand(rng, nclu, nd)),
         astd in angles_stds[1:(end - 1)],
         clu_sep in get_clu_seps(nd),
         len_mu in llengths_mus,
