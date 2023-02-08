@@ -202,7 +202,7 @@ function clugen(
 
     # How many dimensions in `direction` array?
     if dir_ndims == 1
-        # If a main direction vector given, transpose it, so we can treat it
+        # If a main direction vector was given, transpose it, so we can treat it
         # like a matrix later
         direction = direction'
     elseif dir_ndims == 2
