@@ -42,9 +42,9 @@ most users will need.
 - `num_dims`: Number of dimensions.
 - `num_clusters`: Number of clusters to generate.
 - `num_points`: Total number of points to generate.
-- `direction`: Average direction of the cluster-supporting lines. Can be given as
-  the same vector for all clusters (`num_dims` x 1) or as a direction per cluster
-  matrix (`num_clusters` x `num_dims`).
+- `direction`: Average direction of the cluster-supporting lines. Can be a
+  a vector of length `num_dims` (same direction for all clusters) or a matrix of
+  size `num_clusters` x `num_dims` (one direction per cluster).
 - `angle_disp`: Angle dispersion of cluster-supporting lines (radians).
 - `cluster_sep`: Average cluster separation in each dimension (`num_dims` x 1).
 - `llength`: Average length of cluster-supporting lines.
