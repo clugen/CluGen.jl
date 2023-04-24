@@ -29,14 +29,14 @@ using CluGen, Plots
 
 ```julia
 o = clugen(2, 4, 400, [1, 0], pi / 8, [20, 10], 10, 1, 1.5)
-p = plot(o.points[:, 1], o.points[:, 2], seriestype = :scatter, group=o.clusters)
+p = plot(o.points[:, 1], o.points[:, 2], seriestype=:scatter, group=o.clusters)
 ```
 
 ![2D example](https://clugen.github.io/CluGen.jl/stable/ex2d_quick.svg)
 
 ```julia
 o = clugen(3, 4, 1000, [1, 0, 1], pi / 8, [20, 15, 25], 16, 4, 3.5)
-p = plot(o.points[:, 1], o.points[:, 2], o.points[:, 3], seriestype = :scatter, group=o.clusters)
+p = plot(o.points[:, 1], o.points[:, 2], o.points[:, 3], seriestype=:scatter, group=o.clusters)
 ```
 
 ![3D example](https://clugen.github.io/CluGen.jl/stable/ex3d_quick.svg)

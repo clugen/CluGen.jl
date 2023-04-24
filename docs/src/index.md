@@ -36,7 +36,7 @@ using CluGen, Plots
 
 ```@example quick
 o = clugen(2, 4, 400, [1, 0], pi / 8, [20, 10], 10, 1, 1.5)
-p = plot(o.points[:, 1], o.points[:, 2], seriestype = :scatter, group=o.clusters)
+p = plot(o.points[:, 1], o.points[:, 2], seriestype=:scatter, group=o.clusters)
 savefig(p, "ex2d_quick.svg") # hide
 nothing # hide
 ```
@@ -45,7 +45,7 @@ nothing # hide
 
 ```@example quick
 o = clugen(3, 4, 1000, [1, 0, 1], pi / 8, [20, 15, 25], 16, 4, 3.5)
-p = plot(o.points[:, 1], o.points[:, 2], o.points[:, 3], seriestype = :scatter, group=o.clusters)
+p = plot(o.points[:, 1], o.points[:, 2], o.points[:, 3], seriestype=:scatter, group=o.clusters)
 savefig(p, "ex3d_quick.svg") # hide
 nothing # hide
 ```
