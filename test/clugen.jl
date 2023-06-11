@@ -144,6 +144,85 @@
         end
     end
 
+    @testset """Optional params (direct alternatives):
+        seed=$(Int(rng.seed[1])), nd=$nd, nclu=$nclu, dir=$dir, clu_sep=$clu_sep,
+        ae=$ae, clu_off=$clu_off, ptdist_fn=$ptdist_name, ptoff_fn=$ptoff_name,
+        csz_direct=$csz_direct, cctr_direct=$cctr_direct,
+        llen_direct=$llen_direct, lang_direct=$lang_direct
+        """ for rng in rngs[1:2],
+        nd in (3, 6),
+        nclu in num_clusters,
+        dir in get_vecs(rng, 1, nd),
+        clu_sep in get_clu_seps(nd),
+        ae in allow_empties,
+        clu_off in get_clu_offsets(nd),
+        (ptdist_name, ptdist_fn) in ptdist_fns,
+        (ptoff_name, ptoff_fn) in ptoff_fns,
+        csz_direct in (rand(rng, 1:100, nclu),),
+        cctr_direct in (rand(rng, nclu, nd),),
+        llen_direct in get_vecs(rng, 1, nclu),
+        lang_direct in get_unitvecs(rng, 1, nclu)
+
+        # Valid arguments
+        tpts = sum(csz_direct)
+        astd = pi / 333
+        len_mu = 6
+        len_std = 1.1
+        lat_std = 1.6
+
+        # Test passes with valid arguments
+        result = @test_nowarn clugen(
+            nd,
+            nclu,
+            tpts,
+            dir,
+            astd,
+            clu_sep,
+            len_mu,
+            len_std,
+            lat_std;
+            allow_empty=ae,
+            cluster_offset=clu_off,
+            proj_dist_fn=ptdist_fn,
+            point_dist_fn=ptoff_fn,
+            clusizes_fn=csz_direct,
+            clucenters_fn=cctr_direct,
+            llengths_fn=llen_direct,
+            angle_deltas_fn=lang_direct,
+            rng=rng,
+        )
+
+        # Check dimensions of result variables
+        @test size(result.points) == (tpts, nd)
+        @test size(result.clusters) == (tpts,)
+        @test size(result.projections) == (tpts, nd)
+        @test size(result.sizes) == (nclu,)
+        @test size(result.centers) == (nclu, nd)
+        @test size(result.directions) == (nclu, nd)
+        @test size(result.angles) == (nclu,)
+        @test size(result.lengths) == (nclu,)
+
+        # Check point cluster indexes
+        if !ae
+            @test unique(result.clusters) == 1:nclu
+        else
+            @test all(map((x) -> x <= nclu, result.clusters))
+        end
+
+        # Check total points
+        @test sum(result.sizes) == tpts
+        # This might not be the case if the specified clusize_fn does not obey
+        # the total number of points
+
+        # Check that cluster directions have the correct angles with the main direction
+        if nd > 1
+            for i in 1:nclu
+                @test angle_btw(dir, result.directions[i, :]) ≈ abs(result.angles[i]) atol =
+                    1e-11
+            end
+        end
+    end
+
     @testset """Reproducibility:
         seed=$(Int(rng.seed[1]))
         """ for rng in rngs[1:(end - 1)]
