@@ -159,7 +159,7 @@
         (ptdist_name, ptdist_fn) in ptdist_fns,
         (ptoff_name, ptoff_fn) in ptoff_fns,
         csz_direct in (rand(rng, 1:100, nclu),),
-        cctr_direct in (rand(rng, nclu, nd),),
+        cctr_direct in (randn(rng, nclu, nd),),
         llen_direct in get_vecs(rng, 1, nclu),
         lang_direct in get_unitvecs(rng, 1, nclu)
 
@@ -574,5 +574,94 @@
         else
             @test_throws MethodError fn_to_test()
         end
+
+        # Invalid direct clusizes
+        @test_throws ArgumentError clugen(
+            nd,
+            nclu,
+            tpts,
+            dir,
+            astd,
+            clu_sep,
+            len_mu,
+            len_std,
+            lat_std;
+            allow_empty=ae,
+            cluster_offset=clu_off,
+            proj_dist_fn=pt_dist,
+            point_dist_fn=pt_off,
+            clusizes_fn=rand(rng, 1:(tpts * nclu), nclu + 1),
+            clucenters_fn=ccenters_fn,
+            llengths_fn=llengths_fn,
+            angle_deltas_fn=langles_fn,
+            rng=rng,
+        )
+
+        # Invalid direct clucenters
+        @test_throws ArgumentError clugen(
+            nd,
+            nclu,
+            tpts,
+            dir,
+            astd,
+            clu_sep,
+            len_mu,
+            len_std,
+            lat_std;
+            allow_empty=ae,
+            cluster_offset=clu_off,
+            proj_dist_fn=pt_dist,
+            point_dist_fn=pt_off,
+            clusizes_fn=csizes_fn,
+            clucenters_fn=randn(rng, nclu + 1, nd + 1),
+            llengths_fn=llengths_fn,
+            angle_deltas_fn=langles_fn,
+            rng=rng,
+        )
+
+        # Invalid direct llengths
+        @test_throws ArgumentError clugen(
+            nd,
+            nclu,
+            tpts,
+            dir,
+            astd,
+            clu_sep,
+            len_mu,
+            len_std,
+            lat_std;
+            allow_empty=ae,
+            cluster_offset=clu_off,
+            proj_dist_fn=pt_dist,
+            point_dist_fn=pt_off,
+            clusizes_fn=csizes_fn,
+            clucenters_fn=ccenters_fn,
+            llengths_fn=rand(rng, nclu + 1),
+            angle_deltas_fn=langles_fn,
+            rng=rng,
+        )
+
+        # Invalid direct langles
+        @test_throws ArgumentError clugen(
+            nd,
+            nclu,
+            tpts,
+            dir,
+            astd,
+            clu_sep,
+            len_mu,
+            len_std,
+            lat_std;
+            allow_empty=ae,
+            cluster_offset=clu_off,
+            proj_dist_fn=pt_dist,
+            point_dist_fn=pt_off,
+            clusizes_fn=csizes_fn,
+            clucenters_fn=ccenters_fn,
+            llengths_fn=llengths_fn,
+            angle_deltas_fn=rand(rng, nclu + 1),
+            rng=rng,
+        )
+
     end
 end
