@@ -18,10 +18,10 @@
         cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
         proj_dist_fn::Union{String, <:Function} = "norm",
         point_dist_fn::Union{String, <:Function} = "n-1",
-        clusizes_fn::Function = GluGen.clusizes,
-        clucenters_fn::Function = GluGen.clucenters,
-        llengths_fn::Function = GluGen.llengths,
-        angle_deltas_fn::Function = GluGen.angle_deltas,
+        clusizes_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.clusizes,
+        clucenters_fn::Union{<:Function, AbstractArray{<:Real}} = GluGen.clucenters,
+        llengths_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.llengths,
+        angle_deltas_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.angle_deltas,
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,      # Array{<:Real,2}
@@ -88,25 +88,29 @@ arguments, described next.
   cluster sizes add up to `num_points`. This parameter allows the user to specify a
   custom function for this purpose, which must follow [`CluGen.clusizes()`](@ref)'s
   signature. Note that custom functions are not required to strictly obey the
-  `num_points` parameter.
+  `num_points` parameter. Alternatively, the user can specify an array of cluster
+  sizes directly.
 - `clucenters_fn`: Distribution of cluster centers. By default, cluster centers
   are determined by the [`CluGen.clucenters()`](@ref) function, which uses the
   uniform distribution, and takes into account the `num_clusters` and `cluster_sep`
   parameters for generating well-distributed cluster centers. This parameter allows
   the user to specify a custom function for this purpose, which must follow
-  [`CluGen.clucenters()`](@ref)'s signature.
+  [`CluGen.clucenters()`](@ref)'s signature. Alternatively, the user can specify
+  a matrix of size `num_clusters` x `num_dims` with the exact cluster centers.
 - `llengths_fn`: Distribution of line lengths. By default, the lengths of
   cluster-supporting lines are determined by the [`CluGen.llengths()`](@ref) function,
   which uses the folded normal distribution (μ=`llength`, σ=`llength_disp`). This
   parameter allows the user to specify a custom function for this purpose, which
-  must follow [`CluGen.llengths()`](@ref)'s signature.
+  must follow [`CluGen.llengths()`](@ref)'s signature. Alternatively, the user can
+  specify an array of line lengths directly.
 - `angle_deltas_fn`: Distribution of line angle differences with respect to `direction`.
   By default, the angles between the main `direction` of each cluster and the final
   directions of their cluster-supporting lines are determined by the
   [`CluGen.angle_deltas()`](@ref) function, which uses the wrapped normal distribution
   (μ=0, σ=`angle_disp`) with support in the interval ``\\left[-\\pi/2,\\pi/2\\right]``.
   This parameter allows the user to specify a custom function for this purpose,
-  which must follow [`CluGen.angle_deltas()`](@ref)'s signature.
+  which must follow [`CluGen.angle_deltas()`](@ref)'s signature.  Alternatively, the
+  user can specify an array of angle deltas directly.
 - `rng`: A concrete instance of
   [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)
   for reproducible runs. Alternatively, the user can set the global RNG seed with
@@ -176,10 +180,10 @@ function clugen(
     cluster_offset::Union{AbstractArray{<:Real,1},Nothing}=nothing,
     proj_dist_fn::Union{String,<:Function}="norm",
     point_dist_fn::Union{String,<:Function}="n-1",
-    clusizes_fn::Function=clusizes,
-    clucenters_fn::Function=clucenters,
-    llengths_fn::Function=llengths,
-    angle_deltas_fn::Function=angle_deltas,
+    clusizes_fn::Union{<:Function,AbstractArray{<:Real,1}}=clusizes,
+    clucenters_fn::Union{<:Function,AbstractArray{<:Real}}=clucenters,
+    llengths_fn::Union{<:Function,AbstractArray{<:Real,1}}=llengths,
+    angle_deltas_fn::Union{<:Function,AbstractArray{<:Real,1}}=angle_deltas,
     rng::AbstractRNG=Random.GLOBAL_RNG,
 )::NamedTuple
 
@@ -344,20 +348,60 @@ function clugen(
     end
 
     # Determine cluster sizes
-    cluster_sizes = clusizes_fn(num_clusters, num_points, allow_empty; rng=rng)
+    if typeof(clusizes_fn) <: Function
+        cluster_sizes = clusizes_fn(num_clusters, num_points, allow_empty; rng=rng)
+    elseif length(clusizes_fn) == num_clusters
+        cluster_sizes = clusizes_fn
+    else
+        throw(
+            ArgumentError(
+                "clusizes_fn has to be either a function or a `num_clusters`-sized array"
+            ),
+        )
+    end
 
     # Custom clusizes_fn's are not required to obey num_points, so we update
     # it here just in case it's different from what the user specified
     num_points = sum(cluster_sizes)
 
     # Determine cluster centers
-    cluster_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
+    if typeof(clucenters_fn) <: Function
+        cluster_centers = clucenters_fn(num_clusters, cluster_sep, cluster_offset; rng=rng)
+    elseif size(clucenters_fn) == (num_clusters, num_dims)
+        cluster_centers = clucenters_fn
+    else
+        throw(
+            ArgumentError(
+                "clucenters_fn has to be either a function or a matrix of size `num_clusters` x `num_dims`"
+            ),
+        )
+    end
 
     # Determine length of lines supporting clusters
-    cluster_lengths = llengths_fn(num_clusters, llength, llength_disp; rng=rng)
+    if typeof(llengths_fn) <: Function
+        cluster_lengths = llengths_fn(num_clusters, llength, llength_disp; rng=rng)
+    elseif length(llengths_fn) == num_clusters
+        cluster_lengths = llengths_fn
+    else
+        throw(
+            ArgumentError(
+                "llengths_fn has to be either a function or a `num_clusters`-sized array"
+            ),
+        )
+    end
 
     # Obtain angles between main direction and cluster-supporting lines
-    cluster_angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
+    if typeof(angle_deltas_fn) <: Function
+        cluster_angles = angle_deltas_fn(num_clusters, angle_disp; rng=rng)
+    elseif length(angle_deltas_fn) == num_clusters
+        cluster_angles = angle_deltas_fn
+    else
+        throw(
+            ArgumentError(
+                "angle_deltas_fn has to be either a function or a `num_clusters`-sized array"
+            ),
+        )
+    end
 
     # Determine normalized cluster directions by applying the obtained angles
     cluster_directions = rand_vector_at_angle.(eachrow(direction), cluster_angles; rng=rng)
