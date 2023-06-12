@@ -160,8 +160,8 @@
         (ptoff_name, ptoff_fn) in ptoff_fns,
         csz_direct in (rand(rng, 1:100, nclu),),
         cctr_direct in (randn(rng, nclu, nd),),
-        llen_direct in get_vecs(rng, 1, nclu),
-        lang_direct in get_unitvecs(rng, 1, nclu)
+        llen_direct in (20 * rand(rng, nclu),),
+        lang_direct in (π * rand(rng, nclu) .- π / 2,)
 
         # Valid arguments
         tpts = sum(csz_direct)
