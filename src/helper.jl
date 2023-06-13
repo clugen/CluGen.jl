@@ -198,7 +198,7 @@ function clumerge(
     data::Union{NamedTuple,Dict}...;
     out::String="namedtuple",
     join::String="intersect"
-)
+)::Union{NamedTuple,Dict}
 
     nd::Union{Integer,Nothing}=nothing
     tpts::Integer = 0
@@ -225,7 +225,26 @@ function clumerge(
         end
 
         tpts += tpts_i
+
+        if length(getindex(dt, :clusters)) != tpts_i
+            throw(
+                ArgumentError(
+                    "Number of points does not match length of :clusters column"
+                ),
+            )
+        end
     end
-    println("nd   = ",nd)
-    println("tpts = ",tpts)
+
+    output = (points=zeros(tpts, nd), clusters=zeros(Int32, tpts))
+    copied::Integer = 0
+
+    for dt in data
+        tocopy::Integer = length(getindex(dt, :clusters))
+        output.points[(copied + 1):(copied + tocopy), :] = getindex(dt, :points)
+        output.clusters[(copied + 1):(copied + tocopy)] = getindex(dt, :clusters)
+        copied += tocopy
+    end
+
+    return output
+
 end
