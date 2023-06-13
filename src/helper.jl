@@ -197,7 +197,8 @@ In progress.
 function clumerge(
     data::Union{NamedTuple,Dict}...;
     out::String="namedtuple",
-    join::String="intersect"
+    join::String="intersect",
+    keep_clusters::Bool = false
 )::Union{NamedTuple,Dict}
 
     nd::Union{Integer,Nothing}=nothing
@@ -237,14 +238,35 @@ function clumerge(
 
     output = (points=zeros(tpts, nd), clusters=zeros(Int32, tpts))
     copied::Integer = 0
+    last_cluster::Integer = 0
 
     for dt in data
         tocopy::Integer = length(getindex(dt, :clusters))
         output.points[(copied + 1):(copied + tocopy), :] = getindex(dt, :points)
-        output.clusters[(copied + 1):(copied + tocopy)] = getindex(dt, :clusters)
+        output.clusters[(copied + 1):(copied + tocopy)] = if keep_clusters
+            getindex(dt, :clusters)
+        else
+            old_clusters = unique(getindex(dt, :clusters))
+            new_clusters = (last_cluster + 1):(last_cluster + length(old_clusters))
+            mapping = Dict(zip(old_clusters, new_clusters))
+            last_cluster = new_clusters[end]
+            [mapping[val] for val in getindex(dt, :clusters)]
+        end
         copied += tocopy
     end
 
     return output
 
 end
+
+# Test 1:
+# o=clumerge((points=[3 3 3; 1 3 3; 0 0 -1.5], clusters=[1 1 2], stufff="fe"), Dict(:points => [1 -1 3; 10 1 2], :clusters=>[1 2]))
+
+# Test 2:
+# o0 = (points = 35 * rand(100,2) .- 20, clusters=ones(Int32, 100,1))
+# o1 = clugen(2, 5, 1000, [0 1; 0.25 0.75; 0.5 0.5; 0.75 0.25; 1 0], 0, [0, 0], 5, 0, 0.2;
+#      proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = 500 * ones(Int32,5),
+#      clucenters_fn = [0 0; 2 -0.3; 4 -0.8; 6 -1.6; 8 -2.5])
+# o2 = clugen(2, 3, 500, [1,1], 0.1, [10,10], 23, 1, 0.2)
+# o3 = clumerge(o1, o2)
+# plot(o3.points[:, 1], o3.points[:, 2], seriestype = :scatter, group=o3.clusters, aspect_ratio = :equal )
