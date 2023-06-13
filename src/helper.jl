@@ -185,3 +185,47 @@ function fix_num_points!(
 
     return clu_num_points
 end
+
+"""
+    clumerge()
+
+In progress.
+
+* out can be "namedtuple" or "dict"
+* join can be "intersect" or "union"
+"""
+function clumerge(
+    data::Union{NamedTuple,Dict}...;
+    out::String="namedtuple",
+    join::String="intersect"
+)
+
+    nd::Union{Integer,Nothing}=nothing
+    tpts::Integer = 0
+
+    for dt in data
+        if !(haskey(dt, :points) && haskey(dt, :clusters))
+            throw(
+                ArgumentError(
+                    "Input named tuples / dictionaries must have at least :points and :clusters keys"
+                ),
+            )
+        end
+
+        tpts_i, nd_i = size(getindex(dt, :points))
+
+        if nd === nothing
+            nd = nd_i
+        elseif nd != nd_i
+            throw(
+                ArgumentError(
+                    "Dimension mismatch"
+                ),
+            )
+        end
+
+        tpts += tpts_i
+    end
+    println("nd   = ",nd)
+    println("tpts = ",tpts)
+end

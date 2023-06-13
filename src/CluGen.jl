@@ -19,6 +19,7 @@ using Random
 
 export angle_btw
 export clugen
+export clumerge
 export points_on_line
 export rand_unit_vector
 export rand_ortho_vector
