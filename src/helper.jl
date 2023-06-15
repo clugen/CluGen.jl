@@ -190,7 +190,6 @@ end
 mutable struct FieldInfo
     type::Type
     ncol::Integer
-    count::Integer
 end
 
 """
@@ -203,79 +202,83 @@ In progress.
 """
 function clumerge(
     data::Union{NamedTuple,Dict}...;
-    out::String="namedtuple",
-    join::String="intersect",
+    out::Symbol=:NamedTuple,
+    fields::AbstractSet{Symbol}=Set((:points, :clusters)),
     clusters_field::Union{Symbol,Nothing} = :clusters
 )::Union{NamedTuple,Dict}
 
-    numpts::Integer = 0
-    fields::Dict{Symbol,FieldInfo} = Dict()
+    numel::Integer = 0
+    fields_info::Dict{Symbol,FieldInfo} = Dict()
     output::Dict{Symbol, Any} = Dict()
+
+    # If a clusters field is given, it must exist in the fields to merge
+    if clusters_field !== nothing && !(clusters_field in fields)
+        throw(
+            ArgumentError(
+                "`fields` parameter does not contain `$clusters_field`"
+            ),
+        )
+    end
 
     # Cycle through data items
     for dt in data
 
-        # Data item must have a "clusters" field, if such field is required, and
-        # the field must contain integers
-        if !haskey(dt, clusters_field)
-            throw(
-                ArgumentError(
-                    "Data item does not contain required field `$clusters_field`"
-                ),
-            )
-        elseif !(eltype(dt[clusters_field]) <: Integer)
-            throw(
-                ArgumentError(
-                    "`$clusters_field` must contain only integers"
-                ),
-            )
-        end
-
         # Number of elements in the current item
-        numpts_i::Union{Integer, Nothing} = nothing
+        numel_i::Union{Integer, Nothing} = nothing
 
-        # Cycle through fields in the current item
-        for field in keys(dt)
+        # Cycle through fields for the current item
+        for field in fields
+
+            if !haskey(dt, field)
+                throw(
+                    ArgumentError(
+                        "Data item does not contain required field `$field`"
+                    ),
+                )
+            elseif field == clusters_field && !(eltype(dt[clusters_field]) <: Integer)
+                throw(
+                    ArgumentError(
+                        "`$clusters_field` must contain integer types"
+                    ),
+                )
+            end
 
             # Get the field value
             value = getindex(dt, field)
 
-            # Number of elements in value
-            numpts_aux = size(value, 1)
+            # Number of elements in field value
+            numel_tmp = size(value, 1)
 
             # Check the number of elements in the field value
-            if numpts_i === nothing
+            if numel_i === nothing
 
                 # First field: get number of elements in value (must be the same
                 # for the remaining field values)
-                numpts_i = numpts_aux
+                numel_i = numel_tmp
 
-            elseif numpts_aux != numpts_i
+            elseif numel_tmp != numel_i
 
                 # Fields values after the first must have the same number of
                 # elements
                 throw(
                     ArgumentError(
-                        "Data item contains fields with different sizes ($numpts_aux != $numpts_i)"
+                        "Data item contains fields with different sizes ($numel_tmp != $numel_i)"
                     ),
                 )
             end
 
             # Get/check info about the field value type
-            if !haskey(fields, field)
+            if !haskey(fields_info, field)
 
                 # If it's the first time this field appears, just get the info
-                fields[field] = FieldInfo(eltype(value), size(value, 2), 1)
-                # fields[field].ncol = size(value, 2)
-                # fields[field].type = eltype(value)
-                # fields[field].count = 1
+                fields_info[field] = FieldInfo(eltype(value), size(value, 2))
 
             else
 
                 # If this field already appeared in previous data items, get the
                 # info and check/determine its compatibility with respect to
                 # previous data items
-                if size(value, 2) != fields[field].ncol
+                if size(value, 2) != fields_info[field].ncol
                     # Number of columns must be the same
                     throw(
                         ArgumentError(
@@ -285,31 +288,17 @@ function clumerge(
                 end
 
                 # Get the common supertype
-                fields[field].type = promote_type(eltype(value), fields[field].type)
-
-                # Increase count (ocurrence of this field in data items)
-                fields[field].count += 1
+                fields_info[field].type = promote_type(eltype(value), fields_info[field].type)
             end
         end
 
         # Update total number of elements
-        numpts += numpts_i
+        numel += numel_i
     end
-
-    # If intersection mode, filter out fields that don't exist in all data items
-    if join == "intersect"
-        filter!(fv ->  fv.second.count == length(data), fields)
-    end
-
 
     # Initialize output dictionary fields with room for all items
-    for field in fields
-        output[field.first] =
-        if field.second.count == length(data)
-            Array{field.second.type}(undef, numpts, field.second.ncol)
-        else
-            Array{field.second.type, Missing}(undef, numpts, field.second.ncol)
-        end
+    for ifield in fields_info
+        output[ifield.first] = Array{ifield.second.type}(undef, numel, ifield.second.ncol)
     end
 
     # Copy items from input data to output dictionary, field-wise
@@ -318,11 +307,11 @@ function clumerge(
 
     for dt in data
 
-        tocopy::Integer = length(getindex(dt, :clusters))
+        tocopy::Integer = size(getindex(dt, first(fields)), 1)
 
-        for field in fields
-            output[field.first][(copied + 1):(copied + tocopy), :] =
-            if field.first == clusters_field
+        for ifield in fields_info
+            output[ifield.first][(copied + 1):(copied + tocopy), :] =
+            if ifield.first == clusters_field
 
                 old_clusters = unique(getindex(dt, clusters_field))
                 new_clusters = (last_cluster + 1):(last_cluster + length(old_clusters))
@@ -330,10 +319,8 @@ function clumerge(
                 last_cluster = new_clusters[end]
                 [mapping[val] for val in getindex(dt, clusters_field)]
 
-            elseif !haskey(dt, field.first)
-                Array{Missing}(undef, length(tocopy), field.second.ncol)
             else
-                getindex(dt, field.first)
+                getindex(dt, ifield.first)
             end
 
         end
@@ -342,7 +329,11 @@ function clumerge(
 
     end
 
-    return output
+    return if out == :NamedTuple
+        (; output...)
+    else
+        output
+    end
 
 end
 
