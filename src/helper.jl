@@ -200,7 +200,7 @@ end
         fields::AbstractSet{Symbol} = Set((:points, :clusters)),
         clusters_field::Union{Symbol,Nothing} = :clusters,
         output_type::Symbol = :NamedTuple
-    ) -> Union{NamedTuple,Dict}
+    ) -> Union{NamedTuple, Dict}
 
 Merges the fields (specified in `fields`) of two or more `data` sets (named tuples
 or dictionaries. The fields to be merged need to have the same number of columns.
@@ -213,9 +213,9 @@ assignments in each dataset will be updated in the merged dataset so that
 clusters are considered separate.
 
 This function can be used to merge data sets generated with the
-[`CluGen.clugen()`](@ref) function (the default field names assume this), but
+[`clugen()`](@ref) function (the default field names assume this), but
 works with arbitrary data. It can be used, for example, to merge third-party
-data with [`CluGen.clugen()`](@ref) generated data.
+data with [`clugen()`](@ref) generated data.
 
 The function returns a `NamedTuple` by default, but can return a dictionary by
 setting the `output_type` parameter to `:Dict`.
