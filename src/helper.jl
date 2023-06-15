@@ -190,7 +190,9 @@ end
 mutable struct FieldInfo
     type::Type
     ncol::Integer
+    ocurrences::Integer
     count::Integer
+    copied::Integer
 end
 
 """
@@ -208,7 +210,6 @@ function clumerge(
     clusters_field::Union{Symbol,Nothing} = :clusters
 )::Union{NamedTuple,Dict}
 
-    numpts::Integer = 0
     fields::Dict{Symbol,FieldInfo} = Dict()
     output::Dict{Symbol, Any} = Dict()
 
@@ -231,44 +232,17 @@ function clumerge(
             )
         end
 
-        # Number of elements in the current item
-        numpts_i::Union{Integer, Nothing} = nothing
-
         # Cycle through fields in the current item
         for field in keys(dt)
 
             # Get the field value
             value = getindex(dt, field)
 
-            # Number of elements in value
-            numpts_aux = size(value, 1)
-
-            # Check the number of elements in the field value
-            if numpts_i === nothing
-
-                # First field: get number of elements in value (must be the same
-                # for the remaining field values)
-                numpts_i = numpts_aux
-
-            elseif numpts_aux != numpts_i
-
-                # Fields values after the first must have the same number of
-                # elements
-                throw(
-                    ArgumentError(
-                        "Data item contains fields with different sizes ($numpts_aux != $numpts_i)"
-                    ),
-                )
-            end
-
             # Get/check info about the field value type
             if !haskey(fields, field)
 
                 # If it's the first time this field appears, just get the info
-                fields[field] = FieldInfo(eltype(value), size(value, 2), 1)
-                # fields[field].ncol = size(value, 2)
-                # fields[field].type = eltype(value)
-                # fields[field].count = 1
+                fields[field] = FieldInfo(eltype(value), size(value, 2), 1, size(value, 1), 0)
 
             else
 
@@ -287,35 +261,32 @@ function clumerge(
                 # Get the common supertype
                 fields[field].type = promote_type(eltype(value), fields[field].type)
 
-                # Increase count (ocurrence of this field in data items)
-                fields[field].count += 1
+                # Increment number of ocurrence of this field in data items
+                fields[field].ocurrences += 1
+
+                # Update the total number of elements for this field
+                fields[field].count += size(value, 1)
             end
         end
 
-        # Update total number of elements
-        numpts += numpts_i
     end
 
     # If intersection mode, filter out fields that don't exist in all data items
     if join == "intersect"
-        filter!(fv ->  fv.second.count == length(data), fields)
+        filter!(fv ->  fv.second.ocurrences == length(data), fields)
     end
 
 
     # Initialize output dictionary fields with room for all items
     for field in fields
         output[field.first] =
-        if field.second.count == length(data)
-            Array{field.second.type}(undef, numpts, field.second.ncol)
-        else
-            Array{field.second.type, Missing}(undef, numpts, field.second.ncol)
-        end
+            Array{field.second.type}(undef, field.second.count, field.second.ncol)
     end
 
     # Copy items from input data to output dictionary, field-wise
-    copied::Integer = 0
     last_cluster::Integer = 0
 
+    # WE WOULD NEED TO COPY FIELD-WISE FOR THIS TO WORK
     for dt in data
 
         tocopy::Integer = length(getindex(dt, :clusters))
