@@ -186,6 +186,13 @@ function fix_num_points!(
     return clu_num_points
 end
 
+
+mutable struct FieldInfo
+    type::Type
+    ncol::Integer
+    count::Integer
+end
+
 """
     clumerge()
 
@@ -198,61 +205,141 @@ function clumerge(
     data::Union{NamedTuple,Dict}...;
     out::String="namedtuple",
     join::String="intersect",
-    keep_clusters::Bool = false
+    clusters_field::Union{Symbol,Nothing} = :clusters
 )::Union{NamedTuple,Dict}
 
-    nd::Union{Integer,Nothing}=nothing
-    tpts::Integer = 0
+    numpts::Integer = 0
+    fields::Dict{Symbol,FieldInfo} = Dict()
+    output::Dict{Symbol, Any} = Dict()
 
+    # Cycle through data items
     for dt in data
-        if !(haskey(dt, :points) && haskey(dt, :clusters))
+
+        # Data item must have a "clusters" field, if such field is required, and
+        # the field must contain integers
+        if !haskey(dt, clusters_field)
             throw(
                 ArgumentError(
-                    "Input named tuples / dictionaries must have at least :points and :clusters keys"
+                    "Data item does not contain required field `$clusters_field`"
+                ),
+            )
+        elseif !(eltype(dt[clusters_field]) <: Integer)
+            throw(
+                ArgumentError(
+                    "`$clusters_field` must contain only integers"
                 ),
             )
         end
 
-        tpts_i, nd_i = size(getindex(dt, :points))
+        # Number of elements in the current item
+        numpts_i::Union{Integer, Nothing} = nothing
 
-        if nd === nothing
-            nd = nd_i
-        elseif nd != nd_i
-            throw(
-                ArgumentError(
-                    "Dimension mismatch"
-                ),
-            )
+        # Cycle through fields in the current item
+        for field in keys(dt)
+
+            # Get the field value
+            value = getindex(dt, field)
+
+            # Number of elements in value
+            numpts_aux = size(value, 1)
+
+            # Check the number of elements in the field value
+            if numpts_i === nothing
+
+                # First field: get number of elements in value (must be the same
+                # for the remaining field values)
+                numpts_i = numpts_aux
+
+            elseif numpts_aux != numpts_i
+
+                # Fields values after the first must have the same number of
+                # elements
+                throw(
+                    ArgumentError(
+                        "Data item contains fields with different sizes ($numpts_aux != $numpts_i)"
+                    ),
+                )
+            end
+
+            # Get/check info about the field value type
+            if !haskey(fields, field)
+
+                # If it's the first time this field appears, just get the info
+                fields[field] = FieldInfo(eltype(value), size(value, 2), 1)
+                # fields[field].ncol = size(value, 2)
+                # fields[field].type = eltype(value)
+                # fields[field].count = 1
+
+            else
+
+                # If this field already appeared in previous data items, get the
+                # info and check/determine its compatibility with respect to
+                # previous data items
+                if size(value, 2) != fields[field].ncol
+                    # Number of columns must be the same
+                    throw(
+                        ArgumentError(
+                            "Dimension mismatch in field `$field`"
+                        ),
+                    )
+                end
+
+                # Get the common supertype
+                fields[field].type = promote_type(eltype(value), fields[field].type)
+
+                # Increase count (ocurrence of this field in data items)
+                fields[field].count += 1
+            end
         end
 
-        tpts += tpts_i
+        # Update total number of elements
+        numpts += numpts_i
+    end
 
-        if length(getindex(dt, :clusters)) != tpts_i
-            throw(
-                ArgumentError(
-                    "Number of points does not match length of :clusters column"
-                ),
-            )
+    # If intersection mode, filter out fields that don't exist in all data items
+    if join == "intersect"
+        filter!(fv ->  fv.second.count == length(data), fields)
+    end
+
+
+    # Initialize output dictionary fields with room for all items
+    for field in fields
+        output[field.first] =
+        if field.second.count == length(data)
+            Array{field.second.type}(undef, numpts, field.second.ncol)
+        else
+            Array{field.second.type, Missing}(undef, numpts, field.second.ncol)
         end
     end
 
-    output = (points=zeros(tpts, nd), clusters=zeros(Int32, tpts))
+    # Copy items from input data to output dictionary, field-wise
     copied::Integer = 0
     last_cluster::Integer = 0
 
     for dt in data
+
         tocopy::Integer = length(getindex(dt, :clusters))
-        output.points[(copied + 1):(copied + tocopy), :] = getindex(dt, :points)
-        output.clusters[(copied + 1):(copied + tocopy)] = if keep_clusters
-            getindex(dt, :clusters)
-        else
-            old_clusters = unique(getindex(dt, :clusters))
-            new_clusters = (last_cluster + 1):(last_cluster + length(old_clusters))
-            mapping = Dict(zip(old_clusters, new_clusters))
-            last_cluster = new_clusters[end]
-            [mapping[val] for val in getindex(dt, :clusters)]
+
+        for field in fields
+            output[field.first][(copied + 1):(copied + tocopy), :] =
+            if field.first == clusters_field
+
+                old_clusters = unique(getindex(dt, clusters_field))
+                new_clusters = (last_cluster + 1):(last_cluster + length(old_clusters))
+                mapping = Dict(zip(old_clusters, new_clusters))
+                last_cluster = new_clusters[end]
+                [mapping[val] for val in getindex(dt, clusters_field)]
+
+            elseif !haskey(dt, field.first)
+                Array{Missing}(undef, length(tocopy), field.second.ncol)
+            else
+                getindex(dt, field.first)
+            end
+
         end
+
         copied += tocopy
+
     end
 
     return output
@@ -264,9 +351,43 @@ end
 
 # Test 2:
 # o0 = (points = 35 * rand(100,2) .- 20, clusters=ones(Int32, 100,1))
-# o1 = clugen(2, 5, 1000, [0 1; 0.25 0.75; 0.5 0.5; 0.75 0.25; 1 0], 0, [0, 0], 5, 0, 0.2;
-#      proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = 500 * ones(Int32,5),
-#      clucenters_fn = [0 0; 2 -0.3; 4 -0.8; 6 -1.6; 8 -2.5])
+# o1 = clugen(2, 5, 1000, [0 1; 0.25 0.75; 0.5 0.5; 0.75 0.25; 1 0], 0, [0, 0], 5, 0, 0.2; proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = 500 * ones(Int32,5), clucenters_fn = [0 0; 2 -0.3; 4 -0.8; 6 -1.6; 8 -2.5])
 # o2 = clugen(2, 3, 500, [1,1], 0.1, [10,10], 23, 1, 0.2)
 # o3 = clumerge(o1, o2)
 # plot(o3.points[:, 1], o3.points[:, 2], seriestype = :scatter, group=o3.clusters, aspect_ratio = :equal )
+
+
+
+
+        # if !(haskey(dt, :points) && haskey(dt, :clusters))
+        #     throw(
+        #         ArgumentError(
+        #             "Input named tuples / dictionaries must have at least :points and :clusters keys"
+        #         ),
+        #     )
+        # end
+
+        # tpts_i, nd_i = size(getindex(dt, :points))
+
+        # if firstrun
+        #     nd = nd_i
+        # elseif nd != nd_i
+        #     throw(
+        #         ArgumentError(
+        #             "Dimension mismatch"
+        #         ),
+        #     )
+        # end
+
+        # tpts += tpts_i
+
+        # if length(getindex(dt, :clusters)) != tpts_i
+        #     throw(
+        #         ArgumentError(
+        #             "Number of points does not match length of :clusters column"
+        #         ),
+        #     )
+        # end
+
+        # if join != "minimal"
+        # end
