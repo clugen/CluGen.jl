@@ -186,23 +186,45 @@ function fix_num_points!(
     return clu_num_points
 end
 
+"Field information for merging datasets."
 mutable struct FieldInfo
+    "The field data type, may be promoted when merging."
     type::Type
+    "Number of columns in the data."
     ncol::Integer
 end
 
 """
-    clumerge()
+    clumerge(
+        data::Union{NamedTuple, Dict}...;
+        fields::AbstractSet{Symbol} = Set((:points, :clusters)),
+        clusters_field::Union{Symbol,Nothing} = :clusters,
+        output_type::Symbol = :NamedTuple
+    ) -> Union{NamedTuple,Dict}
 
-In progress.
+Merges the fields (specified in `fields`) of two or more `data` sets (named tuples
+or dictionaries. The fields to be merged need to have the same number of columns.
+The corresponding merged field will contain the rows of the fields to be merged,
+and have a common supertype.
 
-* out can be "namedtuple" or "dict"
+The `clusters_field` parameter specifies a field containing integers that
+identify the cluster to which a point belongs to. If specified, cluster
+assignments in each dataset will be updated in the merged dataset so that
+clusters are considered separate.
+
+This function can be used to merge data sets generated with the
+[`CluGen.clugen()`](@ref) function (the default field names assume this), but
+works with arbitrary data. It can be used, for example, to merge third-party
+data with [`CluGen.clugen()`](@ref) generated data.
+
+The function returns a `NamedTuple` by default, but can return a dictionary by
+setting the `output_type` parameter to `:Dict`.
 """
 function clumerge(
     data::Union{NamedTuple,Dict}...;
-    output_type::Symbol=:NamedTuple,
     fields::AbstractSet{Symbol}=Set((:points, :clusters)),
     clusters_field::Union{Symbol,Nothing}=:clusters,
+    output_type::Symbol=:NamedTuple
 )::Union{NamedTuple,Dict}
     # Number of elements in each array the merged dataset
     numel::Integer = 0
@@ -340,3 +362,13 @@ function clumerge(
         output
     end
 end
+
+# Test 1:
+# o=clumerge((points=[3 3 3; 1 3 3; 0 0 -1.5], clusters=[1 1 2], stufff="fe"), Dict(:points => [1 -1 3; 10 1 2], :clusters=>[1 2]))
+
+# Test 2:
+# o0 = (points = 35 * rand(100,2) .- 20, clusters=ones(Int32, 100,1))
+# o1 = clugen(2, 5, 1000, [0 1; 0.25 0.75; 0.5 0.5; 0.75 0.25; 1 0], 0, [0, 0], 5, 0, 0.2; proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = 500 * ones(Int32,5), clucenters_fn = [0 0; 2 -0.3; 4 -0.8; 6 -1.6; 8 -2.5])
+# o2 = clugen(2, 3, 500, [1,1], 0.1, [10,10], 23, 1, 0.2)
+# o3 = clumerge(o1, o2)
+# plot(o3.points[:, 1], o3.points[:, 2], seriestype = :scatter, group=o3.clusters, aspect_ratio = :equal )
