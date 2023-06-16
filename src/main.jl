@@ -500,7 +500,7 @@ setting the `output_type` parameter to `:Dict`.
 """
 function clumerge(
     data::Union{NamedTuple,Dict}...;
-    fields::AbstractSet{Symbol}=Set((:points, :clusters)),
+    fields::Tuple{Vararg{Symbol}}=(:points, :clusters),
     clusters_field::Union{Symbol,Nothing}=:clusters,
     output_type::Symbol=:NamedTuple
 )::Union{NamedTuple,Dict}
@@ -513,9 +513,12 @@ function clumerge(
     # Merged dataset to ouput, initially empty
     output::Dict{Symbol,Any} = Dict()
 
-    # If a clusters field is given, it must exist in the fields to merge
-    if clusters_field !== nothing && !(clusters_field in fields)
-        throw(ArgumentError("`fields` parameter does not contain `$clusters_field`"))
+    # Create a fields set
+    fields_set = Set(fields)
+
+    # If a clusters field is given, add it
+    if clusters_field !== nothing
+        push!(fields_set, clusters_field)
     end
 
     # Check that the output type is either :NamedTuple or :Dict
@@ -530,7 +533,7 @@ function clumerge(
         numel_i::Union{Integer,Nothing} = nothing
 
         # Cycle through fields for the current item
-        for field in fields
+        for field in fields_set
             if !haskey(dt, field)
                 throw(ArgumentError("Data item does not contain required field `$field`"))
             elseif field == clusters_field && !(eltype(dt[clusters_field]) <: Integer)
@@ -605,7 +608,7 @@ function clumerge(
     for dt in data
 
         # How many elements to copy for the current data item?
-        tocopy::Integer = size(getindex(dt, first(fields)), 1)
+        tocopy::Integer = size(getindex(dt, first(fields_set)), 1)
 
         # Cycle through each field and its information
         for ifield in fields_info
