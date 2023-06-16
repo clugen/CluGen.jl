@@ -798,13 +798,15 @@ end
         ymax::Real = 0.85,
         pmargin::Real = 0.1,
         ncols::Integer = 3,
-        side::Integer = 300
+        side::Integer = 300,
+        clusters_field = :clusters
     ) -> Plots.Plot
 
 Plot a set of 1D examples.
 """
 function plot_examples_1d(
-    ets...; ymax::Real=0.85, pmargin::Real=0.1, ncols::Integer=3, side::Integer=300
+    ets...; ymax::Real=0.85, pmargin::Real=0.1, ncols::Integer=3, side::Integer=300,
+    clusters_field=:clusters
 )::Plots.Plot
 
     # Get examples
@@ -824,9 +826,9 @@ function plot_examples_1d(
     plts = map(
         # Density plots
         ((e, t),) -> plot(
-            e.points;
+            getindex(e, :points);
             seriestype=:density,
-            group=e.clusters,
+            group=getindex(e, clusters_field),
             fill=true,
             fillalpha=0.35,
             legend=nothing,
@@ -848,9 +850,9 @@ function plot_examples_1d(
         # Scatter plots on y ≈ 0
         ((e, p),) -> plot!(
             p,
-            e.points,
+            getindex(e, :points),
             -0.04 .* ones(sum(e.sizes));
-            group=e.clusters,
+            group=getindex(e, clusters_field),
             seriestype=:scatter,
             markersize=2.5,
             markerstrokewidth=0.1,
@@ -874,13 +876,15 @@ end
         ets...;
         pmargin::Real = 0.1,
         ncols::Integer = 3,
-        side::Integer = 300
+        side::Integer = 300,
+        clusters_field = :clusters
     ) -> Plots.Plot
 
 Plot a set of 2D examples.
 """
 function plot_examples_2d(
-    ets...; pmargin::Real=0.1, ncols::Integer=3, side::Integer=300
+    ets...; pmargin::Real=0.1, ncols::Integer=3, side::Integer=300,
+    clusters_field=:clusters
 )::Plots.Plot
 
     # Get examples
@@ -899,10 +903,10 @@ function plot_examples_2d(
     # Create individual plots
     plts = map(
         ((e, t),) -> plot(
-            e.points[:, 1],
-            e.points[:, 2];
+            getindex(e, :points)[:, 1],
+            getindex(e, :points)[:, 2];
             seriestype=:scatter,
-            group=e.clusters,
+            group=getindex(e, clusters_field),
             markersize=2.5,
             markerstrokewidth=0.2,
             aspectratio=1,
@@ -929,13 +933,15 @@ end
         ets...;
         pmargin::Real = 0.1,
         ncols::Integer = 3,
-        side::Integer = 300
+        side::Integer = 300,
+        clusters_field = :clusters
     ) -> Plots.Plot
 
 Plot a set of 3D examples.
 """
 function plot_examples_3d(
-    ets...; pmargin::Real=0.02, ncols::Integer=3, side::Integer=300
+    ets...; pmargin::Real=0.02, ncols::Integer=3, side::Integer=300,
+    clusters_field=:clusters
 )::Plots.Plot
 
     # Get examples
@@ -954,11 +960,11 @@ function plot_examples_3d(
     # Create individual plots
     plts = map(
         ((e, t),) -> plot(
-            e.points[:, 1],
-            e.points[:, 2],
-            e.points[:, 3];
+            getindex(e, :points)[:, 1],
+            getindex(e, :points)[:, 2],
+            getindex(e, :points)[:, 3];
             seriestype=:scatter,
-            group=e.clusters,
+            group=getindex(e, clusters_field),
             markersize=2.5,
             markerstrokewidth=0.2,
             aspectratio=1,
@@ -989,12 +995,16 @@ end
         e,
         title;
         pmargin::Real = 0.1,
-        side::Integer = 200
+        side::Integer = 200,
+        clusters_field = :clusters
     ) -> Plots.Plot
 
 Plot one nD example.
 """
-function plot_examples_nd(e, title; pmargin::Real=0.1, side::Integer=200)::Plots.Plot
+function plot_examples_nd(
+    e, title;
+    pmargin::Real=0.1, side::Integer=200, clusters_field=:clusters
+)::Plots.Plot
 
     # How many dimensions?
     nd = size(e.points, 2)
@@ -1016,9 +1026,9 @@ function plot_examples_nd(e, title; pmargin::Real=0.1, side::Integer=200)::Plots
             )
         else
             plot(
-                e.points[:, ei[1]],
-                e.points[:, ei[2]];
-                group=e.clusters,
+                getindex(e, :points)[:, ei[1]],
+                getindex(e, :points)[:, ei[2]];
+                group=getindex(e, clusters_field),
                 seriestype=:scatter,
                 markersize=2,
                 markerstrokewidth=0.1,
@@ -1050,8 +1060,8 @@ Determine the plot limits for the clugen results given in `ex`.
 function get_plot_lims(ex::Tuple, pmargin::Real)::Tuple
 
     # Get maximum and minimum points in each dimension
-    xmaxs = maximum(vcat(map(e -> maximum(e.points; dims=1), ex)...); dims=1)
-    xmins = minimum(vcat(map(e -> minimum(e.points; dims=1), ex)...); dims=1)
+    xmaxs = maximum(vcat(map(e -> maximum(getindex(e, :points); dims=1), ex)...); dims=1)
+    xmins = minimum(vcat(map(e -> minimum(getindex(e, :points); dims=1), ex)...); dims=1)
 
     # Determine plots centers in each dimension
     xcenters = (xmaxs + xmins) / 2
