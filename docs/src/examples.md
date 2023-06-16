@@ -990,3 +990,134 @@ nothing # hide
 
 ![](ex5d_unif_n.svg)
 
+## Merging and hierarchical cluster examples
+
+#### Merging two data sets generated with `clugen()`
+
+The [`clumerge()`](@ref) function allows merging two or more data sets. For
+example:
+
+```@example mrg_cg
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+
+e090 = clugen(2, 5, 1000, [1, 1], pi / 12, [20, 20], 14, 1.2, 1.5;
+    proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(444))
+e091 = clugen(2, 3, 1500, [1, 0], 0.05, [20, 20], 0, 0, 4;
+    point_dist_fn="n", cluster_offset = [20, 0], rng = StableRNG(555))
+e092 = clumerge(e090, e091)
+nothing # hide
+```
+
+```@example mrg_cg
+plt = plot_examples_2d(
+    e090, "e090: data set 1",
+    e091, "e091: data set 2",
+    e092, "e092: merged data sets")
+
+savefig(plt, "exmrg_cg.svg") # hide
+nothing # hide
+```
+
+![](exmrg_cg.svg)
+
+In the previous example, clusters from individual data sets remain as separate
+clusters in the merged data set. It's also possible to mantain the original
+cluster labels by setting the `clusters_field` parameter to `nothing`:
+
+```@example mrg_cg
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+
+e093 = clumerge(e090, e091; clusters_field=nothing)
+nothing # hide
+```
+
+```@example mrg_cg
+plt = plot_examples_2d(
+    e090, "e090: data set 1",
+    e091, "e091: data set 2",
+    e093, "e093: merged data sets")
+
+savefig(plt, "exmrg_cg_noclup.svg") # hide
+nothing # hide
+```
+
+![](exmrg_cg_noclup.svg)
+
+#### Adding noise to a `clugen()`-generated data set
+
+```@example mrg_cg
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+
+e094 = (points = 120 * rand(500, 2) .- 60, clusters = ones(Int32, 500))
+e095 = clumerge(e094, e092) # clumerge(e094, e090, e091) would also work
+nothing # hide
+```
+
+```@example mrg_cg
+plt = plot_examples_2d(
+    e092, "e092: original merged data sets",
+    e094, "e094: random uniform noise",
+    e095, "e095: data sets with noise";
+    pmargin=0)
+
+savefig(plt, "exmrg_cg_noise.svg") # hide
+nothing # hide
+```
+
+![](exmrg_cg_noise.svg)
+
+#### Merging with data not generated with `clugen()`
+
+Data generated with [`clugen()`](@ref) can be merged with other data sets, for
+example data created with [MLJ](https://alan-turing-institute.github.io/MLJ.jl/dev/)'s
+[scikit-learn-like](https://scikit-learn.org/) generators:
+
+```@example mrg_cg_mlj
+ENV["GKSwstype"] = "100" # hide
+using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras, MLJ # hide
+
+X, y = make_moons(100; noise=0.05, as_table=false, rng=StableRNG(333)) # From the MLJ package
+
+e096 = (points=X, clusters=y)
+e097 = clugen(2, 5, 200, [1, 1], pi / 12, [1, 1], 0.1, 0.01, 0.25;
+           proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(444))
+e098 = clumerge(e096, e097)
+nothing # hide
+```
+
+```@example mrg_cg_mlj
+plt = plot_examples_2d(
+    e096, "e096: generated with MLJ's make_moons()",
+    e097, "e097: generated with clugen()",
+    e098, "e098: merged data")
+
+savefig(plt, "exmrg_cg_mlj.svg") # hide
+nothing # hide
+```
+
+![](exmrg_cg_mlj.svg)
+
+We can also hierarchize clusters from different sources:
+
+```@example mrg_cg_mlj
+e099 = Dict(pairs(e096)); e099[:hclusters] = ones(Int32, length(e099[:clusters]))
+e100 = Dict(pairs(e097)); e100[:hclusters] = ones(Int32, length(e100[:clusters]))
+e101 = clumerge(e099, e100; clusters_field=:hclusters)
+nothing # hide
+```
+
+```@example mrg_cg_mlj
+plt = plot_examples_2d(
+    e099, "e099: generated with MLJ's make_moons()",
+    e100, "e100: generated with clugen()",
+    e101, "e101: merged data";
+    clusters_field=:hclusters)
+
+savefig(plt, "exmrg_cg_mlj_h.svg") # hide
+nothing # hide
+```
+
+![](exmrg_cg_mlj_h.svg)
