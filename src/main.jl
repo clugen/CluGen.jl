@@ -462,3 +462,181 @@ function clugen(
         lengths=cluster_lengths,
     )
 end
+
+
+"Field information for merging datasets."
+mutable struct FieldInfo
+    "The field data type, may be promoted when merging."
+    type::Type
+    "Number of columns in the data."
+    ncol::Integer
+end
+
+"""
+    clumerge(
+        data::Union{NamedTuple, Dict}...;
+        fields::AbstractSet{Symbol} = Set((:points, :clusters)),
+        clusters_field::Union{Symbol,Nothing} = :clusters,
+        output_type::Symbol = :NamedTuple
+    ) -> Union{NamedTuple, Dict}
+
+Merges the fields (specified in `fields`) of two or more `data` sets (named tuples
+or dictionaries. The fields to be merged need to have the same number of columns.
+The corresponding merged field will contain the rows of the fields to be merged,
+and have a common supertype.
+
+The `clusters_field` parameter specifies a field containing integers that
+identify the cluster to which a point belongs to. If specified, cluster
+assignments in each dataset will be updated in the merged dataset so that
+clusters are considered separate.
+
+This function can be used to merge data sets generated with the
+[`clugen()`](@ref) function (the default field names assume this), but
+works with arbitrary data. It can be used, for example, to merge third-party
+data with [`clugen()`](@ref) generated data.
+
+The function returns a `NamedTuple` by default, but can return a dictionary by
+setting the `output_type` parameter to `:Dict`.
+"""
+function clumerge(
+    data::Union{NamedTuple,Dict}...;
+    fields::AbstractSet{Symbol}=Set((:points, :clusters)),
+    clusters_field::Union{Symbol,Nothing}=:clusters,
+    output_type::Symbol=:NamedTuple
+)::Union{NamedTuple,Dict}
+    # Number of elements in each array the merged dataset
+    numel::Integer = 0
+
+    # Contains information about each field
+    fields_info::Dict{Symbol,FieldInfo} = Dict()
+
+    # Merged dataset to ouput, initially empty
+    output::Dict{Symbol,Any} = Dict()
+
+    # If a clusters field is given, it must exist in the fields to merge
+    if clusters_field !== nothing && !(clusters_field in fields)
+        throw(ArgumentError("`fields` parameter does not contain `$clusters_field`"))
+    end
+
+    # Check that the output type is either :NamedTuple or :Dict
+    if output_type != :NamedTuple && output_type != :Dict
+        throw(ArgumentError("`output_type` must be :NamedTuple or :Dict"))
+    end
+
+    # Cycle through data items
+    for dt in data
+
+        # Number of elements in the current item
+        numel_i::Union{Integer,Nothing} = nothing
+
+        # Cycle through fields for the current item
+        for field in fields
+            if !haskey(dt, field)
+                throw(ArgumentError("Data item does not contain required field `$field`"))
+            elseif field == clusters_field && !(eltype(dt[clusters_field]) <: Integer)
+                throw(ArgumentError("`$clusters_field` must contain integer types"))
+            end
+
+            # Get the field value
+            value = getindex(dt, field)
+
+            # Number of elements in field value
+            numel_tmp = size(value, 1)
+
+            # Check the number of elements in the field value
+            if numel_i === nothing
+
+                # First field: get number of elements in value (must be the same
+                # for the remaining field values)
+                numel_i = numel_tmp
+
+            elseif numel_tmp != numel_i
+
+                # Fields values after the first must have the same number of
+                # elements
+                throw(
+                    ArgumentError(
+                        "Data item contains fields with different sizes ($numel_tmp != $numel_i)",
+                    ),
+                )
+            end
+
+            # Get/check info about the field value type
+            if !haskey(fields_info, field)
+
+                # If it's the first time this field appears, just get the info
+                fields_info[field] = FieldInfo(eltype(value), size(value, 2))
+
+            else
+
+                # If this field already appeared in previous data items, get the
+                # info and check/determine its compatibility with respect to
+                # previous data items
+                if size(value, 2) != fields_info[field].ncol
+                    # Number of columns must be the same
+                    throw(ArgumentError("Dimension mismatch in field `$field`"))
+                end
+
+                # Get the common supertype
+                fields_info[field].type = promote_type(
+                    eltype(value), fields_info[field].type
+                )
+            end
+        end
+
+        # Update total number of elements
+        numel += numel_i
+    end
+
+    # Initialize output dictionary fields with room for all items
+    for ifield in fields_info
+        output[ifield.first] = if ifield.second.ncol == 1
+            Array{ifield.second.type}(undef, numel)
+        else
+            Array{ifield.second.type}(undef, numel, ifield.second.ncol)
+        end
+    end
+
+    # Copy items from input data to output dictionary, field-wise
+    copied::Integer = 0
+    last_cluster::Integer = 0
+
+    # Create merged output
+    for dt in data
+
+        # How many elements to copy for the current data item?
+        tocopy::Integer = size(getindex(dt, first(fields)), 1)
+
+        # Cycle through each field and its information
+        for ifield in fields_info
+
+            # Copy elements
+            output[ifield.first][(copied + 1):(copied + tocopy), :] =
+                if ifield.first == clusters_field
+
+                    # If this is a clusters field, update the cluster IDs
+                    old_clusters = unique(getindex(dt, clusters_field))
+                    new_clusters = (last_cluster + 1):(last_cluster + length(old_clusters))
+                    mapping = Dict(zip(old_clusters, new_clusters))
+                    last_cluster = new_clusters[end]
+                    [mapping[val] for val in getindex(dt, clusters_field)]
+
+                else
+                    # Otherwise just copy the elements
+                    getindex(dt, ifield.first)
+                end
+        end
+
+        # Update how many were copied so far
+        copied += tocopy
+    end
+
+    # Return result, either as a named tuple or a dictionary
+    return if output_type == :NamedTuple
+        # Convert dictionary to named tuple
+        (; output...)
+    else
+        # Otherwise just return the dictionary
+        output
+    end
+end
