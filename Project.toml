@@ -1,7 +1,7 @@
 name = "CluGen"
 uuid = "48a2e8d8-1966-47f1-a982-993d59b21037"
 authors = ["Nuno Fachada <faken@fakenmc.com> and contributors"]
-version = "0.3.0"
+version = "0.4.0"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -10,7 +10,7 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 [compat]
 julia = "1.1"
 
-# These entries below are required for testing in Julia 1.0/1.1
+# These entries below are required for testing in Julia 1.1
 [extras]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
