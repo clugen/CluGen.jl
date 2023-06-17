@@ -176,4 +176,41 @@
         @test length(getindex(mds, :angles)) == tclu_i
         @test length(getindex(mds, :lengths)) == tclu_i
     end
+
+
+    # Test clumerge() exceptions
+    @testset "Exceptions" for rng in rngs
+
+        # `output_type` must be :NamedTuple or :Dict
+        nd = 3
+        npts = rand(rng, 10:100)
+        ds = (points=rand(rng, npts, nd), clusters=rand(rng, 1:5, npts))
+        @test_throws ArgumentError clumerge(ds; output_type=:Invalid)
+
+        # Data item does not contain required field `unknown`
+        @test_throws ArgumentError clumerge(ds; fields=(:clusters, :unknown))
+
+        # "`clusters_field` must contain integer types
+        nd = 4
+        npts = rand(rng, 10:100)
+        ds = (points=rand(rng, npts, nd), clusters=rand(rng, npts))
+        @test_throws ArgumentError clumerge(ds)
+
+        # Data item contains fields with different sizes (npts != npts / 2)
+        nd = 2
+        npts = rand(rng, 10:100)
+        ds = (points=rand(rng, npts, nd), clusters=rand(rng, 1:10, npts ÷ 2))
+        @test_throws ArgumentError clumerge(ds)
+
+        # Dimension mismatch in field `points`
+        nd1 = 2
+        nd2 = 3
+        npts1 = rand(rng, 10:100)
+        npts2 = rand(rng, 10:100)
+        ds1 = (points=rand(rng, npts1, nd1), clusters=rand(rng, 1:10, npts1))
+        ds2 = (points=rand(rng, npts2, nd2), clusters=rand(rng, 1:10, npts2))
+        @test_throws ArgumentError clumerge(ds1, ds2)
+
+    end
+
 end
