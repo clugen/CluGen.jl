@@ -96,9 +96,11 @@
                 @test typeof(mds) <: NamedTuple
             end
 
-            # Check that the number of clusters and points is correct
+            # Check that the number of points and clusters is correct
+            expect_size = if nd == 1 (tpts,) else (tpts, nd) end
+            @test size(getindex(mds, :points)) == expect_size
             @test maximum(getindex(mds, :clusters)) == tclu
-            @test size(getindex(mds, :points), 1) == tpts
+            @test eltype(getindex(mds, :clusters)) <: Integer
         end
     end
 end
