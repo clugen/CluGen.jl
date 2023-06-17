@@ -8,7 +8,8 @@
     # Test clumerge with several parameters and various data sources
     @testset """seed=$(Int(rng.seed[1])), nd=$nd,
         ds_cg_n=$ds_cg_n, ds_ot_n=$ds_ot_n, ds_od_n=$ds_od_n,
-        out_type=$out_type, no_clusters_field=$no_clusters_field""" for rng in rngs[1:end],
+        out_type=$show(out_type),
+        no_clusters_field=$no_clusters_field""" for rng in rngs[1:end],
         nd in num_dims[1:end],
         ds_cg_n in 0:4, # Number of data sets created with clugen()
         ds_ot_n in 0:2, # Number of other data sets in the form of tuples
