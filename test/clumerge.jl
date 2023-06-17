@@ -103,4 +103,62 @@
             @test eltype(getindex(mds, :clusters)) <: Integer
         end
     end
+
+    # Test clumerge with data from clugen() and merging more fields
+    @testset """seed=$(Int(rng.seed[1])), nd=$nd, ds_cg_n=$ds_n""" for
+        rng in rngs[1:end],
+        nd in num_dims[1:end],
+        ds_n in 2:4
+
+        datasets::Set{Union{NamedTuple,Dict}} = Set()
+        tclu::Integer = 0
+        tclu_i::Integer = 0
+        tpts::Integer = 0
+
+        # Create data sets with clugen()
+        for _ in 1:ds_n
+            ds = @test_nowarn clugen(
+                nd,
+                rand(rng, 1:10),
+                rand(rng, 1:100),
+                rand(rng, nd),
+                rand(rng),
+                rand(rng, nd),
+                rand(rng),
+                rand(rng),
+                rand(rng);
+                allow_empty=true,
+                rng=rng,
+            )
+            tpts += size(ds.points, 1)
+            tclu += length(unique(getindex(ds, :clusters)))
+            tclu_i += length(getindex(ds, :sizes))
+            push!(datasets, ds)
+        end
+
+        # Check that clumerge() is able to merge data set fields related to points
+        # without warnings
+        mds = @test_nowarn clumerge(datasets...; fields=(:points, :clusters, :projections))
+
+        # Check that the number of clusters and points is correct
+        expect_size = if nd == 1 (tpts,) else (tpts, nd) end
+        @test size(getindex(mds, :points)) == expect_size
+        @test size(getindex(mds, :projections)) == expect_size
+        @test maximum(getindex(mds, :clusters)) == tclu
+        @test eltype(getindex(mds, :clusters)) <: Integer
+
+        # Check that clumerge() is able to merge data set fields related to clusters
+        # without warnings
+        mds = @test_nowarn clumerge(datasets...; fields=(:sizes, :centers, :directions, :angles, :lengths), clusters_field=nothing)
+
+        # Check that the cluster-related fields have the correct sizes
+        expect_size = if nd == 1 (tclu_i,) else (tclu_i, nd) end
+        @test length(getindex(mds, :sizes)) == tclu_i
+        @test eltype(getindex(mds, :sizes)) <: Integer
+        @test size(getindex(mds, :centers)) == expect_size
+        @test size(getindex(mds, :directions)) == expect_size
+        @test length(getindex(mds, :angles)) == tclu_i
+        @test length(getindex(mds, :lengths)) == tclu_i
+
+    end
 end
