@@ -75,8 +75,9 @@ end
 # Perform test for each function in the package #
 # ############################################# #
 
-# Main function
+# Main functions
 include("clugen.jl")
+include("clumerge.jl")
 
 # Core functions
 include("angle_btw.jl")
