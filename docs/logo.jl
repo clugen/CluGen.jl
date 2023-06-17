@@ -43,6 +43,8 @@ p = plot(
     group=r.clusters,
     markersize=2,
     markerstrokewidth=0.2,
+    markerstrokecolor=:white,
+    markerstrokealpha=0.8,
     aspectratio=1,
     legend=nothing,
     grid=false,
@@ -56,4 +58,4 @@ p = plot(
 
 logo_path = (@__DIR__) * "/src/assets"
 mkpath(logo_path)
-savefig(p, logo_path * "/logo.svg")
+savefig(p, logo_path * "/logo.png")
