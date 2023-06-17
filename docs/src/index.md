@@ -1,13 +1,15 @@
 # Home
 
 **CluGen.jl** is a Julia implementation of the *clugen* algorithm for generating
-multidimensional clusters. Each cluster is supported by a line segment, the
-position, orientation and length of which guide where the respective points are
-placed. It provides the [`clugen()`](@ref) function for this purpose, as well as
-a number of auxiliary functions, used internally and modularly by
-[`clugen()`](@ref). Users can swap these auxiliary functions by their own
+multidimensional clusters with arbitrary distributions. Each cluster is supported
+by a line segment, the position, orientation and length of which guide where the
+respective points are placed. It provides the [`clugen()`](@ref) function for this
+purpose, as well as a number of auxiliary functions, used internally and modularly
+by [`clugen()`](@ref). Users can swap these auxiliary functions by their own
 customized versions, fine-tuning their cluster generation strategies, or even
-use them as the basis for their own generation algorithms.
+use them as the basis for their own generation algorithms. Finally, the
+[`clumerge()`](@ref) function allows users to merge and/or hierarchize data
+created with [`clugen()`](@ref) and/or obtained from arbitrary sources.
 
 ## How to install
 
