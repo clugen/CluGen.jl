@@ -8,11 +8,12 @@
 # CluGen.jl
 
 **CluGen.jl** is a Julia implementation of the *clugen* algorithm for generating
-multidimensional clusters. Each cluster is supported by a line segment, the
-position, orientation and length of which guide where the respective points are
-placed.
+multidimensional clusters with arbitrary distributions. Each cluster is supported
+by a line segment, the position, orientation and length of which guide where the
+respective points are placed.
 
-See the [documentation](https://clugen.github.io/CluGen.jl/stable) for more
+See the [documentation](https://clugen.github.io/CluGen.jl/stable) and
+[examples](https://clugen.github.io/CluGen.jl/stable/examples/) for more
 details.
 
 ## Installation
