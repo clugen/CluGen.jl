@@ -2,8 +2,9 @@
 
 * [Module](@ref)
   * [`CluGen`](@ref)
-* [Main function](@ref)
+* [Main functions](@ref)
   * [`clugen`](@ref)
+  * [`clumerge`](@ref)
 * [Core functions](@ref)
   * [`points_on_line`](@ref)
   * [`rand_ortho_vector`](@ref)
@@ -18,7 +19,6 @@
   * [`CluGen.llengths`](@ref)
 * [Helper functions](@ref)
   * [`angle_btw`](@ref)
-  * [`clumerge`](@ref)
   * [`CluGen.clupoints_n_1_template`](@ref)
   * [`CluGen.fix_empty!`](@ref)
   * [`CluGen.fix_num_points!`](@ref)
@@ -29,10 +29,11 @@
 CluGen
 ```
 
-## Main function
+## Main functions
 
 ```@docs
 clugen
+clumerge
 ```
 
 ## Core functions
@@ -78,7 +79,6 @@ package since their use is limited to advanced algorithm customization scenarios
 
 ```@docs
 angle_btw
-clumerge
 CluGen.clupoints_n_1_template
 CluGen.fix_empty!
 CluGen.fix_num_points!

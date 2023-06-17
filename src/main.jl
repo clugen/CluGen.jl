@@ -463,7 +463,6 @@ function clugen(
     )
 end
 
-
 "Field information for merging datasets."
 mutable struct FieldInfo
     "The field data type, may be promoted when merging."
@@ -474,29 +473,50 @@ end
 
 """
     clumerge(
-        data::Union{NamedTuple, Dict}...;
-        fields::AbstractSet{Symbol} = Set((:points, :clusters)),
-        clusters_field::Union{Symbol,Nothing} = :clusters,
-        output_type::Symbol = :NamedTuple
+        data::Union{NamedTuple,Dict}...;
+        fields::Tuple{Vararg{Symbol}}=(:points, :clusters),
+        clusters_field::Union{Symbol,Nothing}=:clusters,
+        output_type::Symbol=:NamedTuple
     ) -> Union{NamedTuple, Dict}
 
 Merges the fields (specified in `fields`) of two or more `data` sets (named tuples
-or dictionaries. The fields to be merged need to have the same number of columns.
+or dictionaries). The fields to be merged need to have the same number of columns.
 The corresponding merged field will contain the rows of the fields to be merged,
-and have a common supertype.
+and will have a common supertype.
 
 The `clusters_field` parameter specifies a field containing integers that
-identify the cluster to which a point belongs to. If specified, cluster
-assignments in each dataset will be updated in the merged dataset so that
-clusters are considered separate.
+identify the cluster to which the respective points belongs to. If `clusters_field`
+is specified (by default it's specified as `:clusters`), cluster assignments in
+individual datasets will be updated in the merged dataset so that clusters are
+considered separate. This parameter can be set to `nothing`, in which case no field
+will be considered as a special cluster assignments field.
 
-This function can be used to merge data sets generated with the
-[`clugen()`](@ref) function (the default field names assume this), but
-works with arbitrary data. It can be used, for example, to merge third-party
-data with [`clugen()`](@ref) generated data.
+This function can be used to merge data sets generated with the [`clugen()`](@ref)
+function, by default merging the `:points` and `:clusters` fields in those data sets.
+It also works with arbitrary data by specifying alternative fields in the `fields`
+parameter. It can be used, for example, to merge third-party data with
+[`clugen()`](@ref)-generated data.
 
 The function returns a `NamedTuple` by default, but can return a dictionary by
 setting the `output_type` parameter to `:Dict`.
+
+# Examples
+```jldoctest; setup = :(using Random; Random.seed!(444))
+julia> # Generate data with clugen()
+
+julia> clu_data = clugen(2, 5, 1000, [1, 1], 0.01, [20, 20], 14, 1.2, 1.5);
+
+julia> # Generate 500 points of random uniform noise
+
+julia> noise = (points=120 * rand(500, 2) .- 60, clusters = ones(Int32, 500));
+
+julia> # Create a new data set with the clugen()-generated data plus the noise
+
+julia> clu_data_with_noise = clumerge(noise, clu_data);
+```
+
+The [Examples](@ref) section contains several illustrative examples on how to
+use the `clumerge()` function.
 """
 function clumerge(
     data::Union{NamedTuple,Dict}...;
