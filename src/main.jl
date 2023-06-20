@@ -530,7 +530,7 @@ function clumerge(
     # Contains information about each field
     fields_info::Dict{Symbol,FieldInfo} = Dict()
 
-    # Merged dataset to ouput, initially empty
+    # Merged dataset to output, initially empty
     output::Dict{Symbol,Any} = Dict()
 
     # Create a fields set
