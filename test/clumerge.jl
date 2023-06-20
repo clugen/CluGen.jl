@@ -205,10 +205,9 @@
         # Dimension mismatch in field `points`
         nd1 = 2
         nd2 = 3
-        npts1 = rand(rng, 10:100)
-        npts2 = rand(rng, 10:100)
-        ds1 = (points=rand(rng, npts1, nd1), clusters=rand(rng, 1:10, npts1))
-        ds2 = (points=rand(rng, npts2, nd2), clusters=rand(rng, 1:10, npts2))
+        npts = rand(rng, 10:100)
+        ds1 = (points=rand(rng, npts, nd1), clusters=rand(rng, 1:10, npts))
+        ds2 = (points=rand(rng, npts, nd2), clusters=rand(rng, 1:10, npts))
         @test_throws ArgumentError clumerge(ds1, ds2)
 
     end
