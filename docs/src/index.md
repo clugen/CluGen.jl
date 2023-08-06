@@ -59,8 +59,10 @@ nothing # hide
 The *clugen* algorithm and its several implementations are detailed in the
 following reference (please cite it if you use this software):
 
-* Fachada, N. & de Andrade, D. (2023). Generating Multidimensional Clusters With
-  Support Lines. <https://doi.org/10.48550/arXiv.2301.10327>.
+* Fachada, N. & de Andrade, D. (2023). Generating multidimensional clusters
+  with support lines. *Knowledge-Based Systems*, 277, 110836.
+  <https://doi.org/10.1016/j.knosys.2023.110836>
+  ([arXiv preprint](https://doi.org/10.48550/arXiv.2301.10327))
 
 ## Also on this documentation
 
