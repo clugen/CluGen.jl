@@ -1,7 +1,7 @@
 name = "CluGen"
 uuid = "48a2e8d8-1966-47f1-a982-993d59b21037"
 authors = ["Nuno Fachada <faken@fakenmc.com> and contributors"]
-version = "0.4.0"
+version = "1.0.0"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
