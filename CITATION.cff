@@ -24,7 +24,8 @@ abstract: >-
   generation, capable of creating multidimensional clusters
   supported by line segments using arbitrary distributions.
 keywords:
-  - synthetic data generation
+  - synthetic data
+  - data generation
   - clustering
   - multidimensional data
 license: MIT
@@ -41,8 +42,13 @@ preferred-citation:
       email: diogo.andrade@ulusofona.pt
       affiliation: 'Lusófona University, COPELABS'
       orcid: 'https://orcid.org/0000-0001-9180-0545'
-  journal: "arXiv"
-  title: "Generating Multidimensional Clusters With Support Lines"
-  doi: 10.48550/arXiv.2301.10327
-  month: 1
+  title: Generating multidimensional clusters with support lines
+  journal: Knowledge-Based Systems
+  doi: 10.1016/j.knosys.2023.110836
+  volume: 277
+  start: 110836
+  month: 10
   year: 2023
+  url: 'https://doi.org/10.1016/j.knosys.2023.110836'
+  publisher:
+    name: Elsevier
