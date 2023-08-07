@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Reference · CluGen documentation</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.svg" alt="CluGen documentation logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">CluGen documentation</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../theory/">Theory</a></li><li><a class="tocitem" href="../examples/">Examples</a></li><li class="is-active"><a class="tocitem" href>Reference</a><ul class="internal"><li><a class="tocitem" href="#Module"><span>Module</span></a></li><li><a class="tocitem" href="#Main-function"><span>Main function</span></a></li><li><a class="tocitem" href="#Core-functions"><span>Core functions</span></a></li><li><a class="tocitem" href="#Algorithm-module-functions"><span>Algorithm module functions</span></a></li><li><a class="tocitem" href="#Helper-functions"><span>Helper functions</span></a></li></ul></li><li><a class="tocitem" href="../dev/">Development</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Reference</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Reference</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/clugen/CluGen.jl/blob/main/docs/src/reference.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Reference"><a class="docs-heading-anchor" href="#Reference">Reference</a><a id="Reference-1"></a><a class="docs-heading-anchor-permalink" href="#Reference" title="Permalink"></a></h1><ul><li><a href="#Module">Module</a><ul><li><a href="#CluGen"><code>CluGen</code></a></li></ul></li><li><a href="#Main-function">Main function</a><ul><li><a href="#CluGen.clugen"><code>clugen</code></a></li></ul></li><li><a href="#Core-functions">Core functions</a><ul><li><a href="#CluGen.points_on_line"><code>points_on_line</code></a></li><li><a href="#CluGen.rand_ortho_vector"><code>rand_ortho_vector</code></a></li><li><a href="#CluGen.rand_unit_vector"><code>rand_unit_vector</code></a></li><li><a href="#CluGen.rand_vector_at_angle"><code>rand_vector_at_angle</code></a></li></ul></li><li><a href="#Algorithm-module-functions">Algorithm module functions</a><ul><li><a href="#CluGen.angle_deltas"><code>CluGen.angle_deltas</code></a></li><li><a href="#CluGen.clucenters"><code>CluGen.clucenters</code></a></li><li><a href="#CluGen.clupoints_n_1"><code>CluGen.clupoints_n_1</code></a></li><li><a href="#CluGen.clupoints_n"><code>CluGen.clupoints_n</code></a></li><li><a href="#CluGen.clusizes"><code>CluGen.clusizes</code></a></li><li><a href="#CluGen.llengths"><code>CluGen.llengths</code></a></li></ul></li><li><a href="#Helper-functions">Helper functions</a><ul><li><a href="#CluGen.angle_btw"><code>angle_btw</code></a></li><li><a href="#CluGen.clupoints_n_1_template"><code>CluGen.clupoints_n_1_template</code></a></li><li><a href="#CluGen.fix_empty!"><code>CluGen.fix_empty!</code></a></li><li><a href="#CluGen.fix_num_points!"><code>CluGen.fix_num_points!</code></a></li></ul></li></ul><h2 id="Module"><a class="docs-heading-anchor" href="#Module">Module</a><a id="Module-1"></a><a class="docs-heading-anchor-permalink" href="#Module" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="CluGen" href="#CluGen"><code>CluGen</code></a> — <span class="docstring-category">Module</span></header><section><div><pre><code class="language-julia hljs">CluGen</code></pre><p>A Julia package for generating multidimensional clusters. Provides the <a href="#CluGen.clugen"><code>clugen</code></a> function for this purpose, as well as a number of auxiliary functions, used internally and modularly by <a href="#CluGen.clugen"><code>clugen</code></a>. Users can swap these auxiliary functions by their own customized versions, fine-tuning their cluster generation strategies, or even use them as the basis for their own generation algorithms.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/CluGen.jl#L5-L14">source</a></section></article><h2 id="Main-function"><a class="docs-heading-anchor" href="#Main-function">Main function</a><a id="Main-function-1"></a><a class="docs-heading-anchor-permalink" href="#Main-function" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="CluGen.clugen" href="#CluGen.clugen"><code>CluGen.clugen</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">clugen(
+    num_dims::Integer,
+    num_clusters::Integer,
+    num_points::Integer,
+    direction::AbstractArray{&lt;:Real},
+    angle_disp::Real,
+    cluster_sep::AbstractArray{&lt;:Real, 1},
+    llength::Real,
+    llength_disp::Real,
+    lateral_disp::Real;
+    # Keyword arguments
+    allow_empty::Bool = false,
+    cluster_offset::Union{AbstractArray{&lt;:Real, 1}, Nothing} = nothing,
+    proj_dist_fn::Union{String, &lt;:Function} = &quot;norm&quot;,
+    point_dist_fn::Union{String, &lt;:Function} = &quot;n-1&quot;,
+    clusizes_fn::Union{&lt;:Function, AbstractArray{&lt;:Real, 1}} = GluGen.clusizes,
+    clucenters_fn::Union{&lt;:Function, AbstractArray{&lt;:Real}} = GluGen.clucenters,
+    llengths_fn::Union{&lt;:Function, AbstractArray{&lt;:Real, 1}} = GluGen.llengths,
+    angle_deltas_fn::Union{&lt;:Function, AbstractArray{&lt;:Real, 1}} = GluGen.angle_deltas,
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; NamedTuple{(
+        :points,      # Array{&lt;:Real,2}
+        :clusters,    # Array{&lt;:Integer,1}
+        :projections, # Array{&lt;:Real,2}
+        :sizes,       # Array{&lt;:Integer,1}
+        :centers,     # Array{&lt;:Real,2}
+        :directions,  # Array{&lt;:Real,2}
+        :lengths      # Array{&lt;:Real,1}
+     )}</code></pre><p>Generate multidimensional clusters.</p><p>This is the main function of the CluGen package, and possibly the only function most users will need.</p><p><strong>Arguments (mandatory)</strong></p><ul><li><code>num_dims</code>: Number of dimensions.</li><li><code>num_clusters</code>: Number of clusters to generate.</li><li><code>num_points</code>: Total number of points to generate.</li><li><code>direction</code>: Average direction of the cluster-supporting lines. Can be a a vector of length <code>num_dims</code> (same direction for all clusters) or a matrix of size <code>num_clusters</code> x <code>num_dims</code> (one direction per cluster).</li><li><code>angle_disp</code>: Angle dispersion of cluster-supporting lines (radians).</li><li><code>cluster_sep</code>: Average cluster separation in each dimension (<code>num_dims</code> x 1).</li><li><code>llength</code>: Average length of cluster-supporting lines.</li><li><code>llength_disp</code>: Length dispersion of cluster-supporting lines.</li><li><code>lateral_disp</code>: Cluster lateral dispersion, i.e., dispersion of points from their projection on the cluster-supporting line.</li></ul><p>Note that the terms &quot;average&quot; and &quot;dispersion&quot; refer to measures of central tendency and statistical dispersion, respectively. Their exact meaning depends on the optional arguments, described next.</p><p><strong>Arguments (optional)</strong></p><ul><li><code>allow_empty</code>: Allow empty clusters? <code>false</code> by default.</li><li><code>cluster_offset</code>: Offset to add to all cluster centers. If set to <code>nothing</code> (the default), the offset will be equal to <code>zeros(num_dims)</code>.</li><li><code>proj_dist_fn</code>: Distribution of point projections along cluster-supporting lines, with three possible values:<ul><li><code>&quot;norm&quot;</code> (default): Distribute point projections along lines using a normal distribution (μ=<em>line center</em>, σ=<code>llength/6</code>).</li><li><code>&quot;unif&quot;</code>: Distribute points uniformly along the line.</li><li>User-defined function, which accepts two parameters, line length (float), number of points (integer) and a random number generator, and returns an array containing the distance of each point projection to the center of the line. For example, the <code>&quot;norm&quot;</code> option roughly corresponds to <code>(len, n, rng) -&gt; (1.0 / 6.0) * len .* randn(rng, n)</code>.</li></ul></li><li><code>point_dist_fn</code>: Controls how the final points are created from their projections on the cluster-supporting lines, with three possible values:<ul><li><code>&quot;n-1&quot;</code> (default): Final points are placed on a hyperplane orthogonal to the cluster-supporting line, centered at each point&#39;s projection, using the normal distribution (μ=0, σ=<code>lateral_disp</code>). This is done by the <a href="#CluGen.clupoints_n_1"><code>CluGen.clupoints_n_1()</code></a> function.</li><li><code>&quot;n&quot;</code>: Final points are placed around their projection on the cluster-supporting line using the normal distribution (μ=0, σ=<code>lateral_disp</code>). This is done by the <a href="#CluGen.clupoints_n"><code>CluGen.clupoints_n()</code></a> function.</li><li>User-defined function: The user can specify a custom point placement strategy by passing a function with the same signature as <a href="#CluGen.clupoints_n_1"><code>CluGen.clupoints_n_1()</code></a> and <a href="#CluGen.clupoints_n"><code>CluGen.clupoints_n()</code></a>.</li></ul></li><li><code>clusizes_fn</code>: Distribution of cluster sizes. By default, cluster sizes are determined by the <a href="#CluGen.clusizes"><code>CluGen.clusizes()</code></a> function, which uses the normal distribution (μ=<code>num_points</code>/<code>num_clusters</code>, σ=μ/3), and assures that the final cluster sizes add up to <code>num_points</code>. This parameter allows the user to specify a custom function for this purpose, which must follow <a href="#CluGen.clusizes"><code>CluGen.clusizes()</code></a>&#39;s signature. Note that custom functions are not required to strictly obey the <code>num_points</code> parameter. Alternatively, the user can specify an array of cluster sizes directly.</li><li><code>clucenters_fn</code>: Distribution of cluster centers. By default, cluster centers are determined by the <a href="#CluGen.clucenters"><code>CluGen.clucenters()</code></a> function, which uses the uniform distribution, and takes into account the <code>num_clusters</code> and <code>cluster_sep</code> parameters for generating well-distributed cluster centers. This parameter allows the user to specify a custom function for this purpose, which must follow <a href="#CluGen.clucenters"><code>CluGen.clucenters()</code></a>&#39;s signature. Alternatively, the user can specify a matrix of size <code>num_clusters</code> x <code>num_dims</code> with the exact cluster centers.</li><li><code>llengths_fn</code>: Distribution of line lengths. By default, the lengths of cluster-supporting lines are determined by the <a href="#CluGen.llengths"><code>CluGen.llengths()</code></a> function, which uses the folded normal distribution (μ=<code>llength</code>, σ=<code>llength_disp</code>). This parameter allows the user to specify a custom function for this purpose, which must follow <a href="#CluGen.llengths"><code>CluGen.llengths()</code></a>&#39;s signature. Alternatively, the user can specify an array of line lengths directly.</li><li><code>angle_deltas_fn</code>: Distribution of line angle differences with respect to <code>direction</code>. By default, the angles between the main <code>direction</code> of each cluster and the final directions of their cluster-supporting lines are determined by the <a href="#CluGen.angle_deltas"><code>CluGen.angle_deltas()</code></a> function, which uses the wrapped normal distribution (μ=0, σ=<code>angle_disp</code>) with support in the interval <span>$\left[-\pi/2,\pi/2\right]$</span>. This parameter allows the user to specify a custom function for this purpose, which must follow <a href="#CluGen.angle_deltas"><code>CluGen.angle_deltas()</code></a>&#39;s signature.  Alternatively, the user can specify an array of angle deltas directly.</li><li><code>rng</code>: A concrete instance of <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG"><code>AbstractRNG</code></a> for reproducible runs. Alternatively, the user can set the global RNG seed with <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!"><code>Random.seed!()</code></a> before invoking <code>clugen()</code>.</li></ul><p><strong>Return values</strong></p><p>The function returns a <code>NamedTuple</code> with the following fields:</p><ul><li><code>points</code>: A <code>num_points</code> x <code>num_dims</code> matrix with the generated points for  all clusters.</li><li><code>clusters</code>: A <code>num_points</code> x 1 vector indicating which cluster each point in <code>points</code> belongs to.</li><li><code>projections</code>: A <code>num_points</code> x <code>num_dims</code> matrix with the point projections on the cluster-supporting lines.</li><li><code>sizes</code>: A <code>num_clusters</code> x 1 vector with the number of points in each cluster.</li><li><code>centers</code>: A <code>num_clusters</code> x <code>num_dims</code> matrix with the coordinates of the cluster centers.</li><li><code>directions</code>: A <code>num_clusters</code> x <code>num_dims</code> matrix with the final direction of each cluster-supporting line.</li><li><code>angles</code>: A <code>num_clusters</code> x 1 vector with the angles between the cluster-supporting lines and the main direction.</li><li><code>lengths</code>: A <code>num_clusters</code> x 1 vector with the lengths of the cluster-supporting lines.</li></ul><p>Note that if a custom function was given in the <code>clusizes_fn</code> parameter, it is possible that <code>num_points</code> may have a different value than what was specified in <code>clugen</code>&#39;s <code>num_points</code> parameter.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; # Create 5 clusters in 3D space with a total of 10000 points...
+
+julia&gt; out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
+
+julia&gt; out.centers # What are the cluster centers?
+5×3 Matrix{Float64}:
+   8.12774  -16.8167    -1.80764
+   4.30111   -1.34916  -11.209
+ -22.3933    18.2706    -2.6716
+ -11.568      5.87459    4.11589
+ -19.5565   -10.7151   -12.2009</code></pre><p>The following instruction displays a scatter plot of the clusters in 3D space:</p><pre><code class="language-julia-repl hljs">julia&gt; plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.point_clusters)</code></pre><p>Check the <a href="../examples/#Examples">Examples</a> section for a number of illustrative examples on how to use the <code>clugen()</code> function. The <a href="../theory/#Theory">Theory</a> section provides more information on how the function works and the impact each parameter has on the final result.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/main.jl#L5-L168">source</a></section></article><h2 id="Core-functions"><a class="docs-heading-anchor" href="#Core-functions">Core functions</a><a id="Core-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Core-functions" title="Permalink"></a></h2><p>Core functions perform a number of useful operations during several steps of the algorithm. These functions may be useful in other contexts, and are thus exported by the package.</p><article class="docstring"><header><a class="docstring-binding" id="CluGen.points_on_line" href="#CluGen.points_on_line"><code>CluGen.points_on_line</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">points_on_line(
+    center::AbstractArray{&lt;:Real, 1},
+    direction::AbstractArray{&lt;:Real, 1},
+    dist_center::AbstractArray{&lt;:Real, 1}
+) -&gt; AbstractArray{&lt;:Real, 2}</code></pre><p>Determine coordinates of points on a line with <code>center</code> and <code>direction</code>, based on the distances from the center given in <code>dist_center</code>.</p><p>This works by using the vector formulation of the line equation assuming <code>direction</code> is a <span>$n$</span>-dimensional unit vector. In other words, considering <span>$\mathbf{d}=$</span> <code>direction</code> (<span>$n \times 1$</span>), <span>$\mathbf{c}=$</span> <code>center</code> (<span>$n \times 1$</span>), and <span>$\mathbf{w}=$</span> <code>dist_center</code> (<span>$p \times 1$</span>), the coordinates of points on the line are given by:</p><p class="math-container">\[\mathbf{P}=\mathbf{1}\,\mathbf{c}^T + \mathbf{w}\mathbf{d}^T\]</p><p>where <span>$\mathbf{P}$</span> is the <span>$p \times n$</span> matrix of point coordinates on the line, and <span>$\mathbf{1}$</span> is a <span>$p \times 1$</span> vector with all entries equal to 1.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
+5×2 Matrix{Float64}:
+ 1.0  5.0
+ 3.0  5.0
+ 5.0  5.0
+ 7.0  5.0
+ 9.0  5.0
+
+julia&gt; points_on_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
+2×4 Matrix{Float64}:
+ -2.0  0.0  -10.0  2.0
+ -2.0  0.0   10.0  2.0</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/core.jl#L5-L43">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.rand_ortho_vector" href="#CluGen.rand_ortho_vector"><code>CluGen.rand_ortho_vector</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">rand_ortho_vector(
+    u::AbstractArray{&lt;:Real, 1};
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Real, 1}</code></pre><p>Get a random unit vector orthogonal to <code>u</code>.</p><p>Note that <code>u</code> is expected to be a unit vector itself.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; u = normalize([1,2,5.0,-3,-0.2]); # Define a 5D unit vector
+
+julia&gt; v = rand_ortho_vector(u);
+
+julia&gt; ≈(dot(u, v), 0; atol=1e-15) # Vectors orthogonal? (needs LinearAlgebra package)
+true
+
+julia&gt; rand_ortho_vector([1,0,0]; rng=MersenneTwister(567)) # 3D, reproducible
+3-element Vector{Float64}:
+  0.0
+ -0.717797705156548
+  0.6962517177515569</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/core.jl#L52-L77">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.rand_unit_vector" href="#CluGen.rand_unit_vector"><code>CluGen.rand_unit_vector</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">rand_unit_vector(
+    num_dims::Integer;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt;  AbstractArray{&lt;:Real, 1}</code></pre><p>Get a random unit vector with <code>num_dims</code> dimensions.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; v = rand_unit_vector(4) # 4D
+4-element Vector{Float64}:
+ -0.24033021128704707
+ -0.032103799230189585
+  0.04223910709972599
+ -0.9692402145232775
+
+julia&gt; norm(v) # Check vector magnitude is 1 (needs LinearAlgebra package)
+1.0
+
+julia&gt; rand_unit_vector(2; rng=MersenneTwister(33)) # 2D, reproducible
+2-element Vector{Float64}:
+  0.8429232717309576
+ -0.5380337888779647</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/core.jl#L110-L135">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.rand_vector_at_angle" href="#CluGen.rand_vector_at_angle"><code>CluGen.rand_vector_at_angle</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">rand_vector_at_angle(
+    u::AbstractArray{&lt;:Real, 1},
+    angle::Real;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt;  AbstractArray{&lt;:Real, 1}</code></pre><p>Get a random unit vector which is at <code>angle</code> radians of vector <code>u</code>.</p><p>Note that <code>u</code> is expected to be a unit vector itself.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; u = normalize([1,0.5,0.3,-0.1]); # Define a 4D unit vector
+
+julia&gt; v = rand_vector_at_angle(u, pi/4); # pi/4 = 0.7853981... radians = 45 degrees
+
+julia&gt; a = acos(dot(u, v) / (norm(u) * norm(v))) # Angle (radians) between u and v?
+0.7853981633974483
+
+julia&gt; rand_vector_at_angle([0, 1], pi/6; rng=MersenneTwister(456)) # 2D, reproducible
+2-element Vector{Float64}:
+ -0.4999999999999999
+  0.8660254037844387</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/core.jl#L144-L169">source</a></section></article><h2 id="Algorithm-module-functions"><a class="docs-heading-anchor" href="#Algorithm-module-functions">Algorithm module functions</a><a id="Algorithm-module-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Algorithm-module-functions" title="Permalink"></a></h2><p>The module functions perform a complete step of the cluster generation algorithm, providing the package&#39;s out-of-the-box functionality. Users can swap one or more of these when invoking <a href="#CluGen.clugen"><code>clugen()</code></a> in order to customize the algorithm to their needs.</p><p>Since these functions are specific to the cluster generation algorithm, they are not exported by the package.</p><article class="docstring"><header><a class="docstring-binding" id="CluGen.angle_deltas" href="#CluGen.angle_deltas"><code>CluGen.angle_deltas</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">angle_deltas(
+    num_clusters::Integer,
+    angle_disp::Real;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Real, 1}</code></pre><p>Determine the angles between the average cluster direction and the cluster-supporting lines. These angles are obtained from a wrapped normal distribution (μ=0, σ=<code>angle_disp</code>) with support in the interval <span>$\left[-\pi/2,\pi/2\right]$</span>. Note this is different from the standard wrapped normal distribution, the support of which is given by the interval <span>$\left[-\pi,\pi\right]$</span>.</p><p>The <code>angle_disp</code> parameter must be specified in radians and results are given in radians in the interval <span>$\left[-\pi/2,\pi/2\right]$</span>.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; CluGen.angle_deltas(4, pi/128)
+4-element Vector{Float64}:
+  0.01888791855096079
+ -0.027851298321307266
+  0.03274154825228485
+ -0.004475798744567242
+
+julia&gt; CluGen.angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
+3-element Vector{Float64}:
+  0.08834204306583336
+  0.014678748091943444
+ -0.15202559427536264</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/module.jl#L5-L40">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.clucenters" href="#CluGen.clucenters"><code>CluGen.clucenters</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">clucenters(
+    num_clusters::Integer,
+    clu_sep::AbstractArray{&lt;:Real, 1},
+    clu_offset::AbstractArray{&lt;:Real, 1};
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt;  AbstractArray{&lt;:Real}</code></pre><p>Determine cluster centers using the uniform distribution, taking into account the number of clusters (<code>num_clusters</code>) and the average cluster separation (<code>clu_sep</code>).</p><p>More specifically, let <span>$c=$</span> <code>num_clusters</code>, <span>$\mathbf{s}=$</span> <code>clu_sep</code>, <span>$\mathbf{o}=$</span> <code>clu_offset</code>, <span>$n=$</span> <code>length(clu_sep)</code> (i.e., number of dimensions). Cluster centers are obtained according to the following equation:</p><p class="math-container">\[\mathbf{C}=c\mathbf{U} \cdot \operatorname{diag}(\mathbf{s}) + \mathbf{1}\,\mathbf{o}^T\]</p><p>where <span>$\mathbf{C}$</span> is the <span>$c \times n$</span> matrix of cluster centers, <span>$\mathbf{U}$</span> is an <span>$c \times n$</span> matrix of random values drawn from the uniform distribution between -0.5 and 0.5, and <span>$\mathbf{1}$</span> is an <span>$c \times 1$</span> vector with all entries equal to 1.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; CluGen.clucenters(4, [10, 50], [0, 0]) # 2D
+4×2 Matrix{Float64}:
+ 10.7379   -37.3512
+ 17.6206    32.511
+  6.95835   17.2044
+ -4.18188  -89.5734
+
+julia&gt; CluGen.clucenters(5, [20, 10, 30], [10, 10, -10]) # 3D
+5×3 Matrix{Float64}:
+ -13.136    15.8746      2.34767
+ -29.1129   -0.715105  -46.6028
+ -23.6334    8.19236    20.879
+   7.30168  -1.20904   -41.2033
+  46.5412    7.3284    -42.8401
+
+julia&gt; CluGen.clucenters(3, [100], [0]; rng=MersenneTwister(121)) # 1D, reproducible
+3×1 Matrix{Float64}:
+  -91.3675026663759
+  140.98964768714384
+ -124.90981996579862</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/module.jl#L65-L115">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.clupoints_n_1" href="#CluGen.clupoints_n_1"><code>CluGen.clupoints_n_1</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">CluGen.clupoints_n_1(
+    projs::AbstractArray{&lt;:Real, 2},
+    lat_disp::Real,
+    line_len::Real,
+    clu_dir::AbstractArray{&lt;:Real, 1},
+    clu_ctr::AbstractArray{&lt;:Real, 1};
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Real}</code></pre><p>Generate points from their <span>$n$</span>-dimensional projections on a cluster-supporting line, placing each point on a hyperplane orthogonal to that line and centered at the point&#39;s projection, using the normal distribution (μ=0, σ=<code>lat_disp</code>).</p><p>This function&#39;s main intended use is by the <a href="#CluGen.clugen"><code>clugen()</code></a> function, generating the final points when the <code>point_dist_fn</code> parameter is set to <code>&quot;n-1&quot;</code>.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Arguments</strong></p><ul><li><code>projs</code>: Point projections on the cluster-supporting line.</li><li><code>lat_disp</code>: Standard deviation for the normal distribution, i.e., cluster lateral dispersion.</li><li><code>line_len</code>: Length of cluster-supporting line (ignored).</li><li><code>clu_dir</code>: Direction of the cluster-supporting line (unit vector).</li><li><code>clu_ctr</code>: Center position of the cluster-supporting line (ignored).</li><li><code>rng</code>: An optional pseudo-random number generator for reproducible executions.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
+5×2 Matrix{Float64}:
+ 1.0  5.0
+ 3.0  5.0
+ 5.0  5.0
+ 7.0  5.0
+ 9.0  5.0
+
+julia&gt; CluGen.clupoints_n_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
+5×2 Matrix{Float64}:
+ 1.0  5.59513
+ 3.0  3.97591
+ 5.0  4.42867
+ 7.0  5.22971
+ 9.0  4.80166</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/module.jl#L130-L177">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.clupoints_n" href="#CluGen.clupoints_n"><code>CluGen.clupoints_n</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">GluGen.clupoints_n(
+    projs::AbstractArray{&lt;:Real, 2},
+    lat_disp::Real,
+    line_len::Real,
+    clu_dir::AbstractArray{&lt;:Real, 1},
+    clu_ctr::AbstractArray{&lt;:Real, 1};
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Real}</code></pre><p>Generate points from their <span>$n$</span>-dimensional projections on a cluster-supporting line, placing each point around its projection using the normal distribution (μ=0, σ=<code>lat_disp</code>).</p><p>This function&#39;s main intended use is by the <a href="#CluGen.clugen"><code>clugen()</code></a> function, generating the final points when the <code>point_dist_fn</code> parameter is set to <code>&quot;n&quot;</code>.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Arguments</strong></p><ul><li><code>projs</code>: Point projections on the cluster-supporting line.</li><li><code>lat_disp</code>: Standard deviation for the normal distribution, i.e., cluster lateral dispersion.</li><li><code>line_len</code>: Length of cluster-supporting line (ignored).</li><li><code>clu_dir</code>: Direction of the cluster-supporting line.</li><li><code>clu_ctr</code>: Center position of the cluster-supporting line (ignored).</li><li><code>rng</code>: An optional pseudo-random number generator for reproducible executions.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
+5×2 Matrix{Float64}:
+ 1.0  5.0
+ 3.0  5.0
+ 5.0  5.0
+ 7.0  5.0
+ 9.0  5.0
+
+julia&gt; CluGen.clupoints_n(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
+5×2 Matrix{Float64}:
+ 1.59513  4.66764
+ 4.02409  5.49048
+ 5.57133  4.96226
+ 7.22971  5.13691
+ 8.80166  4.90289</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/module.jl#L195-L242">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.clusizes" href="#CluGen.clusizes"><code>CluGen.clusizes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">clusizes(
+    num_clusters::Integer,
+    num_points::Integer,
+    allow_empty::Bool;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Integer, 1}</code></pre><p>Determine cluster sizes, i.e., the number of points in each cluster, using the normal distribution (μ=<code>num_points</code>/<code>num_clusters</code>, σ=μ/3), and then assuring that the final cluster sizes add up to <code>num_points</code> via the <a href="#CluGen.fix_num_points!"><code>CluGen.fix_num_points!()</code></a> function.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; CluGen.clusizes(4, 6, true)
+4-element Vector{Int64}:
+ 1
+ 0
+ 3
+ 2
+
+julia&gt; CluGen.clusizes(4, 100, false)
+4-element Vector{Int64}:
+ 29
+ 26
+ 24
+ 21
+
+julia&gt; CluGen.clusizes(5, 500, true; rng=MersenneTwister(123)) # Reproducible
+5-element Vector{Int64}:
+ 108
+ 129
+ 107
+  89
+  67</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/module.jl#L267-L307">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.llengths" href="#CluGen.llengths"><code>CluGen.llengths</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">llengths(
+    num_clusters::Integer,
+    llength::Real,
+    llength_disp::Real;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Real, 1}</code></pre><p>Determine length of cluster-supporting lines using the folded normal distribution (μ=<code>llength</code>, σ=<code>llength_disp</code>).</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; CluGen.llengths(5, 10, 3)
+5-element Vector{Float64}:
+ 13.57080364295883
+ 16.14453912336772
+ 13.427952708601596
+ 11.37824686122124
+  8.809962762114331
+
+julia&gt; CluGen.llengths(3, 100, 60; rng=MersenneTwister(111)) # Reproducible
+3-element Vector{Float64}:
+ 146.1737820482947
+  31.914161161783426
+ 180.04064126207396</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/module.jl#L349-L379">source</a></section></article><h2 id="Helper-functions"><a class="docs-heading-anchor" href="#Helper-functions">Helper functions</a><a id="Helper-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Helper-functions" title="Permalink"></a></h2><p>The helper functions provide useful or reusable functionality, mainly to the module functions described in the previous section. This reusable functionality may be useful for users implementing their own customized module functions.</p><p>Except for <a href="#CluGen.angle_btw"><code>angle_btw()</code></a>, these functions are not exported by the package since their use is limited to advanced algorithm customization scenarios.</p><article class="docstring"><header><a class="docstring-binding" id="CluGen.angle_btw" href="#CluGen.angle_btw"><code>CluGen.angle_btw</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">angle_btw(v1::AbstractArray{&lt;:Real, 1}, v2::AbstractArray{&lt;:Real, 1}) -&gt; Real</code></pre><p>Angle between two <span>$n$</span>-dimensional vectors.</p><p>Typically, the angle between two vectors <code>v1</code> and <code>v2</code> can be obtained with:</p><pre><code class="language-julia hljs">acos(dot(v1, v2) / (norm(v1) * norm(v2)))</code></pre><p>However, this approach is numerically unstable. The version provided here is numerically stable and based on the <a href="https://github.com/JeffreySarnoff/AngleBetweenVectors.jl/blob/master/src/AngleBetweenVectors.jl">AngleBetweenVectors.jl</a> package by Jeffrey Sarnoff (MIT license), implementing an algorithm provided by Prof. W. Kahan in <a href="https://people.eecs.berkeley.edu/~wkahan/MathH110/Cross.pdf">these notes</a> (see page 15).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; rad2deg(angle_btw([1.0, 1.0, 1.0, 1.0], [1.0, 0.0, 0.0, 0.0]))
+60.00000000000001</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/helper.jl#L5-L28">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.clupoints_n_1_template" href="#CluGen.clupoints_n_1_template"><code>CluGen.clupoints_n_1_template</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">CluGen.clupoints_n_1_template(
+    projs::AbstractArray{&lt;:Real, 2},
+    lat_disp::Real,
+    clu_dir::AbstractArray{&lt;:Real, 1},
+    dist_fn::Function;
+    rng::AbstractRNG = Random.GLOBAL_RNG
+) -&gt; AbstractArray{&lt;:Real}</code></pre><p>Generate points from their <span>$n$</span>-dimensional projections on a cluster-supporting line, placing each point on a hyperplane orthogonal to that line and centered at the point&#39;s projection. The function specified in <code>dist_fn</code> is used to perform the actual placement.</p><p>This function is used internally by <a href="#CluGen.clupoints_n_1"><code>CluGen.clupoints_n_1()</code></a> and may be useful for constructing user-defined final point placement strategies for the <code>point_dist_fn</code> parameter of the main <a href="#CluGen.clugen"><code>clugen()</code></a> function.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p><p><strong>Arguments</strong></p><ul><li><code>projs</code>: Point projections on the cluster-supporting line.</li><li><code>lat_disp</code>: Dispersion of points from their projection.</li><li><code>clu_dir</code>: Direction of the cluster-supporting line (unit vector).</li><li><code>dist_fn</code>: Function to place points on a second line, orthogonal to the first. The functions accepts as parameters the number of points in the current cluster, the <code>lateral_disp</code> parameter (the same passed to the <a href="#CluGen.clugen"><code>clugen()</code></a> function), and a random number generator, returning a vector containing the distance of each point to its projection on the cluster-supporting line.</li><li><code>rng</code>: An optional pseudo-random number generator for reproducible executions.</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/helper.jl#L41-L73">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.fix_empty!" href="#CluGen.fix_empty!"><code>CluGen.fix_empty!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">fix_empty!(
+    clu_num_points::AbstractArray{&lt;:Integer, 1},
+    allow_empty::Bool = false
+) -&gt; AbstractArray{&lt;:Integer, 1}</code></pre><p>Certifies that, given enough points, no clusters are left empty. This is done by removing a point from the largest cluster and adding it to an empty cluster while there are empty clusters. If the total number of points is smaller than the number of clusters (or if the <code>allow_empty</code> parameter is set to <code>true</code>), this function does nothing.</p><p>This function is used internally by <a href="#CluGen.clusizes"><code>CluGen.clusizes()</code></a> and might be useful for custom cluster sizing implementations given as the <code>clusizes_fn</code> parameter of the main <a href="#CluGen.clugen"><code>clugen()</code></a> function.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/helper.jl#L107-L125">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="CluGen.fix_num_points!" href="#CluGen.fix_num_points!"><code>CluGen.fix_num_points!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">fix_num_points!(
+    clu_num_points::AbstractArray{&lt;:Integer, 1},
+    num_points::Integer
+) -&gt; AbstractArray{&lt;:Integer, 1}</code></pre><p>Certifies that the values in the <code>clu_num_points</code> array, i.e. the number of points in each cluster, add up to <code>num_points</code>. If this is not the case, the <code>clu_num_points</code> array is modified in-place, incrementing the value corresponding to the smallest cluster while <code>sum(clu_num_points) &lt; num_points</code>, or decrementing the value corresponding to the largest cluster while <code>sum(clu_num_points) &gt; num_points</code>.</p><p>This function is used internally by <a href="#CluGen.clusizes"><code>CluGen.clusizes()</code></a> and might be useful for custom cluster sizing implementations given as the <code>clusizes_fn</code> parameter of the main <a href="#CluGen.clugen"><code>clugen()</code></a> function.</p><p>This function is not exported by the package and must be prefixed with <code>CluGen</code> if invoked by user code.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/clugen/CluGen.jl/blob/0c8578657525d6210ffb2b3ff044b0b377ed54dd/src/helper.jl#L154-L173">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../examples/">« Examples</a><a class="docs-footer-nextpage" href="../dev/">Development »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Sunday 11 June 2023 14:37">Sunday 11 June 2023</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
