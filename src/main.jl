@@ -65,8 +65,8 @@ arguments, described next.
   - `"norm"` (default): Distribute point projections along lines using a normal
     distribution (μ=_line center_, σ=`llength/6`).
   - `"unif"`: Distribute points uniformly along the line.
-  - User-defined function, which accepts two parameters, line length (float),
-    number of points (integer) and a random number generator, and returns an array
+  - User-defined function, which accepts three parameters, line length (float),
+    number of points (integer), and a random number generator, and returns an array
     containing the distance of each point projection to the center of the line. For
     example, the `"norm"` option roughly corresponds to
     `(len, n, rng) -> (1.0 / 6.0) * len .* randn(rng, n)`.
