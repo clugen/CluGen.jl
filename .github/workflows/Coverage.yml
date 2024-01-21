@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths: [ 'src/**', 'test/**', '.github/workflows/Coverage.yml' ]
     tags: '*'
+  workflow_dispatch:
 
 jobs:
   test:
