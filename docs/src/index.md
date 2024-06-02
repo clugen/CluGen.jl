@@ -32,7 +32,7 @@ julia> Pkg.add("https://github.com/clugen/CluGen.jl")
 ```@example quick
 ENV["GKSwstype"] = "100" # hide
 using Random # hide
-Random.seed!(123) # hide
+Random.seed!(1234) # hide
 using CluGen, Plots
 ```
 
