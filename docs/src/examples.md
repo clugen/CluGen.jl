@@ -4,15 +4,8 @@ This section contains a number of examples on how to use CluGen. Each example
 must be preceded with:
 
 ```@example
-using CluGen, Distributions, Plots, StableRNGs
+using CluGen, Distributions, Plots
 ```
-
-The [StableRNGs](https://github.com/JuliaRandom/StableRNGs.jl) package is used
-in these examples to keep them reproducible between Julia versions. In practice
-it might be simpler to specify a seed with
-[`Random.seed!()`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!)
-and omit the PRNG altogether, or use a built-in PRNG such as the
-[Mersenne Twister](https://docs.julialang.org/en/v1/stdlib/Random/#Random.MersenneTwister).
 
 The plots of each example are generated with helper functions available
 [here](https://github.com/clugen/CluGen.jl/blob/main/docs/CluGenExtras.jl).
@@ -34,11 +27,11 @@ plot(e001.points[:, 1], e001.points[:, 2], seriestype = :scatter, group = e001.c
 
 ```@example 2d_dir
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
-e001 = clugen(2, 4, 200, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
-e002 = clugen(2, 4, 200, [1, 1], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
-e003 = clugen(2, 4, 200, [0, 1], 0, [10, 10], 10, 1.5, 0.5; rng = StableRNG(1))
+e001 = clugen(2, 4, 200, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = 1)
+e002 = clugen(2, 4, 200, [1, 1], 0, [10, 10], 10, 1.5, 0.5; rng = 1)
+e003 = clugen(2, 4, 200, [0, 1], 0, [10, 10], 10, 1.5, 0.5; rng = 1)
 nothing # hide
 ```
 
@@ -58,17 +51,15 @@ nothing # hide
 
 ```@example 2d_angdisp
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom angle_deltas function: arbitrarily rotate some clusters by 90 degrees
 angdel_90_fn(nclu, astd; rng=nothing) = rand(rng, [0, pi / 2], nclu)
 
-e004 = clugen(2, 6, 500, [1, 0], 0, [10, 10], 10, 1.5, 0.5;
-    rng = StableRNG(1))
-e005 = clugen(2, 6, 500, [1, 0], pi / 8, [10, 10], 10, 1.5, 0.5;
-    rng = StableRNG(1))
+e004 = clugen(2, 6, 500, [1, 0], 0, [10, 10], 10, 1.5, 0.5; rng = 1)
+e005 = clugen(2, 6, 500, [1, 0], pi / 8, [10, 10], 10, 1.5, 0.5; rng = 1)
 e006 = clugen(2, 6, 500, [1, 0], 0, [10, 10], 10, 1.5, 0.5;
-    angle_deltas_fn = angdel_90_fn, rng = StableRNG(1))
+    angle_deltas_fn = angdel_90_fn, rng = 1)
 nothing # hide
 ```
 
@@ -90,14 +81,14 @@ nothing # hide
 
 ```@example 2d_llen
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e007 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 0, 0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e008 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 10, 0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e009 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 30, 0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 nothing # hide
 ```
 
@@ -117,18 +108,18 @@ nothing # hide
 
 ```@example 2d_llendisp
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom llengths function: line lengths grow for each new cluster
 llen_grow_fn(nclu, llen, llenstd; rng = nothing) =
     llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
 
 e010 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15,  0.0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e011 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 15, 10.0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e012 = clugen(2, 5, 800, [1, 0], pi / 10, [10, 10], 10,  0.1, 0.5;
-    llengths_fn = llen_grow_fn, point_dist_fn = "n", rng = StableRNG(2))
+    llengths_fn = llen_grow_fn, point_dist_fn = "n", rng = 2)
 nothing # hide
 ```
 
@@ -150,11 +141,11 @@ nothing # hide
 
 ```@example 2d_clusep
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
-e013 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = StableRNG(321))
-e014 = clugen(2, 8, 1000, [1, 1], pi / 4, [30, 10], 10, 2, 2.5; rng = StableRNG(321))
-e015 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 30], 10, 2, 2.5; rng = StableRNG(321))
+e013 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5; rng = 321)
+e014 = clugen(2, 8, 1000, [1, 1], pi / 4, [30, 10], 10, 2, 2.5; rng = 321)
+e015 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 30], 10, 2, 2.5; rng = 321)
 nothing # hide
 ```
 
@@ -174,18 +165,18 @@ nothing # hide
 
 ```@example 2d_cluoff
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom clucenters function: places clusters in a diagonal
 centers_diag_fn(nclu, csep, coff; rng=nothing) =
     ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
 
 e016 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5;
-    rng = StableRNG(321))
+    rng = 321)
 e017 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5;
-    cluster_offset = [20, -20], rng = StableRNG(321))
+    cluster_offset = [20, -20], rng = 321)
 e018 = clugen(2, 8, 1000, [1, 1], pi / 4, [10, 10], 10, 2, 2.5;
-    cluster_offset = [-50, -50], clucenters_fn = centers_diag_fn, rng = StableRNG(321))
+    cluster_offset = [-50, -50], clucenters_fn = centers_diag_fn, rng = 321)
 nothing # hide
 ```
 
@@ -207,11 +198,11 @@ nothing # hide
 
 ```@example 2d_projnorm
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
-e019 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; rng = StableRNG(456))
-e020 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; rng = StableRNG(456))
-e021 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0; rng = StableRNG(456))
+e019 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0; rng = 456)
+e020 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0; rng = 456)
+e021 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0; rng = 456)
 nothing # hide
 ```
 
@@ -231,14 +222,14 @@ nothing # hide
 
 ```@example 2d_projunif
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e022 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0;
-    proj_dist_fn = "unif", rng = StableRNG(456))
+    proj_dist_fn = "unif", rng = 456)
 e023 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0;
-    proj_dist_fn = "unif", rng = StableRNG(456))
+    proj_dist_fn = "unif", rng = 456)
 e024 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0;
-    proj_dist_fn = "unif", rng = StableRNG(456))
+    proj_dist_fn = "unif", rng = 456)
 nothing # hide
 ```
 
@@ -258,17 +249,17 @@ nothing # hide
 
 ```@example 2d_projlap
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e025 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 0.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(456))
+    proj_dist_fn = proj_laplace, rng = 456)
 e026 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 1.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(456))
+    proj_dist_fn = proj_laplace, rng = 456)
 e027 = clugen(2, 4, 1000, [1, 0], pi / 2, [20, 20], 13, 2, 3.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(456))
+    proj_dist_fn = proj_laplace, rng = 456)
 nothing # hide
 ```
 
@@ -290,17 +281,17 @@ nothing # hide
 
 ```@example 2d_pt_n_1
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e028 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    rng = StableRNG(345))
+    rng = 345)
 e029 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    proj_dist_fn = "unif", rng = StableRNG(345))
+    proj_dist_fn = "unif", rng = 345)
 e030 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(345))
+    proj_dist_fn = proj_laplace, rng = 345)
 nothing # hide
 ```
 
@@ -320,17 +311,17 @@ nothing # hide
 
 ```@example 2d_pt_n
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e031 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    point_dist_fn = "n", rng = StableRNG(345))
+    point_dist_fn = "n", rng = 345)
 e032 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    point_dist_fn = "n", proj_dist_fn = "unif", rng = StableRNG(345))
+    point_dist_fn = "n", proj_dist_fn = "unif", rng = 345)
 e033 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    point_dist_fn = "n", proj_dist_fn = proj_laplace, rng = StableRNG(345))
+    point_dist_fn = "n", proj_dist_fn = proj_laplace, rng = 345)
 nothing # hide
 ```
 
@@ -350,7 +341,7 @@ nothing # hide
 
 ```@example 2d_ptexp
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom point_dist_fn: final points placed using the Exponential distribution
 function clupoints_n_1_exp(projs, lat_std, len, clu_dir, clu_ctr; rng=nothing)
@@ -362,11 +353,11 @@ end
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e034 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    point_dist_fn = clupoints_n_1_exp, rng = StableRNG(345))
+    point_dist_fn = clupoints_n_1_exp, rng = 345)
 e035 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = "unif", rng = StableRNG(345))
+    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = "unif", rng = 345)
 e036 = clugen(2, 5, 1500, [1, 0], pi / 3, [20, 20], 12, 3, 1.0;
-    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = proj_laplace, rng = StableRNG(345))
+    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = proj_laplace, rng = 345)
 nothing # hide
 ```
 
@@ -386,7 +377,7 @@ nothing # hide
 
 ```@example 2d_clusizes
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom clusizes_fn (e038): cluster sizes determined via the uniform distribution,
 # no correction for total points
@@ -402,13 +393,13 @@ centers_fixed(nclu, csep, coff; rng = nothing) =
 
 e037 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, point_dist_fn = "n",
-    rng = StableRNG(9))
+    rng = 9)
 e038 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, clusizes_fn = clusizes_unif, point_dist_fn = "n",
-    rng = StableRNG(9))
+    rng = 9)
 e039 = clugen(2, 4, 1500, [1, 1], pi, [20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, clusizes_fn = clusizes_equal, point_dist_fn = "n",
-    rng = StableRNG(9))
+    rng = 9)
 nothing # hide
 ```
 
@@ -428,22 +419,22 @@ nothing # hide
 
 ```@example 2d_directopt
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e040 = clugen(2, 4, 1000, [-1, 1], 0, [0, 0], 0, 0, 0.2;
     proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = [50, 200, 500, 2000],
     llengths_fn = [0, 2, 4, 6], clucenters_fn = [-5 -5; -2.5 -2.5; 0 0; 2.5 2.5],
-    rng = StableRNG(123))
+    rng = 123)
 
 e041 = clugen(2, 5, 1000, [1 1; 1 0; 1 0; 0 1; 0 1], 0, [0, 0], 0, 0, 0.2;
     proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = [200, 500, 500, 500, 500],
     llengths_fn = [0, 5, 5, 5, 5], clucenters_fn = [0 0; 0 5; 0 -5; 5 0; -5 0],
-    rng = StableRNG(123))
+    rng = 123)
 
 e042 = clugen(2, 5, 1000, [0 1; 0.25 0.75; 0.5 0.5; 0.75 0.25; 1 0], 0, [0, 0], 5, 0, 0.2;
     proj_dist_fn = "unif", point_dist_fn = "n", clusizes_fn = 500 * ones(Int32,5),
     clucenters_fn = [-5 0; -3 -0.3; -1 -0.8; 1 -1.6; 3 -2.5],
-    rng = StableRNG(123))
+    rng = 123)
 nothing # hide
 ```
 
@@ -476,11 +467,11 @@ plot(e043.points[:, 1], e043.points[:, 2], e043.points[:, 3], seriestype = :scat
 
 ```@example 3d_dir
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
-e043 = clugen(3, 4, 500, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
-e044 = clugen(3, 4, 500, [1, 1, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
-e045 = clugen(3, 4, 500, [0, 0, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = StableRNG(1))
+e043 = clugen(3, 4, 500, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5; rng = 1)
+e044 = clugen(3, 4, 500, [1, 1, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = 1)
+e045 = clugen(3, 4, 500, [0, 0, 1], 0, [10, 10, 10], 15, 1.5, 0.5; rng = 1)
 nothing # hide
 ```
 
@@ -500,17 +491,17 @@ nothing # hide
 
 ```@example 3d_angdisp
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom angle_deltas function: arbitrarily rotate some clusters by 90 degrees
 angdel_90_fn(nclu, astd; rng=nothing) = rand(rng, [0, pi / 2], nclu)
 
 e046 = clugen(3, 6, 1000, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5;
-    rng = StableRNG(2))
+    rng = 2)
 e047 = clugen(3, 6, 1000, [1, 0, 0], pi / 8, [10, 10, 10], 15, 1.5, 0.5;
-    rng = StableRNG(2))
+    rng = 2)
 e048 = clugen(3, 6, 1000, [1, 0, 0], 0, [10, 10, 10], 15, 1.5, 0.5;
-    angle_deltas_fn = angdel_90_fn, rng = StableRNG(2))
+    angle_deltas_fn = angdel_90_fn, rng = 2)
 nothing # hide
 ```
 
@@ -530,14 +521,14 @@ nothing # hide
 
 ```@example 3d_dirclu_angd
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Directions for each cluster
 dirs = [[0 0 1];[1 1 0];[-1 1 0];[1 0 0];[0 1 0]]
 
-e049 = clugen(3, 5, 1000, dirs, 0, zeros(3), 10, 0, 0.1; rng = StableRNG(77))
-e050 = clugen(3, 5, 1000, dirs, π/12, zeros(3), 10, 0, 0.1; rng = StableRNG(77))
-e051 = clugen(3, 5, 1000, dirs, π/4, zeros(3), 10, 0, 0.1; rng = StableRNG(77))
+e049 = clugen(3, 5, 1000, dirs, 0, zeros(3), 10, 0, 0.1; rng = 77)
+e050 = clugen(3, 5, 1000, dirs, π/12, zeros(3), 10, 0, 0.1; rng = 77)
+e051 = clugen(3, 5, 1000, dirs, π/4, zeros(3), 10, 0, 0.1; rng = 77)
 nothing # hide
 ```
 
@@ -559,14 +550,14 @@ nothing # hide
 
 ```@example 3d_llen
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e052 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 0, 0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e053 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 10, 0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e054 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 30, 0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 nothing # hide
 ```
 
@@ -586,18 +577,18 @@ nothing # hide
 
 ```@example 3d_len_disp
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom llengths function: line lengths tend to grow for each new cluster
 llen_grow_fn(nclu, llen, llenstd; rng = nothing) =
     llen * (collect(0:(nclu - 1)) + llenstd * randn(rng, nclu))
 
 e055 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 15,  0.0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e056 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 15, 10.0, 0.5;
-    point_dist_fn = "n", rng = StableRNG(2))
+    point_dist_fn = "n", rng = 2)
 e057 = clugen(3, 5, 800, [1, 0, 0], pi / 10, [10, 10, 10], 10,  0.1, 0.5;
-    llengths_fn = llen_grow_fn, point_dist_fn = "n", rng = StableRNG(2))
+    llengths_fn = llen_grow_fn, point_dist_fn = "n", rng = 2)
 nothing # hide
 ```
 
@@ -619,11 +610,11 @@ nothing # hide
 
 ```@example 3d_clusep
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
-e058 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [30, 10, 10], 25, 4, 3; rng = StableRNG(321))
-e059 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 30, 10], 25, 4, 3; rng = StableRNG(321))
-e060 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 30], 25, 4, 3; rng = StableRNG(321))
+e058 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [30, 10, 10], 25, 4, 3; rng = 321)
+e059 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 30, 10], 25, 4, 3; rng = 321)
+e060 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 30], 25, 4, 3; rng = 321)
 nothing # hide
 ```
 
@@ -643,17 +634,17 @@ nothing # hide
 
 ```@example 3d_cluoff
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom clucenters function: places clusters in a diagonal
 centers_diag_fn(nclu, csep, coff; rng=nothing) = ones(nclu, length(csep)) .* (1:nclu) * maximum(csep) .+ coff'
 
 e061 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 10], 12, 3, 2.5;
-    rng = StableRNG(321))
+    rng = 321)
 e062 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 10], 12, 3, 2.5;
-    cluster_offset = [20, -20, 20], rng = StableRNG(321))
+    cluster_offset = [20, -20, 20], rng = 321)
 e063 = clugen(3, 8, 1000, [1, 1, 1], pi / 4, [10, 10, 10], 12, 3, 2.5;
-    cluster_offset = [-50, -50, -50], clucenters_fn = centers_diag_fn, rng = StableRNG(321))
+    cluster_offset = [-50, -50, -50], clucenters_fn = centers_diag_fn, rng = 321)
 nothing # hide
 ```
 
@@ -675,11 +666,11 @@ nothing # hide
 
 ```@example 3d_normproj
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
-e064 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; rng = StableRNG(456))
-e065 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; rng = StableRNG(456))
-e066 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; rng = StableRNG(456))
+e064 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0; rng = 456)
+e065 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0; rng = 456)
+e066 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0; rng = 456)
 nothing # hide
 ```
 
@@ -699,14 +690,14 @@ nothing # hide
 
 ```@example 3d_unifproj
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e067 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0;
-    proj_dist_fn = "unif", rng = StableRNG(456))
+    proj_dist_fn = "unif", rng = 456)
 e068 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0;
-    proj_dist_fn = "unif", rng = StableRNG(456))
+    proj_dist_fn = "unif", rng = 456)
 e069 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0;
-    proj_dist_fn = "unif", rng = StableRNG(456))
+    proj_dist_fn = "unif", rng = 456)
 nothing # hide
 ```
 
@@ -726,17 +717,17 @@ nothing # hide
 
 ```@example 3d_custfproj
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e070 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 0.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(456))
+    proj_dist_fn = proj_laplace, rng = 456)
 e071 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 1.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(456))
+    proj_dist_fn = proj_laplace, rng = 456)
 e072 = clugen(3, 4, 1000, [1, 0, 0], pi / 2, [20, 20, 20], 13, 2, 3.0;
-    proj_dist_fn = proj_laplace, rng = StableRNG(456))
+    proj_dist_fn = proj_laplace, rng = 456)
 nothing # hide
 ```
 
@@ -758,17 +749,17 @@ nothing # hide
 
 ```@example 3d_n_1
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e073 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    rng = StableRNG(34))
+    rng = 34)
 e074 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    proj_dist_fn = "unif", rng = StableRNG(34))
+    proj_dist_fn = "unif", rng = 34)
 e075 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    proj_dist_fn = proj_laplace, rng = StableRNG(34))
+    proj_dist_fn = proj_laplace, rng = 34)
 nothing # hide
 ```
 
@@ -788,17 +779,17 @@ nothing # hide
 
 ```@example 3d_n
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e076 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    point_dist_fn = "n", rng = StableRNG(34))
+    point_dist_fn = "n", rng = 34)
 e077 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    point_dist_fn = "n", proj_dist_fn = "unif", rng = StableRNG(34))
+    point_dist_fn = "n", proj_dist_fn = "unif", rng = 34)
 e078 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    point_dist_fn = "n", proj_dist_fn = proj_laplace, rng = StableRNG(34))
+    point_dist_fn = "n", proj_dist_fn = proj_laplace, rng = 34)
 nothing # hide
 ```
 
@@ -818,7 +809,7 @@ nothing # hide
 
 ```@example 3d_custpt
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom point_dist_fn: final points placed using the Exponential distribution
 function clupoints_n_1_exp(projs, lat_std, len, clu_dir, clu_ctr; rng=nothing)
@@ -830,11 +821,11 @@ end
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
 e079 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    point_dist_fn = clupoints_n_1_exp, rng = StableRNG(34))
+    point_dist_fn = clupoints_n_1_exp, rng = 34)
 e080 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = "unif", rng = StableRNG(34))
+    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = "unif", rng = 34)
 e081 = clugen(3, 5, 1500, [1, 0, 0], pi / 3, [20, 20, 20], 22, 3, 2;
-    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = proj_laplace, rng = StableRNG(34))
+    point_dist_fn = clupoints_n_1_exp, proj_dist_fn = proj_laplace, rng = 34)
 nothing # hide
 ```
 
@@ -854,7 +845,7 @@ nothing # hide
 
 ```@example 3d_clusizes
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 # Custom clusizes_fn (e083): cluster sizes determined via the uniform distribution,
 # no correction for total points
@@ -871,13 +862,13 @@ centers_fixed(nclu, csep, coff; rng=nothing) =
 
 e082 = clugen(3, 4, 1500, [1, 1, 1], pi, [20, 20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, point_dist_fn = "n",
-    rng = StableRNG(9))
+    rng = 9)
 e083 = clugen(3, 4, 1500, [1, 1, 1], pi, [20, 20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, clusizes_fn = clusizes_unif, point_dist_fn = "n",
-    rng = StableRNG(9))
+    rng = 9)
 e084 = clugen(3, 4, 1500, [1, 1, 1], pi, [20, 20, 20], 0, 0, 5;
     clucenters_fn = centers_fixed, clusizes_fn = clusizes_equal, point_dist_fn = "n",
-    rng = StableRNG(9))
+    rng = 9)
 nothing # hide
 ```
 
@@ -904,9 +895,9 @@ The following example was plotted with the `plot_examples_1d()` function availab
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
-e085 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = StableRNG(45))
-e086 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = StableRNG(45))
-e087 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = StableRNG(45))
+e085 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = 45)
+e086 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = 45)
+e087 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = 45)
 ```
 
 ```julia
@@ -925,14 +916,14 @@ plt = plot_examples_1d(
 # in the generated output. We can remove this trick when the bug is fixed.
 
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, StableRNGs, StatsPlots, Main.CluGenExtras # hide
+using CluGen, Distributions, StatsPlots, Main.CluGenExtras # hide
 
 # Custom proj_dist_fn: point projections placed using the Laplace distribution
 proj_laplace(len, n, rng) = rand(rng, Laplace(0, len / 6), n)
 
-e085 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = StableRNG(45))
-e086 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = StableRNG(45))
-e087 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = StableRNG(45))
+e085 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; rng = 45)
+e086 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = "unif", rng = 45)
+e087 = clugen(1, 3, 2000, [1], 0, [10], 6, 1.5, 0; proj_dist_fn = proj_laplace, rng = 45)
 
 plt = plot_examples_1d(
     e085, "e085: proj_dist_fn=\"norm\" (default)",
@@ -952,11 +943,11 @@ The following examples were plotted with the `plot_examples_nd()` function avail
 
 ```@example 5d_defopt
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 nd = 5
 e088 = clugen(nd, 6, 1500, [1, 1, 0.5, 0, 0], pi / 16, 30 .* ones(nd), 30, 4, 3;
-    rng = StableRNG(123))
+    rng = 123)
 nothing # hide
 ```
 
@@ -973,11 +964,11 @@ nothing # hide
 
 ```@example 5d_unif_n
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 nd = 5
 e089 = clugen(nd, 6, 1500, [0.1, 0.3, 0.5, 0.3, 0.1], pi / 12, 30 .* ones(nd), 35, 5, 3.5;
-    proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(321))
+    proj_dist_fn = "unif", point_dist_fn = "n", rng = 321)
 nothing # hide
 ```
 
@@ -999,12 +990,12 @@ example:
 
 ```@example mrg_cg
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e090 = clugen(2, 5, 1000, [1, 1], pi / 12, [20, 20], 14, 1.2, 1.5;
-    proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(444))
+    proj_dist_fn = "unif", point_dist_fn = "n", rng = 444)
 e091 = clugen(2, 3, 1500, [1, 0], 0.05, [20, 20], 0, 0, 4;
-    point_dist_fn="n", cluster_offset = [20, 0], rng = StableRNG(555))
+    point_dist_fn="n", cluster_offset = [20, 0], rng = 555)
 e092 = clumerge(e090, e091)
 nothing # hide
 ```
@@ -1027,7 +1018,7 @@ cluster labels by setting the `clusters_field` parameter to `nothing`:
 
 ```@example mrg_cg
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e093 = clumerge(e090, e091; clusters_field=nothing)
 nothing # hide
@@ -1049,7 +1040,7 @@ nothing # hide
 
 ```@example mrg_cg
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras # hide
 
 e094 = (points = 120 * rand(500, 2) .- 60, clusters = ones(Int32, 500))
 e095 = clumerge(e094, e092) # clumerge(e094, e090, e091) would also work
@@ -1077,13 +1068,13 @@ example data created with [MLJ](https://alan-turing-institute.github.io/MLJ.jl/d
 
 ```@example mrg_cg_mlj
 ENV["GKSwstype"] = "100" # hide
-using CluGen, Distributions, Plots, StableRNGs, Main.CluGenExtras, MLJ # hide
+using CluGen, Distributions, Plots, Main.CluGenExtras, MLJ # hide
 
-X, y = make_moons(100; noise=0.05, as_table=false, rng=StableRNG(333)) # From the MLJ package
+X, y = make_moons(100; noise=0.05, as_table=false, rng=333) # From the MLJ package
 
 e096 = (points=X, clusters=y)
 e097 = clugen(2, 5, 200, [1, 1], pi / 12, [1, 1], 0.1, 0.01, 0.25;
-           proj_dist_fn = "unif", point_dist_fn = "n", rng = StableRNG(444))
+           proj_dist_fn = "unif", point_dist_fn = "n", rng = 444)
 e098 = clumerge(e096, e097)
 nothing # hide
 ```
