@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2024 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -22,7 +22,7 @@
         clucenters_fn::Union{<:Function, AbstractArray{<:Real}} = GluGen.clucenters,
         llengths_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.llengths,
         angle_deltas_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.angle_deltas,
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::Union{Integer,AbstractRNG}=Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,      # Array{<:Real,2}
             :clusters,    # Array{<:Integer,1}
