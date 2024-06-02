@@ -111,7 +111,7 @@ arguments, described next.
   This parameter allows the user to specify a custom function for this purpose,
   which must follow [`CluGen.angle_deltas()`](@ref)'s signature.  Alternatively, the
   user can specify an array of angle deltas directly.
-- `rng`: A concrete instance of
+- `rng`: The seed for the random number generator or an instance of
   [`AbstractRNG`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.AbstractRNG)
   for reproducible runs. Alternatively, the user can set the global RNG seed with
   [`Random.seed!()`](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!)
@@ -184,7 +184,7 @@ function clugen(
     clucenters_fn::Union{<:Function,AbstractArray{<:Real}}=clucenters,
     llengths_fn::Union{<:Function,AbstractArray{<:Real,1}}=llengths,
     angle_deltas_fn::Union{<:Function,AbstractArray{<:Real,1}}=angle_deltas,
-    rng::AbstractRNG=Random.GLOBAL_RNG,
+    rng::Union{Integer,AbstractRNG}=Random.GLOBAL_RNG,
 )::NamedTuple
 
     # ############### #
@@ -282,6 +282,11 @@ function clugen(
                 "($(length(cluster_offset)) != $num_dims)",
             ),
         )
+    end
+
+    # If the user specified rng as an int, create a proper rng object
+    if typeof(rng) <: Integer
+        rng = MersenneTwister(rng)
     end
 
     # Check that proj_dist_fn specifies a valid way for projecting points along
