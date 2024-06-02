@@ -18,7 +18,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           # Julia 1.1 on macos x64
-          - os: macos-latest-large
+          - os: macos-13
             version: 1.1
           # Julia nightly on macos ARM
           - os: macos-latest
