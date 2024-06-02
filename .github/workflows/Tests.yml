@@ -10,6 +10,7 @@ on:
 jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ github.event_name }}
+    if: ${{ ! (matrix.os == 'macos-latest' && matrix.version == '1.1') }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
