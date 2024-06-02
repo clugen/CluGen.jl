@@ -1,7 +1,7 @@
-# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2024 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
-using CluGen, Plots, StableRNGs
+using CluGen, Plots, Random
 
 # Script to create CluGen's logo
 # Invoke from it's current folder with `julia logo.jl`
@@ -32,7 +32,7 @@ r = clugen(
     clucenters_fn=centers_fixed,
     clusizes_fn=clusizes_equal,
     point_dist_fn="n",
-    rng=StableRNG(9),
+    rng=MersenneTwister(9),
 )
 
 p = plot(
