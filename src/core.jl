@@ -1,13 +1,13 @@
-# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2024 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
 """
     points_on_line(
-        center::AbstractArray{<:Real, 1},
-        direction::AbstractArray{<:Real, 1},
-        dist_center::AbstractArray{<:Real, 1}
-    ) -> AbstractArray{<:Real, 2}
+        center::AbstractArray{<:Real,1},
+        direction::AbstractArray{<:Real,1},
+        dist_center::AbstractArray{<:Real,1}
+    ) -> AbstractArray{<:Real,2}
 
 Determine coordinates of points on a line with `center` and `direction`, based
 on the distances from the center given in `dist_center`.
@@ -27,7 +27,7 @@ line, and ``\\mathbf{1}`` is a ``p \\times 1`` vector with all entries equal to 
 
 # Examples
 ```jldoctest
-julia> points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
+julia> points_on_line([5.0, 5.0], [1.0, 0.0], -4:2:4) # 2D, 5 points
 5×2 Matrix{Float64}:
  1.0  5.0
  3.0  5.0
@@ -35,7 +35,7 @@ julia> points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # 2D, 5 points
  7.0  5.0
  9.0  5.0
 
-julia> points_on_line([-2.0,0,0,2.0], [0,0,-1.0,0], [10,-10]) # 4D, 2 points
+julia> points_on_line([-2.0, 0, 0, 2.0], [0, 0, -1.0, 0], [10, -10]) # 4D, 2 points
 2×4 Matrix{Float64}:
  -2.0  0.0  -10.0  2.0
  -2.0  0.0   10.0  2.0
@@ -51,9 +51,9 @@ end
 
 """
     rand_ortho_vector(
-        u::AbstractArray{<:Real, 1};
-        rng::AbstractRNG = Random.GLOBAL_RNG
-    ) -> AbstractArray{<:Real, 1}
+        u::AbstractArray{<:Real,1};
+        rng::AbstractRNG=Random.GLOBAL_RNG
+    ) -> AbstractArray{<:Real,1}
 
 Get a random unit vector orthogonal to `u`.
 
@@ -61,14 +61,14 @@ Note that `u` is expected to be a unit vector itself.
 
 # Examples
 ```jldoctest; setup = :(using LinearAlgebra, Random; Random.seed!(111))
-julia> u = normalize([1,2,5.0,-3,-0.2]); # Define a 5D unit vector
+julia> u = normalize([1, 2, 5.0, -3, -0.2]); # Define a 5D unit vector
 
 julia> v = rand_ortho_vector(u);
 
 julia> ≈(dot(u, v), 0; atol=1e-15) # Vectors orthogonal? (needs LinearAlgebra package)
 true
 
-julia> rand_ortho_vector([1,0,0]; rng=MersenneTwister(567)) # 3D, reproducible
+julia> rand_ortho_vector([1, 0, 0]; rng=MersenneTwister(567)) # 3D, reproducible
 3-element Vector{Float64}:
   0.0
  -0.717797705156548
@@ -111,7 +111,7 @@ end
     rand_unit_vector(
         num_dims::Integer;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    ) ->  AbstractArray{<:Real, 1}
+    ) ->  AbstractArray{<:Real,1}
 
 Get a random unit vector with `num_dims` dimensions.
 
@@ -143,10 +143,10 @@ end
 
 """
     rand_vector_at_angle(
-        u::AbstractArray{<:Real, 1},
+        u::AbstractArray{<:Real,1},
         angle::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    ) ->  AbstractArray{<:Real, 1}
+    ) ->  AbstractArray{<:Real,1}
 
 Get a random unit vector which is at `angle` radians of vector `u`.
 

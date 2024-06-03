@@ -1,9 +1,9 @@
-# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2024 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
 """
-    angle_btw(v1::AbstractArray{<:Real, 1}, v2::AbstractArray{<:Real, 1}) -> Real
+    angle_btw(v1::AbstractArray{<:Real,1}, v2::AbstractArray{<:Real,1}) -> Real
 
 Angle between two ``n``-dimensional vectors.
 
@@ -40,9 +40,9 @@ end
 
 """
     CluGen.clupoints_n_1_template(
-        projs::AbstractArray{<:Real, 2},
+        projs::AbstractArray{<:Real,2},
         lat_disp::Real,
-        clu_dir::AbstractArray{<:Real, 1},
+        clu_dir::AbstractArray{<:Real,1},
         dist_fn::Function;
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
@@ -106,9 +106,9 @@ end
 
 """
     fix_empty!(
-        clu_num_points::AbstractArray{<:Integer, 1},
-        allow_empty::Bool = false
-    ) -> AbstractArray{<:Integer, 1}
+        clu_num_points::AbstractArray{<:Integer,1},
+        allow_empty::Bool=false
+    ) -> AbstractArray{<:Integer,1}
 
 Certifies that, given enough points, no clusters are left empty. This is done by
 removing a point from the largest cluster and adding it to an empty cluster while
@@ -153,9 +153,9 @@ end
 
 """
     fix_num_points!(
-        clu_num_points::AbstractArray{<:Integer, 1},
+        clu_num_points::AbstractArray{<:Integer,1},
         num_points::Integer
-    ) -> AbstractArray{<:Integer, 1}
+    ) -> AbstractArray{<:Integer,1}
 
 Certifies that the values in the `clu_num_points` array, i.e. the number of
 points in each cluster, add up to `num_points`. If this is not the case, the

@@ -9,20 +9,20 @@
         num_points::Integer,
         direction::AbstractArray{<:Real},
         angle_disp::Real,
-        cluster_sep::AbstractArray{<:Real, 1},
+        cluster_sep::AbstractArray{<:Real,1},
         llength::Real,
         llength_disp::Real,
         lateral_disp::Real;
         # Keyword arguments
         allow_empty::Bool = false,
-        cluster_offset::Union{AbstractArray{<:Real, 1}, Nothing} = nothing,
-        proj_dist_fn::Union{String, <:Function} = "norm",
-        point_dist_fn::Union{String, <:Function} = "n-1",
-        clusizes_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.clusizes,
-        clucenters_fn::Union{<:Function, AbstractArray{<:Real}} = GluGen.clucenters,
-        llengths_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.llengths,
-        angle_deltas_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.angle_deltas,
-        rng::Union{Integer, AbstractRNG}=Random.GLOBAL_RNG
+        cluster_offset::Union{AbstractArray{<:Real,1},Nothing} = nothing,
+        proj_dist_fn::Union{String,<:Function} = "norm",
+        point_dist_fn::Union{String,<:Function} = "n-1",
+        clusizes_fn::Union{<:Function,AbstractArray{<:Real,1}} = GluGen.clusizes,
+        clucenters_fn::Union{<:Function,AbstractArray{<:Real}} = GluGen.clucenters,
+        llengths_fn::Union{<:Function,AbstractArray{<:Real,1}} = GluGen.llengths,
+        angle_deltas_fn::Union{<:Function,AbstractArray{<:Real,1}} = GluGen.angle_deltas,
+        rng::Union{Integer,AbstractRNG}=Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,      # Array{<:Real,2}
             :clusters,    # Array{<:Integer,1}
@@ -145,7 +145,7 @@ possible that `num_points` may have a different value than what was specified in
 ```jldoctest; setup = :(using Random; Random.seed!(123))
 julia> # Create 5 clusters in 3D space with a total of 10000 points...
 
-julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi/16, [10, 10, 10], 10, 1, 2);
+julia> out = clugen(3, 5, 10000, [0.5, 0.5, 0.5], pi / 16, [10, 10, 10], 10, 1, 2);
 
 julia> out.centers # What are the cluster centers?
 5×3 Matrix{Float64}:
@@ -159,7 +159,7 @@ julia> out.centers # What are the cluster centers?
 The following instruction displays a scatter plot of the clusters in 3D space:
 
 ```julia-repl
-julia> plot(out.points[:,1], out.points[:,2], out.points[:,3], seriestype = :scatter, group=out.point_clusters)
+julia> plot(out.points[:, 1], out.points[:, 2], out.points[:, 3], seriestype=:scatter, group=out.point_clusters)
 ```
 
 Check the [Examples](@ref) section for a number of illustrative examples on how to
@@ -482,7 +482,7 @@ end
         fields::Tuple{Vararg{Symbol}}=(:points, :clusters),
         clusters_field::Union{Symbol,Nothing}=:clusters,
         output_type::Symbol=:NamedTuple
-    ) -> Union{NamedTuple, Dict}
+    ) -> Union{NamedTuple,Dict}
 
 Merges the fields (specified in `fields`) of two or more `data` sets (named tuples
 or dictionaries). The fields to be merged need to have the same number of columns.
@@ -513,7 +513,7 @@ julia> clu_data = clugen(2, 5, 1000, [1, 1], 0.01, [20, 20], 14, 1.2, 1.5);
 
 julia> # Generate 500 points of random uniform noise
 
-julia> noise = (points=120 * rand(500, 2) .- 60, clusters = ones(Int32, 500));
+julia> noise = (points=120 * rand(500, 2) .- 60, clusters=ones(Int32, 500));
 
 julia> # Create a new data set with the clugen()-generated data plus the noise
 

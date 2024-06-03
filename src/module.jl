@@ -7,7 +7,7 @@
         num_clusters::Integer,
         angle_disp::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    ) -> AbstractArray{<:Real, 1}
+    ) -> AbstractArray{<:Real,1}
 
 Determine the angles between the average cluster direction and the
 cluster-supporting lines. These angles are obtained from a wrapped normal
@@ -24,14 +24,14 @@ if invoked by user code.
 
 # Examples
 ```jldoctest; setup = :(using Random; Random.seed!(111))
-julia> CluGen.angle_deltas(4, pi/128)
+julia> CluGen.angle_deltas(4, pi / 128)
 4-element Vector{Float64}:
   0.01888791855096079
  -0.027851298321307266
   0.03274154825228485
  -0.004475798744567242
 
-julia> CluGen.angle_deltas(3, pi/32; rng=MersenneTwister(987)) # Reproducible
+julia> CluGen.angle_deltas(3, pi / 32; rng=MersenneTwister(987)) # Reproducible
 3-element Vector{Float64}:
   0.08834204306583336
   0.014678748091943444
@@ -65,8 +65,8 @@ end
 """
     clucenters(
         num_clusters::Integer,
-        clu_sep::AbstractArray{<:Real, 1},
-        clu_offset::AbstractArray{<:Real, 1};
+        clu_sep::AbstractArray{<:Real,1},
+        clu_offset::AbstractArray{<:Real,1};
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) ->  AbstractArray{<:Real}
 
@@ -129,11 +129,11 @@ end
 
 """
     CluGen.clupoints_n_1(
-        projs::AbstractArray{<:Real, 2},
+        projs::AbstractArray{<:Real,2},
         lat_disp::Real,
         line_len::Real,
-        clu_dir::AbstractArray{<:Real, 1},
-        clu_ctr::AbstractArray{<:Real, 1};
+        clu_dir::AbstractArray{<:Real,1},
+        clu_ctr::AbstractArray{<:Real,1};
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
@@ -158,7 +158,7 @@ if invoked by user code.
 
 # Examples
 ```jldoctest; setup = :(using Random)
-julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
+julia> projs = points_on_line([5.0, 5.0], [1.0, 0.0], -4:2:4) # Get 5 point projections on a 2D line
 5×2 Matrix{Float64}:
  1.0  5.0
  3.0  5.0
@@ -166,7 +166,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  7.0  5.0
  9.0  5.0
 
-julia> CluGen.clupoints_n_1(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
+julia> CluGen.clupoints_n_1(projs, 0.5, 1.0, [1, 0], [0, 0]; rng=MersenneTwister(123))
 5×2 Matrix{Float64}:
  1.0  5.59513
  3.0  3.97591
@@ -194,11 +194,11 @@ end
 
 """
     GluGen.clupoints_n(
-        projs::AbstractArray{<:Real, 2},
+        projs::AbstractArray{<:Real,2},
         lat_disp::Real,
         line_len::Real,
-        clu_dir::AbstractArray{<:Real, 1},
-        clu_ctr::AbstractArray{<:Real, 1};
+        clu_dir::AbstractArray{<:Real,1},
+        clu_ctr::AbstractArray{<:Real,1};
         rng::AbstractRNG = Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
@@ -223,7 +223,7 @@ if invoked by user code.
 
 # Examples
 ```jldoctest; setup = :(using Random)
-julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projections on a 2D line
+julia> projs = points_on_line([5.0, 5.0], [1.0, 0.0], -4:2:4) # Get 5 point projections on a 2D line
 5×2 Matrix{Float64}:
  1.0  5.0
  3.0  5.0
@@ -231,7 +231,7 @@ julia> projs = points_on_line([5.0,5.0], [1.0,0.0], -4:2:4) # Get 5 point projec
  7.0  5.0
  9.0  5.0
 
-julia> CluGen.clupoints_n(projs, 0.5, 1.0, [1,0], [0,0]; rng=MersenneTwister(123))
+julia> CluGen.clupoints_n(projs, 0.5, 1.0, [1, 0], [0, 0]; rng=MersenneTwister(123))
 5×2 Matrix{Float64}:
  1.59513  4.66764
  4.02409  5.49048
@@ -270,7 +270,7 @@ end
         num_points::Integer,
         allow_empty::Bool;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    ) -> AbstractArray{<:Integer, 1}
+    ) -> AbstractArray{<:Integer,1}
 
 Determine cluster sizes, i.e., the number of points in each cluster, using the
 normal distribution (μ=`num_points`/`num_clusters`, σ=μ/3), and then assuring
@@ -352,7 +352,7 @@ end
         llength::Real,
         llength_disp::Real;
         rng::AbstractRNG = Random.GLOBAL_RNG
-    ) -> AbstractArray{<:Real, 1}
+    ) -> AbstractArray{<:Real,1}
 
 Determine length of cluster-supporting lines using the folded normal distribution
 (μ=`llength`, σ=`llength_disp`).
