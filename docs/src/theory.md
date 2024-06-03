@@ -37,7 +37,7 @@ using CluGen, LinearAlgebra, Plots, Main.CluGenExtras
 # Create clusters
 d = [1, 1]
 nclu = 4
-r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1; rng = 1234)
+r = clugen(2, nclu, 200, d, pi/16, [10, 10], 10, 1.5, 1; rng=1234)
 plt, _ = plot_story_2d(d, r)
 
 savefig(plt, "algorithm.svg")
@@ -72,7 +72,7 @@ and plotted with the following instructions:
 ```julia-repl
 julia> using CluGen, Plots
 
-julia> r = clugen(2, 4, 200, [1, 1], pi/16, [10, 10], 10, 1.5, 1; rng = 1234);
+julia> r = clugen(2, 4, 200, [1, 1], pi/16, [10, 10], 10, 1.5, 1; rng=1234);
 
-julia> plot(r.points[:,1], r.points[:,2], seriestype = :scatter, group=r.clusters)
+julia> plot(r.points[:,1], r.points[:,2], seriestype=:scatter, group=r.clusters)
 ```
