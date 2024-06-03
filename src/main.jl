@@ -22,7 +22,7 @@
         clucenters_fn::Union{<:Function, AbstractArray{<:Real}} = GluGen.clucenters,
         llengths_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.llengths,
         angle_deltas_fn::Union{<:Function, AbstractArray{<:Real, 1}} = GluGen.angle_deltas,
-        rng::Union{Integer,AbstractRNG}=Random.GLOBAL_RNG
+        rng::Union{Integer, AbstractRNG}=Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,      # Array{<:Real,2}
             :clusters,    # Array{<:Integer,1}
