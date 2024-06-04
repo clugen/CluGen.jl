@@ -110,7 +110,7 @@ end
 """
     rand_unit_vector(
         num_dims::Integer;
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) ->  AbstractArray{<:Real,1}
 
 Get a random unit vector with `num_dims` dimensions.
@@ -145,7 +145,7 @@ end
     rand_vector_at_angle(
         u::AbstractArray{<:Real,1},
         angle::Real;
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) ->  AbstractArray{<:Real,1}
 
 Get a random unit vector which is at `angle` radians of vector `u`.

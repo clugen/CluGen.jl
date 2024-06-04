@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2023 Nuno Fachada, Diogo de Andrade, and contributors
+# Copyright (c) 2020-2024 Nuno Fachada, Diogo de Andrade, and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -6,7 +6,7 @@
     angle_deltas(
         num_clusters::Integer,
         angle_disp::Real;
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real,1}
 
 Determine the angles between the average cluster direction and the
@@ -67,7 +67,7 @@ end
         num_clusters::Integer,
         clu_sep::AbstractArray{<:Real,1},
         clu_offset::AbstractArray{<:Real,1};
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) ->  AbstractArray{<:Real}
 
 Determine cluster centers using the uniform distribution, taking into account the
@@ -134,7 +134,7 @@ end
         line_len::Real,
         clu_dir::AbstractArray{<:Real,1},
         clu_ctr::AbstractArray{<:Real,1};
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
 Generate points from their ``n``-dimensional projections on a cluster-supporting
@@ -199,7 +199,7 @@ end
         line_len::Real,
         clu_dir::AbstractArray{<:Real,1},
         clu_ctr::AbstractArray{<:Real,1};
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
 Generate points from their ``n``-dimensional projections on a cluster-supporting
@@ -269,7 +269,7 @@ end
         num_clusters::Integer,
         num_points::Integer,
         allow_empty::Bool;
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Integer,1}
 
 Determine cluster sizes, i.e., the number of points in each cluster, using the
@@ -351,7 +351,7 @@ end
         num_clusters::Integer,
         llength::Real,
         llength_disp::Real;
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real,1}
 
 Determine length of cluster-supporting lines using the folded normal distribution

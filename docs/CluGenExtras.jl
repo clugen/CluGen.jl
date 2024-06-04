@@ -1,5 +1,5 @@
 
-# Copyright (c) 2020-2023 Nuno Fachada and contributors
+# Copyright (c) 2020-2024 Nuno Fachada and contributors
 # Distributed under the MIT License (See accompanying file LICENSE or copy
 # at http://opensource.org/licenses/MIT)
 
@@ -571,12 +571,12 @@ end
 
 """
     clupoints_n_hollow(
-        projs::AbstractArray{<:Real, 2},
+        projs::AbstractArray{<:Real,2},
         lat_disp::Real,
         line_len::Real,
-        clu_dir::AbstractArray{<:Real, 1},
-        clu_ctr::AbstractArray{<:Real, 1};
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        clu_dir::AbstractArray{<:Real,1},
+        clu_ctr::AbstractArray{<:Real,1};
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
 Alternative function for the `point_dist_fn` parameter of the `clugen()` function

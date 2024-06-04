@@ -44,7 +44,7 @@ end
         lat_disp::Real,
         clu_dir::AbstractArray{<:Real,1},
         dist_fn::Function;
-        rng::AbstractRNG = Random.GLOBAL_RNG
+        rng::AbstractRNG=Random.GLOBAL_RNG
     ) -> AbstractArray{<:Real}
 
 Generate points from their ``n``-dimensional projections on a cluster-supporting

@@ -14,14 +14,14 @@
         llength_disp::Real,
         lateral_disp::Real;
         # Keyword arguments
-        allow_empty::Bool = false,
-        cluster_offset::Union{AbstractArray{<:Real,1},Nothing} = nothing,
-        proj_dist_fn::Union{String,<:Function} = "norm",
-        point_dist_fn::Union{String,<:Function} = "n-1",
-        clusizes_fn::Union{<:Function,AbstractArray{<:Real,1}} = GluGen.clusizes,
-        clucenters_fn::Union{<:Function,AbstractArray{<:Real}} = GluGen.clucenters,
-        llengths_fn::Union{<:Function,AbstractArray{<:Real,1}} = GluGen.llengths,
-        angle_deltas_fn::Union{<:Function,AbstractArray{<:Real,1}} = GluGen.angle_deltas,
+        allow_empty::Bool=false,
+        cluster_offset::Union{AbstractArray{<:Real,1},Nothing}=nothing,
+        proj_dist_fn::Union{String,<:Function}="norm",
+        point_dist_fn::Union{String,<:Function}="n-1",
+        clusizes_fn::Union{<:Function,AbstractArray{<:Real,1}}=CluGen.clusizes,
+        clucenters_fn::Union{<:Function,AbstractArray{<:Real}}=CluGen.clucenters,
+        llengths_fn::Union{<:Function,AbstractArray{<:Real,1}}=CluGen.llengths,
+        angle_deltas_fn::Union{<:Function,AbstractArray{<:Real,1}}=CluGen.angle_deltas,
         rng::Union{Integer,AbstractRNG}=Random.GLOBAL_RNG
     ) -> NamedTuple{(
             :points,      # Array{<:Real,2}
